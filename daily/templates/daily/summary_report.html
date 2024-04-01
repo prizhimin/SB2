@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сводный отчёт</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Сводный отчёт</h1>
+        <!-- Форма для выбора даты -->
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <!--<label for="file_name">Введите имя файла сводного отчёта:</label>
+            <input type="text" id="file_name" name="file_name" style="width: 300px;">
+            <br>
+            <br>
+            -->
+            <button type="submit" formaction="{% url 'summary_report' %}">Показать отчеты за указанную дату</button>
+            <button type="submit" formaction="{% url 'generate_summary_report' %}">Сводный отчёт за указанную дату</button>
+        </form>
+    </div>
+    <div class="report-list">
+        <!-- Список ссылок на отчеты -->
+        <h2>Отчеты за выбранную дату:</h2>
+        <ul>
+            {% for report in reports %}
+            <li>
+                <a href="{% url 'report_details' report.id %}" class="action-button">
+                    {{ report.report_date|date:"d.m.Y" }} - {{ report.department.name }} - {{ report.author.last_name }}
+                    {{ report.author.first_name }}
+                </a>
+            </li>
+            {% empty %}
+            <li>Нет доступных отчетов</li>
+            {% endfor %}
+        </ul>
+        <!-- Список подразделений без отчетов за выбранную дату -->
+        <h2>Подразделения без отчетов за выбранную дату:</h2>
+        <ul class="department-list">
+            {% for department in departments_without_reports %}
+            <li>• {{ department.name }}</li>
+            {% empty %}
+            <li>Нет подразделений без отчетов</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Кнопка "Вернуться на Главную" -->
+    <div class="actions">
+        <a href="{% url 'dashboard' %}" class="action-link">
+            <button type="button">Вернуться на Главную</button>
+        </a>
+    </div>
+</body>
+</html>

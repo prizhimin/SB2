@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление ежедневного отчёта</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Добавление ежедневного отчёта</h1>
+    <form method="post" class="form-group">
+        {% csrf_token %}
+        <table class="form-table">
+            <tr>
+                <th>{{ form.department.label }} </th>
+                <th>{{ form.department }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.report_date.label }} </th>
+                <th>{{ form.report_date }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_1.label }} </th>
+                <th>{{ form.field_1 }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_2.label }} </th>
+                <th>{{ form.field_2 }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_3.label }} </th>
+                <th>{{ form.field_3 }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_4.label }} </th>
+                <th>{{ form.field_4 }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_5.label }} </th>
+                <th>{{ form.field_5 }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_6.label }} </th>
+                <th>{{ form.field_6 }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_7.label }} </th>
+                <th>{{ form.field_7 }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_8.label }} </th>
+                <th>{{ form.field_8 }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_9.label }} </th>
+                <th>{{ form.field_9 }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_10.label }} </th>
+                <th>{{ form.field_10 }} </th>
+            </tr>
+            <tr>
+                <th>{{ form.field_11.label }} </th>
+                <th>{{ form.field_11 }} </th>
+            </tr>
+        </table>
+        <button type="submit">Внести данные</button>
+    </form>
+</body>
+</html>
