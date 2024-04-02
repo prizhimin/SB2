@@ -18,7 +18,7 @@ class DailyReportForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         user_departments = UserDepartment.objects.filter(user=user)
         department_ids = user_departments.values_list('department__id', flat=True)
-        self.fields['department'].queryset = Department.objects.filter(id__in=department_ids)
+        self.fields['department'].queryset = Department.objects.filter(id__in=department_ids).order_by('name')
         self.fields['report_date'].initial = get_date_for_report()
 
     class Meta:
