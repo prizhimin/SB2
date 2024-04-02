@@ -8,74 +8,76 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <h1>Добавление ежедневного отчёта</h1>
-    <form method="post" class="form-group">
-        {% csrf_token %}
-        <table class="form-table">
-            <tr>
-                <th>{{ form.department.label }} </th>
-                <th>{{ form.department }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.report_date.label }} </th>
-                <th>{{ form.report_date }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_1.label }} </th>
-                <th>{{ form.field_1 }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_2.label }} </th>
-                <th>{{ form.field_2 }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_3.label }} </th>
-                <th>{{ form.field_3 }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_4.label }} </th>
-                <th>{{ form.field_4 }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_5.label }} </th>
-                <th>{{ form.field_5 }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_6.label }} </th>
-                <th>{{ form.field_6 }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_7.label }} </th>
-                <th>{{ form.field_7 }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_8.label }} </th>
-                <th>{{ form.field_8 }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_9.label }} </th>
-                <th>{{ form.field_9 }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_10.label }} </th>
-                <th>{{ form.field_10 }} </th>
-            </tr>
-            <tr>
-                <th>{{ form.field_11.label }} </th>
-                <th>{{ form.field_11 }} </th>
-            </tr>
-        </table>
-        <div class="actions">
-            <button type="submit">Внести данные</button>
-            <!-- Кнопка "Назад к списку отчётов" -->
-            <a href="{% url 'daily_reports' %}" class="action-link">
-                <button type="button">Назад к списку отчётов</button>
-            </a>
-            <!-- Кнопка "Вернуться на Главную" -->
-            <a href="{% url 'dashboard' %}" class="action-link">
-                <button type="button">Вернуться на Главную</button>
-            </a>
-        </div>
-    </form>
+    <div class="container">
+        <h1>Добавление ежедневного отчёта</h1>
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            <table class="form-table">
+                <tr>
+                    <th>{{ form.department.label }} </th>
+                    <th>{{ form.department }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.report_date.label }} </th>
+                    <th>{{ form.report_date }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_1.label }} </th>
+                    <th>{{ form.field_1 }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_2.label }} </th>
+                    <th>{{ form.field_2 }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_3.label }} </th>
+                    <th>{{ form.field_3 }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_4.label }} </th>
+                    <th>{{ form.field_4 }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_5.label }} </th>
+                    <th>{{ form.field_5 }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_6.label }} </th>
+                    <th>{{ form.field_6 }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_7.label }} </th>
+                    <th>{{ form.field_7 }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_8.label }} </th>
+                    <th>{{ form.field_8 }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_9.label }} </th>
+                    <th>{{ form.field_9 }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_10.label }} </th>
+                    <th>{{ form.field_10 }} </th>
+                </tr>
+                <tr>
+                    <th>{{ form.field_11.label }} </th>
+                    <th>{{ form.field_11 }} </th>
+                </tr>
+            </table>
+            <div class="actions">
+                <button type="submit">Внести данные</button>
+                <!-- Кнопка "Назад к списку отчётов" -->
+                <a href="{% url 'daily_reports' %}" class="action-link">
+                    <button type="button">Назад к списку отчётов</button>
+                </a>
+                <!-- Кнопка "Вернуться на Главную" -->
+                <a href="{% url 'dashboard' %}" class="action-link">
+                    <button type="button">Вернуться на Главную</button>
+                </a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
