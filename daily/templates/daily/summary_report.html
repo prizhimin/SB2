@@ -14,11 +14,6 @@
         <form method="post" class="form-group">
             {% csrf_token %}
             {{ form.as_p }}
-            <!--<label for="file_name">Введите имя файла сводного отчёта:</label>
-            <input type="text" id="file_name" name="file_name" style="width: 300px;">
-            <br>
-            <br>
-            -->
             <button type="submit" formaction="{% url 'summary_report' %}">Показать отчеты за указанную дату</button>
             <button type="submit" formaction="{% url 'generate_summary_report' %}">Сводный отчёт за указанную дату</button>
         </form>

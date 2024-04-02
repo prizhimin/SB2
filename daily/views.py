@@ -127,9 +127,13 @@ def summary_report(request):
                            'departments_without_reports': departments_without_reports})
     else:
         form = DateSelectionForm(initial={'report_date': get_date_for_report()})
-    return render(request, 'daily/summary_report.html', {'form': form})
-
-
+        default_date = get_date_for_report()
+        reports = DailyReport.objects.filter(report_date=default_date)
+        all_departments = Department.objects.all()
+        departments_without_reports = all_departments.exclude(dailyreport__report_date=default_date)
+        return render(request, 'daily/summary_report.html',
+                      {'form': form, 'reports': reports,
+                       'departments_without_reports': departments_without_reports})
 @login_required
 @check_summary_report_creator
 def generate_summary_report(request):
