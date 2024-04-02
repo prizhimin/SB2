@@ -120,7 +120,8 @@ def summary_report(request):
             # Получаем все подразделения
             all_departments = Department.objects.all()
             # Получаем список подразделений, для которых нет отчетов за выбранную дату
-            departments_without_reports = all_departments.exclude(dailyreport__report_date=selected_date)
+            departments_without_reports = (all_departments.exclude(dailyreport__report_date=selected_date)
+                                           .order_by('name'))
             # Возвращаем HTML-страницу с данными отчетов и формой выбора даты
             return render(request, 'daily/summary_report.html',
                           {'form': form, 'reports': reports,
