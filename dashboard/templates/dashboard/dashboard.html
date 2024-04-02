@@ -19,14 +19,14 @@
                 </li>
             {% endfor %}
         </ul>
-        <div class="actions">
-            <a href="{% url 'accounts:custom_logout'  %}">
-                <button type="button">Выход</button>
-            </a>
-                <a href="{% url 'accounts:change_password'  %}">
-                    <button type="button">Смена пароля</button>
-                </a>
-        </div>
+    </div>
+    <div class="actions">
+        <a href="{% url 'accounts:custom_logout'  %}">
+            <button type="button">Выход</button>
+        </a>
+        <a href="{% url 'accounts:change_password' %}">
+            <button type="button">Смена пароля</button>
+        </a>
     </div>
 </body>
 </html>
