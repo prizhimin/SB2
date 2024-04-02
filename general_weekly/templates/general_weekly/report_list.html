@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список отчетов</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+
+    </div>
+    <!-- Кнопки  -->
+    <div class="actions">
+        <!-- Кнопка "Выход" -->
+        <a href="{% url 'accounts:custom_logout' %}" class="action-link">
+            <button type="button">Выход</button>
+        </a>
+        <!-- Кнопка "Вернуться на Главную" -->
+        <a href="{% url 'dashboard' %}" class="action-link">
+            <button type="button">Вернуться на Главную</button>
+        </a>
+
+    </div>
+</body>
+</html>

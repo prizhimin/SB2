@@ -1,4 +1,4 @@
-# from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 # from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -11,4 +11,4 @@ from django.http import HttpResponse
 
 @login_required
 def general_weekly(request):
-    return HttpResponse('<h1>General Weekly</h1>')
+    return render(request, 'general_weekly/report_list.html')
