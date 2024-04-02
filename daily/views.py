@@ -19,8 +19,6 @@ def daily_reports(request):
     user = request.user
     # Получаем филиалы, к которым пользователь имеет отношение
     user_departments = UserDepartment.objects.filter(user=user).values_list('department', flat=True)
-    # Получаем отчеты, относящиеся к пользователю
-    # reports = DailyReport.objects.filter(author=user).order_by('-report_date')
     # Получаем все отчеты, связанные с этими филиалами, и сортируем их по дате отчета
     reports = DailyReport.objects.filter(department__in=user_departments).order_by('-report_date')
     # Если форма отправлена методом POST
