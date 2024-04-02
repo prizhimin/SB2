@@ -17,41 +17,41 @@
             <button type="submit" formaction="{% url 'summary_report' %}">Показать отчеты за указанную дату</button>
             <button type="submit" formaction="{% url 'generate_summary_report' %}">Сводный отчёт за указанную дату</button>
         </form>
-    </div>
-    <div class="report-list">
-        <!-- Список ссылок на отчеты -->
-        <h2>Отчеты за выбранную дату:</h2>
-        <ul>
-            {% for report in reports %}
-            <li>
-                <a href="{% url 'report_details' report.id %}" class="action-button">
-                    {{ report.report_date|date:"d.m.Y" }} - {{ report.department.name }} - {{ report.author.last_name }}
-                    {{ report.author.first_name }}
-                </a>
-            </li>
-            {% empty %}
-            <li>Нет доступных отчетов</li>
-            {% endfor %}
-        </ul>
-        <!-- Список подразделений без отчетов за выбранную дату -->
-        <h2>Подразделения без отчетов за выбранную дату:</h2>
-        <ul class="department-list">
-            {% for department in departments_without_reports %}
-            <li>• {{ department.name }}</li>
-            {% empty %}
-            <li>Нет подразделений без отчетов</li>
-            {% endfor %}
-        </ul>
-    </div>
-    <!-- Кнопка "Вернуться на Главную" -->
-    <div class="actions">
-        <!-- Кнопка "Назад к списку отчётов" -->
-        <a href="{% url 'daily_reports' %}" class="action-link">
-            <button type="button">Назад к списку отчётов</button>
-        </a>
-        <a href="{% url 'dashboard' %}" class="action-link">
-            <button type="button">Вернуться на Главную</button>
-        </a>
+        <div class="report-list">
+            <!-- Список ссылок на отчеты -->
+            <h2>Отчеты за выбранную дату:</h2>
+            <ul>
+                {% for report in reports %}
+                <li>
+                    <a href="{% url 'report_details' report.id %}" class="action-button">
+                        {{ report.report_date|date:"d.m.Y" }} - {{ report.department.name }} - {{ report.author.last_name }}
+                        {{ report.author.first_name }}
+                    </a>
+                </li>
+                {% empty %}
+                <li>Нет доступных отчетов</li>
+                {% endfor %}
+            </ul>
+            <!-- Список подразделений без отчетов за выбранную дату -->
+            <h2>Подразделения без отчетов за выбранную дату:</h2>
+            <ul class="department-list">
+                {% for department in departments_without_reports %}
+                <li>• {{ department.name }}</li>
+                {% empty %}
+                <li>Нет подразделений без отчетов</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="actions">
+            <!-- Кнопка "Назад к списку отчётов" -->
+            <a href="{% url 'daily_reports' %}" class="action-link">
+                <button type="button">Назад к списку отчётов</button>
+            </a>
+            <!-- Кнопка "Вернуться на Главную" -->
+            <a href="{% url 'dashboard' %}" class="action-link">
+                <button type="button">Вернуться на Главную</button>
+            </a>
+        </div>
     </div>
 </body>
 </html>

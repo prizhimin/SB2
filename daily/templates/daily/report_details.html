@@ -14,72 +14,73 @@
         <p><strong>Автор:</strong> {{ user_full_name }}</p>
         <p><strong>Подразделение:</strong> {{ report.department.name }}</p>
         <hr>
+        <div class="report-list">
+            <table>
+                <tr>
+                    <th>Поле</th>
+                    <th>Значение</th>
+                </tr>
+                <tr>
+                    <td>Незакрытие постов охраны:</td>
+                    <td>{{ report.field_1 }}</td>
+                </tr>
+                <tr>
+                    <td>Отсутствие спец. средств и оружия:</td>
+                    <td>{{ report.field_2 }}</td>
+                </tr>
+                <tr>
+                    <td>Ненадлежащее проведение досмотра:</td>
+                    <td>{{ report.field_3 }}</td>
+                </tr>
+                <tr>
+                    <td>Самовольное покидание поста:</td>
+                    <td>{{ report.field_4 }}</td>
+                </tr>
+                <tr>
+                    <td>Допущение проникновения посторонних лиц:</td>
+                    <td>{{ report.field_5 }}</td>
+                </tr>
+                <tr>
+                    <td>Допущение прохода по чужому пропуску (без пропуска):</td>
+                    <td>{{ report.field_6 }}</td>
+                </tr>
+                <tr>
+                    <td>Нахождение на посту в нетрезвом виде:</td>
+                    <td>{{ report.field_7 }}</td>
+                </tr>
+                <tr>
+                    <td>Неприбытие ГБР:</td>
+                    <td>{{ report.field_8 }}</td>
+                </tr>
+                <tr>
+                    <td>Иные значимые нарушения:</td>
+                    <td>{{ report.field_9 }}</td>
+                </tr>
+                <tr>
+                    <td>Количество проведенных проверок СБ за прошедшие сутки:</td>
+                    <td>{{ report.field_10 }}</td>
+                </tr>
+                <tr>
+                    <td>Количество направленных претензионных писем за прошедшие сутки:</td>
+                    <td>{{ report.field_11 }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="actions">
+            <!-- Кнопка "Редактирование отчета" -->
+            <a href="{% url 'edit_daily_report' report.id %}" class="action-link">
+                <button type="button">Редактирование отчета</button>
+            </a>
+            <!-- Кнопка "Добавить новый ежедневный отчет" -->
+            <a href="{% url 'add_daily_report' %}" class="action-link">
+                    <button type="button">Добавить новый ежедневный отчет</button>
+            </a>
+            <!-- Кнопка "Назад к списку отчётов" -->
+            <a href="{% url 'daily_reports' %}" class="action-link">
+                <button type="button">Назад к списку отчётов</button>
+            </a>
+        </div>
     </div>
-    <div class="report-list">
-        <table>
-            <tr>
-                <th>Поле</th>
-                <th>Значение</th>
-            </tr>
-            <tr>
-                <td>Незакрытие постов охраны:</td>
-                <td>{{ report.field_1 }}</td>
-            </tr>
-            <tr>
-                <td>Отсутствие спец. средств и оружия:</td>
-                <td>{{ report.field_2 }}</td>
-            </tr>
-            <tr>
-                <td>Ненадлежащее проведение досмотра:</td>
-                <td>{{ report.field_3 }}</td>
-            </tr>
-            <tr>
-                <td>Самовольное покидание поста:</td>
-                <td>{{ report.field_4 }}</td>
-            </tr>
-            <tr>
-                <td>Допущение проникновения посторонних лиц:</td>
-                <td>{{ report.field_5 }}</td>
-            </tr>
-            <tr>
-                <td>Допущение прохода по чужому пропуску (без пропуска):</td>
-                <td>{{ report.field_6 }}</td>
-            </tr>
-            <tr>
-                <td>Нахождение на посту в нетрезвом виде:</td>
-                <td>{{ report.field_7 }}</td>
-            </tr>
-            <tr>
-                <td>Неприбытие ГБР:</td>
-                <td>{{ report.field_8 }}</td>
-            </tr>
-            <tr>
-                <td>Иные значимые нарушения:</td>
-                <td>{{ report.field_9 }}</td>
-            </tr>
-            <tr>
-                <td>Количество проведенных проверок СБ за прошедшие сутки:</td>
-                <td>{{ report.field_10 }}</td>
-            </tr>
-            <tr>
-                <td>Количество направленных претензионных писем за прошедшие сутки:</td>
-                <td>{{ report.field_11 }}</td>
-            </tr>
-        </table>
-    </div>
-    <div class="actions">
-        <!-- Кнопка "Редактирование отчета" -->
-        <a href="{% url 'edit_daily_report' report.id %}" class="action-link">
-            <button type="button">Редактирование отчета</button>
-        </a>
-        <!-- Кнопка "Добавить новый ежедневный отчет" -->
-        <a href="{% url 'add_daily_report' %}" class="action-link">
-                <button type="button">Добавить новый ежедневный отчет</button>
-        </a>
-        <!-- Кнопка "Назад к списку отчётов" -->
-        <a href="{% url 'daily_reports' %}" class="action-link">
-            <button type="button">Назад к списку отчётов</button>
-        </a>
-    </div>
+
 </body>
 </html>
