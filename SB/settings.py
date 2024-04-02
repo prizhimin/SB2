@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'accounts',
     'daily.apps.DailyConfig',
     'dashboard',
+    'general_weekly.apps.GeneralWeeklyConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
