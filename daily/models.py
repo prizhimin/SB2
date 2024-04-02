@@ -57,5 +57,3 @@ class CreatorsSummaryReport(models.Model):
     Список создателей сводного отчёта
     """
     creators = models.ManyToManyField(User, related_name='summary_reports')
-
-

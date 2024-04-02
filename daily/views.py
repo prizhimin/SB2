@@ -17,8 +17,12 @@ from openpyxl import load_workbook
 def daily_reports(request):
     # Получаем текущего пользователя
     user = request.user
+    # Получаем филиалы, к которым пользователь имеет отношение
+    user_departments = UserDepartment.objects.filter(user=user).values_list('department', flat=True)
     # Получаем отчеты, относящиеся к пользователю
-    reports = DailyReport.objects.filter(author=user).order_by('-report_date')
+    # reports = DailyReport.objects.filter(author=user).order_by('-report_date')
+    # Получаем все отчеты, связанные с этими филиалами, и сортируем их по дате отчета
+    reports = DailyReport.objects.filter(department__in=user_departments).order_by('-report_date')
     # Если форма отправлена методом POST
     if request.method == 'POST':
         form = DateForm(request.POST)
@@ -68,7 +72,7 @@ def add_daily_report(request):
             # Иначе получаем первое подразделение в системе
             first_department = Department.objects.first()
         # Создаем экземпляр формы ежедневного отчета с начальными данными,
-        # передавая текущего пользователя и первое подразделение
+        # передавая текущего пользователя и первое доступное пользователю подразделение
         form = DailyReportForm(request.user, initial={
             'department': first_department})  # Передаем объект пользователя и начальные значения в форму
     # Отображаем шаблон add_daily_report.html с переданной формой

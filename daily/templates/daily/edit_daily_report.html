@@ -65,7 +65,17 @@
                 <td>{{ form.field_11 }} </td>
             </tr>
         </table>
-        <button type="submit">Сохранить изменения</button>
+        <div class="actions">
+            <button type="submit">Сохранить изменения</button>
+            <!-- Кнопка "Назад к списку отчётов" -->
+            <a href="{% url 'daily_reports' %}" class="action-link">
+                <button type="button">Назад к списку отчётов</button>
+            </a>
+            <!-- Кнопка "Вернуться на Главную" -->
+            <a href="{% url 'dashboard' %}" class="action-link">
+                <button type="button">Вернуться на Главную</button>
+            </a>
+        </div>
     </form>
 </body>
 </html>
