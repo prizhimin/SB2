@@ -29,3 +29,4 @@ def get_date_for_report():
         case _:
             # Возвращаем вчерашнюю дату
             return current_datetime.date() - timezone.timedelta(days=1)
+deac    d
