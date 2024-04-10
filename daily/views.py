@@ -135,6 +135,8 @@ def summary_report(request):
         return render(request, 'daily/summary_report.html',
                       {'form': form, 'reports': reports,
                        'departments_without_reports': departments_without_reports})
+
+
 @login_required
 @check_summary_report_creator
 def generate_summary_report(request):
@@ -163,7 +165,7 @@ def generate_summary_report(request):
             departments_cols = {k: v for k, v in zip(('Марий Эл и Чувашии', 'Ульяновский', 'Удмуртский', 'Свердловский',
                                                       'Саратовский', 'Самарский', 'Пермский', 'Оренбургский',
                                                       'Нижегородский', 'Мордовский', 'Коми', 'Кировский',
-                                                      'Владимирский', 'Пензенский'), 'CDEFGHIJKLNOP')}
+                                                      'Владимирский', 'Пензенский'), 'CDEFGHIJKLMNOP')}
             # Копируем данные из отчетов филиалов в сводный отчет
             for report in reports:
                 for idx, line in enumerate(tuple(range(3, 12)) + (16, 17), start=1):
