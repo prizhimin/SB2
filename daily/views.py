@@ -149,7 +149,7 @@ def generate_summary_report(request):
             # Получаем путь к папке для сохранения отчетов
             path_to_reports = daily_config.PATH_TO_SAVE
             # Префикс названия отчёта
-            prefix_report_name = 'Daily_summary_report'
+            prefix_report_name = 'Ежедневный отчёт по охране'
             # Формируем имя файла отчета на основе выбранной даты
             report_name = os.path.join(path_to_reports, f'{prefix_report_name}_{selected_date}.xlsx')
             # Копируем шаблон отчета
