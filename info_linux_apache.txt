@@ -46,4 +46,5 @@ sudo chmod 775 -R /home/prinv/
 source ~/SB/venv/bin/activate
 pip install -r ~/SB/requirements.txt
 deactivate
-sudo a2ensite /etc/apache2/sites-available/000-default.conf
+sudo cd /etc/apache2/sites-available/
+sudo a2ensite 000-default.conf
