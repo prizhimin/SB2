@@ -56,6 +56,12 @@ ALTER ROLE djangouser SET client_encoding TO 'utf8';
 ALTER ROLE djangouser SET default_transaction_isolation TO 'read committed';
 ALTER ROLE djangouser SET timezone TO 'UTC';
 GRANT ALL PRIVILEGES ON DATABASE djangoproject TO djangouser;
+ALTER DATABASE djangoproject OWNER TO djangouser;
+\с djangoproject;
+GRANT USAGE ON SCHEMA public TO djangouser;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO djangouser;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO djangouser;
+ALTER DATABASE djangoproject SET client_encoding TO 'utf8';
 \q
 
 settings.py
@@ -65,9 +71,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'djangoproject',
         'USER': 'djangouser',
-        'PASSWORD': 'Qsfjro!BIBb748489sdc',
-        'HOST': 'localhost',
-        'PORT': '',
+        'PASSWORD': 'Qsfjro!BIBb748489sdс',
+        'HOST': '',
+        'PORT': '5432',
     }
 }
 
