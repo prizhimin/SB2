@@ -48,7 +48,7 @@ pip install -r ~/SB/requirements.txt
 deactivate
 sudo cd /etc/apache2/sites-available/ && a2ensite 000-default.conf
 
-
+Создание БД на PostgreSQL
 sudo -u postgres psql
 CREATE DATABASE djangoproject;
 CREATE USER djangouser WITH PASSWORD '1234;
@@ -57,7 +57,8 @@ ALTER ROLE djangouser SET default_transaction_isolation TO 'read committed';
 ALTER ROLE djangouser SET timezone TO 'UTC';
 GRANT ALL PRIVILEGES ON DATABASE djangoproject TO djangouser;
 ALTER DATABASE djangoproject OWNER TO djangouser;
-####
+
+#### Необязательная часть, пусть будет
 \с djangoproject;
 GRANT USAGE ON SCHEMA public TO djangouser;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO djangouser;
@@ -72,7 +73,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'djangoproject',
         'USER': 'djangouser',
-        'PASSWORD': 'Qsfjro!BIBb748489sdс',
+        'PASSWORD': '1324',
         'HOST': '',
         'PORT': '5432',
     }
