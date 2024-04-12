@@ -51,7 +51,7 @@ sudo cd /etc/apache2/sites-available/ && a2ensite 000-default.conf
 Создание БД на PostgreSQL
 sudo -u postgres psql
 CREATE DATABASE djangoproject;
-CREATE USER djangouser WITH PASSWORD '1234;
+CREATE USER djangouser WITH PASSWORD '1234';
 ALTER ROLE djangouser SET client_encoding TO 'utf8';
 ALTER ROLE djangouser SET default_transaction_isolation TO 'read committed';
 ALTER ROLE djangouser SET timezone TO 'UTC';
@@ -64,7 +64,19 @@ GRANT USAGE ON SCHEMA public TO djangouser;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO djangouser;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO djangouser;
 ALTER DATABASE djangoproject SET client_encoding TO 'utf8';
+####
 \q
+
+# Изменить пароль пользователя
+ALTER USER djangouser WITH PASSWORD '1234';
+# список БД
+\l
+# список пользоватей
+\du
+# Удалить БД
+DROP DATABASE djangoproject;
+
+
 
 settings.py
 
@@ -78,4 +90,13 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+cd ~/SB
+source venv/bin/activate
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+
+
+
 

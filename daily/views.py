@@ -33,7 +33,10 @@ def daily_reports(request):
 
     for report in reports:
         report.user_full_name = f"{report.author.first_name} {report.author.last_name}"
-    summary_reports_creators = [user.username for user in CreatorsSummaryReport.objects.first().creators.all()]
+    summary_reports_creators = []
+    first_summary_report = CreatorsSummaryReport.objects.first()
+    if first_summary_report:
+        summary_reports_creators = [user.username for user in first_summary_report.creators.all()]
     return render(request, 'daily/reports_list.html',
                   {'reports': reports,
                    'form': form,
