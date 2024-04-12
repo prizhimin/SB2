@@ -75,8 +75,10 @@ ALTER USER djangouser WITH PASSWORD '1234';
 \du
 # Удалить БД
 DROP DATABASE djangoproject;
-
-
+# Сохранить дамп данных в файл
+# Если вам нужно сделать полное резервное копирование, включая все настройки, вы можете использовать команду pg_dumpall.
+sudo -u postgres pg_dump -U postgres -d djangoproject > djangoporject.sql
+# После сохранения резервной копии базы данных, вы можете восстановить ее из файла с помощью утилиты pg_restore
 
 settings.py
 
@@ -96,7 +98,6 @@ source venv/bin/activate
 python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
-
 
 
 
