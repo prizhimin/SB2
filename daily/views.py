@@ -135,6 +135,7 @@ def summary_report(request):
         reports = DailyReport.objects.filter(report_date=default_date)
         all_departments = Department.objects.all()
         departments_without_reports = all_departments.exclude(dailyreport__report_date=default_date).order_by('name')
+
         return render(request, 'daily/summary_report.html',
                       {'form': form, 'reports': reports,
                        'departments_without_reports': departments_without_reports})
