@@ -1,0 +1,100 @@
+[
+{
+    "model": "commondata.department",
+    "pk": 1,
+    "fields": {
+        "name": "Владимирский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 2,
+    "fields": {
+        "name": "Кировский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 3,
+    "fields": {
+        "name": "Коми"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 4,
+    "fields": {
+        "name": "Марий Эл и Чувашии"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 5,
+    "fields": {
+        "name": "Мордовский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 6,
+    "fields": {
+        "name": "Нижегородский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 7,
+    "fields": {
+        "name": "Оренбургский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 8,
+    "fields": {
+        "name": "Пензенский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 9,
+    "fields": {
+        "name": "Пермский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 10,
+    "fields": {
+        "name": "Самарский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 11,
+    "fields": {
+        "name": "Саратовский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 12,
+    "fields": {
+        "name": "Свердловский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 13,
+    "fields": {
+        "name": "Удмуртский"
+    }
+},
+{
+    "model": "commondata.department",
+    "pk": 14,
+    "fields": {
+        "name": "Ульяновский"
+    }
+}
+]
