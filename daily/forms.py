@@ -1,5 +1,6 @@
 from django import forms
-from .models import DailyReport, Department, UserDepartment
+from commondata.models import Department
+from .models import DailyReport, UserDepartment
 from django.utils import timezone
 from datetime import datetime, timedelta
 from .utils import get_date_for_report

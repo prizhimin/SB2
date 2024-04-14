@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['127.0.0.1', '10.168.11.219', '10.168.11.206', '192.168.0.9', '
 
 INSTALLED_APPS = [
     'accounts',
+    'commondata',
     'daily.apps.DailyConfig',
     'dashboard',
     'general_weekly.apps.GeneralWeeklyConfig',

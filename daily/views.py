@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
 from django.utils import timezone
 from django.apps import apps
-from .models import DailyReport, CreatorsSummaryReport, Department, UserDepartment
+from .models import DailyReport, CreatorsSummaryReport, UserDepartment
+from commondata.models import Department
 from .forms import DateForm, DailyReportForm, DateSelectionForm
 from .decorators import check_summary_report_creator, check_user_department
 from .utils import get_date_for_report

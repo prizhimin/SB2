@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Department, UserDepartment, DailyReport, CreatorsSummaryReport
-
+from .models import UserDepartment, DailyReport, CreatorsSummaryReport
+from commondata.models import Department
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
