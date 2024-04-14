@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 from .utils import get_date_for_report
 
 
-class DateForm(forms.Form):
-    selected_date = forms.DateField(label='Выберите дату')
+# class DateForm(forms.Form):
+#    selected_date = forms.DateField(label='Выберите дату')
 
 
 class DateSelectionForm(forms.Form):
