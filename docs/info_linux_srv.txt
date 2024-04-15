@@ -7,7 +7,7 @@
     WSGIScriptAlias / /home/prinv/SB/SB/wsgi.py
 
     # Опции и параметры для WSGI
-    WSGIDaemonProcess SB  python-path=/home/prinv/SB lang='ru_RU.UTF-8' locale='ru_RU.UTF-8'
+    WSGIDaemonProcess SB python-path=/home/prinv/SB lang='ru_RU.UTF-8' locale='ru_RU.UTF-8'
     WSGIProcessGroup SB
 
     # Поддержка статических файлов Django
@@ -62,7 +62,7 @@ sudo mcedit /etc/apache2/sites-available/000-default.conf
     WSGIScriptAlias / /srv/SB2/SB/wsgi.py
 
     # Опции и параметры для WSGI
-    WSGIDaemonProcess SB  python-path=/srv/SB2 lang='ru_RU.UTF-8' locale='ru_RU.UTF-8'
+    WSGIDaemonProcess SB python-home=/srv/SB2/venv python-path=/srv/SB2 lang='ru_RU.UTF-8' locale='ru_RU.UTF-8'
     WSGIProcessGroup SB
 
     # Поддержка статических файлов Django
