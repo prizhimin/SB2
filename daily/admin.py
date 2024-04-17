@@ -1,15 +1,7 @@
 from django.contrib import admin
 from .models import UserDepartment, DailyReport, CreatorsSummaryReport
-from commondata.models import Department
 
 
-@admin.register(Department)
-class DepartmentAdmin(admin.ModelAdmin):
-    # Определяем порядок сортировки по алфавиту по полю 'name'
-    ordering = ['name']
-
-
-# admin.site.register(DailyReport)
 admin.site.register(UserDepartment)
 
 
