@@ -9,7 +9,28 @@
 </head>
 <body>
     <div class="container">
-
+            <h1>Список еженедельных отчётов</h1>
+            <!-- Контейнер для кнопок -->
+            <div class="button-container">
+                <!-- Форма для выбора даты -->
+                <form method="post" class="form-group">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Показать отчеты на указанную дату</button>
+                </form>
+            </div>
+            <!-- Список ссылок на отчеты -->
+            <ul class="report-list">
+                {% for report in reports %}
+                <li>
+                    <a href="{% url 'report_details' report.id %}" class="action-button">
+                        {{ report.report_date|date:"d.m.Y" }} - {{ report.department.name }} - {{ report.user_full_name }}
+                    </a>
+                </li>
+                {% empty %}
+                <li>Нет доступных отчетов</li>
+                {% endfor %}
+            </ul>
     </div>
     <!-- Кнопки  -->
     <div class="actions">

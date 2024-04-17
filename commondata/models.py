@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 
 class Department(models.Model):
     """
@@ -9,3 +9,8 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# class CustomUser(AbstractUser):
+#     def __str__(self):
+#         return f"{self.first_name} {self.last_name}"
