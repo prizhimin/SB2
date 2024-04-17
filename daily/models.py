@@ -36,7 +36,7 @@ class DailyReport(models.Model):
     field_11 = models.PositiveSmallIntegerField('Количество направленных претензионных писем за прошедшие сутки', default=0)
 
     def __str__(self):
-        return f"{self.report_date} - {self.department.name} - {self.author.last_name} {self.author.first_name}"
+        return f"{self.report_date.strftime('%d.%m.%Y')} - {self.department.name} - {self.author.last_name} {self.author.first_name}"
 
     @staticmethod
     def get_daily_reports_by_date(date):
