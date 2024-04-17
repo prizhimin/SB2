@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime, timedelta
+from datetime import datetime
 from commondata.models import Department
 from .utils import friday_of_week
 
@@ -49,3 +49,22 @@ class WeeklyReport(models.Model):
 
     def __str__(self):
         return f"{self.report_date.strftime('%d.%m.%Y')} - {self.department.name} - {self.author.last_name} {self.author.first_name}"
+
+
+class WeeklyUserDepartment(models.Model):
+    """
+    Список пользователей и филиалов, к которым они относятся
+    Один пользователь может относиться к нескольким филиалам
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    department = models.ManyToManyField(Department)
+
+    def __str__(self):
+        return f"{self.user.username}'s departments"
+
+
+class WeeklyCreatorsSummaryReport(models.Model):
+    """
+    Список создателей сводного отчёта
+    """
+    creators = models.ManyToManyField(User, related_name='weekly_summary_reports')
