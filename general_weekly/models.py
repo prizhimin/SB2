@@ -42,7 +42,7 @@ class WeeklyReport(models.Model):
     field19 = models.TextField('Значимая информация, факты, события, риски и т.д.', max_length=2000, blank=True)
 
     def save(self, *args, **kwargs):
-        # Получаем дату пятницы для даты отчета
+        # Получаем дату пятницы для даты отчёта
         friday_date = datetime.strptime(friday_of_week(self.report_date.strftime('%d.%m.%Y')), "%d.%m.%Y")
         self.report_date = friday_date.strftime("%Y-%m-%d")
         super().save(*args, **kwargs)

@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Список отчетов</title>
+        <title>Список отчётов</title>
         <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     </head>
     <body>
@@ -16,10 +16,10 @@
                 <form method="post" class="form-group">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit">Показать отчеты на указанную дату</button>
+                    <button type="submit">Показать отчёты на указанную дату</button>
                 </form>
             </div>
-            <!-- Список ссылок на отчеты -->
+            <!-- Список ссылок на отчёты -->
             <ul class="report-list">
                 {% for report in reports %}
                 <li>
@@ -28,7 +28,7 @@
                     </a>
                 </li>
                 {% empty %}
-                <li>Нет доступных отчетов</li>
+                <li>Нет доступных отчётов</li>
                 {% endfor %}
             </ul>
         </div>
@@ -42,9 +42,9 @@
             <a href="{% url 'dashboard' %}" class="action-link">
                 <button type="button">Вернуться на Главную</button>
             </a>
-            <!-- Кнопка "Добавить новый ежедневный отчет" -->
+            <!-- Кнопка "Добавить новый ежедневный отчёт" -->
             <a href="{% url 'add_daily_report' %}" class="action-link">
-                <button type="button">Добавить новый ежедневный отчет</button>
+                <button type="button">Добавить новый ежедневный отчёт</button>
             </a>
             <!-- Кнопка "Показать все отчёты" -->
             <a href="{% url 'daily_reports' %}" class="action-link">

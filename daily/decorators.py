@@ -11,7 +11,7 @@ def check_summary_report_creator(view_func):
     """
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        # Получаем список создателей сводных отчетов
+        # Получаем список создателей сводных отчётов
         summary_reports_creators = CreatorsSummaryReport.objects.first().creators.all()
         # Проверяем, имеет ли пользователь права на создание сводного отчёта
         if request.user in summary_reports_creators:
