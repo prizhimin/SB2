@@ -10,8 +10,3 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
-
-
-# class CustomUser(AbstractUser):
-#     def __str__(self):
-#         return f"{self.first_name} {self.last_name}"
