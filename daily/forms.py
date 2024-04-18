@@ -11,7 +11,8 @@ from .utils import get_date_for_report
 
 
 class DateSelectionForm(forms.Form):
-    report_date = forms.DateField(label='Выберите дату сводного отчета (в формате дд.мм.гггг)', input_formats=['%d.%m.%Y'])
+    report_date = forms.DateField(label='Выберите дату сводного отчета (в формате дд.мм.гггг)',
+                                  input_formats=['%d.%m.%Y'])
 
 
 class DailyReportForm(forms.ModelForm):
@@ -24,4 +25,5 @@ class DailyReportForm(forms.ModelForm):
 
     class Meta:
         model = DailyReport
-        fields = ['department', 'report_date', 'field_1', 'field_2', 'field_3', 'field_4', 'field_5', 'field_6', 'field_7', 'field_8', 'field_9', 'field_10', 'field_11']
+        fields = ['department', 'report_date', 'field_1', 'field_2', 'field_3', 'field_4', 'field_5', 'field_6',
+                  'field_7', 'field_8', 'field_9', 'field_10', 'field_11']

@@ -159,7 +159,8 @@ def generate_summary_report(request):
             # Префикс названия отчёта
             prefix_report_name = 'Ежедневный отчёт по охране'
             # Формируем имя файла отчета на основе выбранной даты
-            report_name = os.path.join(path_to_reports, f'{prefix_report_name} за {selected_date.strftime('%d.%m.%Y')}.xlsx')
+            report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
+                                                        f'{selected_date.strftime('%d.%m.%Y')}.xlsx')
             # Копируем шаблон отчета
             copy(os.path.join(path_to_reports, 'daily_summary_report_blank.xlsx'), report_name)
             # Получаем все отчеты за выбранную дату, отсортированные по дате

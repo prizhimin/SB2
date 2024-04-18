@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Список приложений
+
+
 class App(models.Model):
     name = models.CharField(max_length=100, default='')
     comment = models.CharField(max_length=100, default='')
