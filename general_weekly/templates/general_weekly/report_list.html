@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-            <h1>Список еженедельных отчётов</h1>
+            <h1>Список еженедельных отчётов по охране</h1>
             <!-- Контейнер для кнопок -->
             <div class="button-container">
                 <!-- Форма для выбора даты -->
@@ -42,7 +42,21 @@
         <a href="{% url 'dashboard' %}" class="action-link">
             <button type="button">Вернуться на Главную</button>
         </a>
-
+            <!-- Кнопка "Добавить новый ежедневный отчет" -->
+            <!--
+            <a href="{% url 'add_daily_report' %}" class="action-link">
+                <button type="button">Добавить новый ежедневный отчет</button>
+            </a> -->
+            <!-- Кнопка "Показать все отчёты" -->
+            <a href="{% url 'daily_reports' %}" class="action-link">
+                <button type="button">Показать все отчёты</button>
+            </a>
+            <!-- Кнопка "Сводный отчёт" -->
+            {% if request.user.username in summary_reports_creators %}
+            <a href="{% url 'summary_report' %}" class="action-link">
+                <button type="button" class="yellow-button">Сводный отчёт</button>
+            </a>
+            {% endif %}
     </div>
 </body>
 </html>
