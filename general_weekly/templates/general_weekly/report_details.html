@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Детали отчёта</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Детали еженедельного отчёта по охране</h1>
+            <p><strong>Дата отчёта:</strong> {{ report.report_date | date:"d.m.Y" }}</p>
+            <p><strong>Автор:</strong> {{ user_full_name }}</p>
+            <p><strong>Подразделение:</strong> {{ report.department.name }}</p>
+            <hr>
+            <div class="report-list">
+                <table>
+                    <tr>
+                        <td>Экономический эффект (сумма, в млн. руб. без НДС)</td>
+                        <td>{{ report.field1 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Наиболее значимый пример</td>
+                        <td>{{ report.field2|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Выявлено неучтённых ТМЦ (сумма, в млн. руб. без НДС)</td>
+                        <td>{{ report.field3 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Наиболее значимый пример</td>
+                        <td>{{ report.field4|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Входной контроль (сумма, в млн. руб. без НДС)</td>
+                        <td>{{ report.field5 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Наиболее значимый пример</td>
+                        <td>{{ report.field6|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Количество запросов, актов реагирования от<br>
+                            контрольно-надзорных и правоохранительных органов<br>
+                            поступивших в отчётном периоде</td>
+                        <td>{{ report.field7 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Наиболее значимый пример</td>
+                        <td>{{ report.field8|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Количество запросов, актов реагирования, поручений<br>
+                            из территориальных органов власти, поступивших<br>
+                            в отчётном периоде</td>
+                        <td>{{ report.field9 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Наиболее значимый пример</td>
+                        <td>{{ report.field10|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Направлено заявлений в правоохранительные органы<br>
+                            для защиты интересова Компании</td>
+                        <td>{{ report.field11 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Наиболее значимый пример</td>
+                        <td>{{ report.field12|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Проведено встреч, рабочих групп с сотрудниками<br>
+                            правоохратиельных органов, контрольно-надзорных органов</td>
+                        <td>{{ report.field13 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Наиболее значимый пример</td>
+                        <td>{{ report.field14|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Выявлено фактов антикорпоративных проявлений</td>
+                        <td>{{ report.field15 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Наиболее значимый пример</td>
+                        <td>{{ report.field16|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Инициировано служебных проверок</td>
+                        <td>{{ report.field17 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Наиболее значимый пример</td>
+                        <td>{{ report.field18|linebreaks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Значимая информация, факты, события, риски и т.д.</td>
+                        <td>{{ report.field19|linebreaks }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="actions">
+                <!-- Кнопка "Назад к списку отчётов" -->
+                <a href="{% url 'general_weekly' %}" class="action-link">
+                    <button type="button">Назад к списку отчётов</button>
+                </a>
+            </div>
+        </div>
+    </body>
+</html>

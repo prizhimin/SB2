@@ -15,36 +15,35 @@ class WeeklyReport(models.Model):
     author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     field1 = models.DecimalField('Экономический эффект (сумма, в млн. руб. без НДС)', max_digits=10, decimal_places=3)
-    field2 = models.TextField('Наиболее значимый пример', max_length=1000, blank=True)
+    field2 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field3 = models.DecimalField('Выявлено неучтённых ТМЦ (сумма, в млн. руб. без НДС)', max_digits=10,
                                  decimal_places=3)
-    field4 = models.TextField('Наиболее значимый пример', max_length=1000, blank=True)
+    field4 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field5 = models.DecimalField('Входной контроль (сумма, в млн. руб. без НДС)', max_digits=10, decimal_places=3)
-    field6 = models.TextField('Наиболее значимый пример', max_length=1000, blank=True)
+    field6 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field7 = models.PositiveIntegerField('Количество запросов, актов реагирования от\n'
                                          'контрольно-надзорых и правоохранительных органов,\n'
                                          'поступивших в отчётном периоде', default=0)
-    field8 = models.TextField('Наиболее значимый пример', max_length=1000, blank=True)
+    field8 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field9 = models.PositiveIntegerField('Количество запросов, актов реагирования, поручений\n'
                                          'из территориальных органов власти, поступивших\n'
                                          'в отчётном периоде', default=0)
-    field10 = models.TextField('Наиболее значимый пример', max_length=1000, blank=True)
+    field10 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field11 = models.PositiveIntegerField('Направлено заявлений в правоохранительные органы\n'
                                           'для защиты интересова Компании', default=0)
-    field12 = models.TextField('Наиболее значимый пример', max_length=1000, blank=True)
+    field12 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field13 = models.PositiveIntegerField('Проведено встреч, рабочих групп с сотрудниками\n'
-                                          'правоохратиельных органов, контрольно-нажзорных органов', default=0)
-    field14 = models.TextField('Наиболее значимый пример', max_length=1000, blank=True)
+                                          'правоохратиельных органов, контрольно-надзорных органов', default=0)
+    field14 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field15 = models.PositiveIntegerField('Выявлено фактов антикорпоративных проявлений', default=0)
-    field16 = models.TextField('Наиболее значимый пример', max_length=1000, blank=True)
+    field16 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field17 = models.PositiveIntegerField('Инициировано служебных проверок', default=0)
-    field18 = models.TextField('Наиболее значимый пример', max_length=1000, blank=True)
+    field18 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field19 = models.TextField('Значимая информация, факты, события, риски и т.д.', max_length=2000, blank=True)
 
     def save(self, *args, **kwargs):
         # Получаем дату пятницы для даты отчёта
-        friday_date = datetime.strptime(friday_of_week(self.report_date.strftime('%d.%m.%Y')), "%d.%m.%Y")
-        self.report_date = friday_date.strftime("%Y-%m-%d")
+        self.report_date = friday_of_week(self.report_date)
         super().save(*args, **kwargs)
 
     def __str__(self):

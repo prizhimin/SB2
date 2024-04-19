@@ -23,7 +23,7 @@
             <ul class="report-list">
                 {% for report in reports %}
                 <li>
-                    <a href="{% url 'report_details' report.id %}" class="action-button">
+                    <a href="{% url 'general_weekly_report_details' report.id %}" class="action-button">
                         {{ report.report_date|date:"d.m.Y" }} - {{ report.department.name }} - {{ report.user_full_name }}
                     </a>
                 </li>
@@ -42,21 +42,19 @@
         <a href="{% url 'dashboard' %}" class="action-link">
             <button type="button">Вернуться на Главную</button>
         </a>
-            <!-- Кнопка "Добавить новый ежедневный отчёт" -->
-            <!--
-            <a href="{% url 'add_daily_report' %}" class="action-link">
-                <button type="button">Добавить новый ежедневный отчёт</button>
-            </a> -->
-            <!-- Кнопка "Показать все отчёты" -->
-            <a href="{% url 'daily_reports' %}" class="action-link">
-                <button type="button">Показать все отчёты</button>
-            </a>
-            <!-- Кнопка "Сводный отчёт" -->
-            {% if request.user.username in summary_reports_creators %}
+        <a href="{% url 'add_general_weekly_report' %}" class="action-link">
+            <button type="button">Добавить новый еженедельный отчёт</button>
+        </a>
+        <!-- Кнопка "Показать все отчёты" -->
+        <a href="{% url 'general_weekly' %}" class="action-link">
+            <button type="button">Показать все отчёты</button>
+        </a>
+        <!-- Кнопка "Сводный отчёт" -->
+        {% if request.user.username in summary_reports_creators %}
             <a href="{% url 'summary_report' %}" class="action-link">
                 <button type="button" class="yellow-button">Сводный отчёт</button>
             </a>
-            {% endif %}
+        {% endif %}
     </div>
 </body>
 </html>
