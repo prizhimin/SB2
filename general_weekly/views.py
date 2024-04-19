@@ -27,8 +27,7 @@ def general_weekly(request):
             # Фильтруем отчёты по выбранной дате
             reports = reports.filter(report_date=friday_of_week(selected_date))
     else:
-            form = DateForm(initial={'selected_date': friday_of_week(datetime.now())})
-
+        form = DateForm(initial={'selected_date': friday_of_week(datetime.now())})
     for report in reports:
         report.user_full_name = f"{report.author.first_name} {report.author.last_name}"
     summary_reports_creators = []
