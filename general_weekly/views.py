@@ -5,6 +5,8 @@ from .models import WeeklyUserDepartment, WeeklyReport, WeeklyCreatorsSummaryRep
 from .utils import friday_of_week
 from commondata.forms import DateForm
 from datetime import datetime
+
+
 # from django.apps import apps
 # from shutil import copy
 # import os
