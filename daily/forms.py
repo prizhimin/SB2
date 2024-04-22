@@ -1,18 +1,8 @@
 from django import forms
+
 from commondata.models import Department
 from .models import DailyReport, UserDepartment
-from django.utils import timezone
-from datetime import datetime, timedelta
 from .utils import get_date_for_report
-
-
-# class DateForm(forms.Form):
-#    selected_date = forms.DateField(label='Выберите дату')
-
-
-# class DateSelectionForm(forms.Form):
-#     report_date = forms.DateField(label='Выберите дату сводного отчёта (в формате дд.мм.гггг)',
-#                                   input_formats=['%d.%m.%Y'])
 
 
 class DailyReportForm(forms.ModelForm):

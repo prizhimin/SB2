@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 
 def friday_of_week(date):
     """
     Функция возвращает дату пятницы
-    :param date_string: дата дня недели
+    :param date:
     :return: дата пятницы этой недели
     """
     # Вычисляем день недели (0 - понедельник, 6 - воскресенье)
