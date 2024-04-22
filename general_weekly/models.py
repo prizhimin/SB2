@@ -13,7 +13,7 @@ class WeeklyReport(models.Model):
                                       editable=False)  # Нередактируемое поле с временем создания
     report_date = models.DateField('Отчётная дата', null=False, blank=False)
     author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, verbose_name='Подразделение', on_delete=models.CASCADE)
     field1 = models.DecimalField('Экономический эффект (сумма, в млн. руб. без НДС)', max_digits=10, decimal_places=3)
     field2 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field3 = models.DecimalField('Выявлено неучтённых ТМЦ (сумма, в млн. руб. без НДС)', max_digits=10,
