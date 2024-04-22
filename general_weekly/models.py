@@ -14,12 +14,14 @@ class WeeklyReport(models.Model):
     report_date = models.DateField('Отчётная дата', null=False, blank=False)
     author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
     department = models.ForeignKey(Department, verbose_name='Подразделение', on_delete=models.CASCADE)
-    field1 = models.DecimalField('Экономический эффект (сумма, в млн. руб. без НДС)', max_digits=10, decimal_places=3)
+    field1 = models.DecimalField('Экономический эффект (сумма, в млн. руб. без НДС)', max_digits=10,
+                                 decimal_places=3, blank=True, default=0)
     field2 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field3 = models.DecimalField('Выявлено неучтённых ТМЦ (сумма, в млн. руб. без НДС)', max_digits=10,
-                                 decimal_places=3)
+                                 decimal_places=3, blank=True, default=0)
     field4 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
-    field5 = models.DecimalField('Входной контроль (сумма, в млн. руб. без НДС)', max_digits=10, decimal_places=3)
+    field5 = models.DecimalField('Входной контроль (сумма, в млн. руб. без НДС)', max_digits=10,
+                                 decimal_places=3, blank=True, default=0)
     field6 = models.TextField('Наиболее значимый пример', max_length=1800, blank=True)
     field7 = models.PositiveIntegerField('Количество запросов, актов реагирования от\n'
                                          'контрольно-надзорых и правоохранительных органов,\n'

@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from django import forms
+
 from commondata.models import Department
-from daily.utils import get_date_for_report
 from .models import WeeklyReport, WeeklyUserDepartment
+from .utils import friday_of_week
 
 
 class WeeklyReportForm(forms.ModelForm):
@@ -10,7 +13,7 @@ class WeeklyReportForm(forms.ModelForm):
         user_departments = WeeklyUserDepartment.objects.filter(user=user)
         department_ids = user_departments.values_list('department__id', flat=True)
         self.fields['department'].queryset = Department.objects.filter(id__in=department_ids).order_by('name')
-        self.fields['report_date'].initial = get_date_for_report()
+        self.fields['report_date'].initial = friday_of_week(datetime.now())
 
     class Meta:
         model = WeeklyReport

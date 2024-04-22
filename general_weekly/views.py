@@ -1,16 +1,17 @@
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 from commondata.models import Department
+from commondata.forms import DateForm
 from .forms import WeeklyReportForm
 from .models import WeeklyUserDepartment, WeeklyReport, WeeklyCreatorsSummaryReport
 from .utils import friday_of_week
-from .decorators import general_weekly_check_user_department
-from commondata.forms import DateForm
-from datetime import datetime
+from .decorators import general_weekly_check_user_department, check_general_weekly_summary_report_creator
 
 
-# from django.http import HttpResponse
 # from django.apps import apps
 # from shutil import copy
 # import os
@@ -52,7 +53,6 @@ def general_weekly_report_details(request, report_id):
     # Получаем объект отчёта по его id
     report = get_object_or_404(WeeklyReport, pk=report_id)
     # Объединяем имя и фамилию пользователя через пробел
-    print(report)
     user_full_name = f"{report.author.last_name} {report.author.first_name}"
     return render(request, 'general_weekly/report_details.html', {'report': report, 'user_full_name': user_full_name})
 
@@ -63,9 +63,9 @@ def add_general_weekly_report(request):
         # Создаем экземпляр формы ежедневного отчёта, передавая текущего пользователя и данные из POST-запроса
         form = WeeklyReportForm(request.user, request.POST)  # Передаем объект пользователя в форму
         if form.is_valid():  # Проверяем валидность данных формы
-            daily_report = form.save(commit=False)  # Создаем объект ежедневного отчёта, не сохраняя его в базу данных
-            daily_report.author = request.user  # Устанавливаем автора отчёта
-            daily_report.save()  # Сохраняем отчёт в базу данных
+            weekly_report = form.save(commit=False)  # Создаем объект ежедневного отчёта, не сохраняя его в базу данных
+            weekly_report.author = request.user  # Устанавливаем автора отчёта
+            weekly_report.save()  # Сохраняем отчёт в базу данных
             return redirect(success_page)  # Перенаправляем пользователя на success_page в случае успешного сохранения отчёта
     else:
         # Получаем первое подразделение пользователя, если оно есть
@@ -81,6 +81,40 @@ def add_general_weekly_report(request):
             'department': first_department})  # Передаем объект пользователя и начальные значения в форму
     # Отображаем шаблон add_daily_report.html с переданной формой
     return render(request, 'general_weekly/add_general_weekly_report.html', {'form': form})
+
+
+@login_required
+@general_weekly_check_user_department
+def edit_general_weekly_report(request, report_id):
+    # Получаем отчёт по его идентификатору
+    report = get_object_or_404(WeeklyReport, id=report_id)
+    # Получаем текущее время в часовом поясе Москвы
+    current_time = timezone.now()
+    # Проверяем, прошло ли меньше 1 часа с момента создания отчёта
+    if current_time - report.created_at > timedelta(hours=1):
+        # Если прошло более часа, переходим на страницу с сообщением об ошибке
+        return render(request, 'general_weekly/error_edit_report.html')
+    if request.method == 'POST':
+        # Если запрос метода POST, обрабатываем форму
+        form = WeeklyReportForm(request.user, request.POST, instance=report)
+        if form.is_valid():
+            # Если форма валидна, сохраняем отчёт
+            weeklw_report = form.save(commit=False)
+            weeklw_report.author = request.user
+            weeklw_report.save()
+            # Перенаправляем пользователя на страницу успешного завершения
+            return redirect(success_page)
+    else:
+        # Если запрос метода GET, отображаем форму для редактирования
+        form = WeeklyReportForm(request.user, instance=report)
+    # Возвращаем HTML-страницу с формой для редактирования отчёта
+    return render(request, 'general_weekly/edit_general_weekly_report.html', {'form': form, 'report_id': report_id})
+
+
+@login_required
+@check_general_weekly_summary_report_creator
+def generate_general_weekly_summary_report(request):
+    return HttpResponse('<h1>General</h1>')
 
 
 def general_weekly_access_denied_page(request):

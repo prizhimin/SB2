@@ -51,7 +51,7 @@
         </a>
         <!-- Кнопка "Сводный отчёт" -->
         {% if request.user.username in summary_reports_creators %}
-            <a href="{% url 'summary_report' %}" class="action-link">
+            <a href="{% url 'generate_general_weekly_summary_report' %}" class="action-link">
                 <button type="button" class="yellow-button">Сводный отчёт</button>
             </a>
         {% endif %}
