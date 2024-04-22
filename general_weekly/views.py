@@ -20,6 +20,9 @@ from .decorators import general_weekly_check_user_department, check_general_week
 
 @login_required
 def general_weekly(request):
+    """
+    Список отчётов
+    """
     # Получаем текущего пользователя
     user = request.user
     # Получаем филиалы, к которым пользователь имеет отношение
@@ -36,7 +39,7 @@ def general_weekly(request):
     else:
         form = DateForm(initial={'selected_date': friday_of_week(datetime.now())})
     for report in reports:
-        report.user_full_name = f"{report.author.first_name} {report.author.last_name}"
+        report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
     summary_reports_creators = []
     first_summary_report = WeeklyCreatorsSummaryReport.objects.first()
     if first_summary_report:
@@ -50,6 +53,12 @@ def general_weekly(request):
 @login_required
 @general_weekly_check_user_department
 def general_weekly_report_details(request, report_id):
+    """
+    Детализированный отчёт
+    :param request:
+    :param report_id:
+    :return:
+    """
     # Получаем объект отчёта по его id
     report = get_object_or_404(WeeklyReport, pk=report_id)
     # Объединяем имя и фамилию пользователя через пробел
@@ -59,6 +68,11 @@ def general_weekly_report_details(request, report_id):
 
 @login_required
 def add_general_weekly_report(request):
+    """
+    Добавление отчёта
+    :param request:
+    :return:
+    """
     if request.method == 'POST':
         # Создаем экземпляр формы ежедневного отчёта, передавая текущего пользователя и данные из POST-запроса
         form = WeeklyReportForm(request.user, request.POST)  # Передаем объект пользователя в форму
@@ -87,6 +101,9 @@ def add_general_weekly_report(request):
 @login_required
 @general_weekly_check_user_department
 def edit_general_weekly_report(request, report_id):
+    """
+    Редактирование отчёта
+    """
     # Получаем отчёт по его идентификатору
     report = get_object_or_404(WeeklyReport, id=report_id)
     # Получаем текущее время в часовом поясе Москвы
@@ -115,6 +132,9 @@ def edit_general_weekly_report(request, report_id):
 @login_required
 @check_general_weekly_summary_report_creator
 def general_weekly_summary_report(request):
+    """
+    Сводный отчёт
+    """
     if request.method == 'POST':
         # Если запрос метода POST, обрабатываем форму
         form = DateSelectionForm(request.POST)
@@ -156,4 +176,9 @@ def success_page(request):
 @login_required
 @check_general_weekly_summary_report_creator
 def generate_general_weekly_summary_report(request):
+    """
+    Генерация сводного отчёта
+    :param request:
+    :return:
+    """
     return HttpResponse('General weekly')
