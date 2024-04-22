@@ -1,7 +1,5 @@
 from datetime import datetime
-
 from django import forms
-
 from commondata.models import Department
 from .models import WeeklyReport, WeeklyUserDepartment
 from .utils import friday_of_week

@@ -6,8 +6,8 @@ from django.utils import timezone
 from django.apps import apps
 from .models import DailyReport, CreatorsSummaryReport, UserDepartment
 from commondata.models import Department
-from commondata.forms import DateForm
-from .forms import DailyReportForm, DateSelectionForm
+from commondata.forms import DateForm, DateSelectionForm
+from .forms import DailyReportForm
 from .decorators import check_summary_report_creator, check_user_department
 from .utils import get_date_for_report
 from shutil import copy

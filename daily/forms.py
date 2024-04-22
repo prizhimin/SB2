@@ -10,9 +10,9 @@ from .utils import get_date_for_report
 #    selected_date = forms.DateField(label='Выберите дату')
 
 
-class DateSelectionForm(forms.Form):
-    report_date = forms.DateField(label='Выберите дату сводного отчёта (в формате дд.мм.гггг)',
-                                  input_formats=['%d.%m.%Y'])
+# class DateSelectionForm(forms.Form):
+#     report_date = forms.DateField(label='Выберите дату сводного отчёта (в формате дд.мм.гггг)',
+#                                   input_formats=['%d.%m.%Y'])
 
 
 class DailyReportForm(forms.ModelForm):

@@ -5,7 +5,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 
 from commondata.models import Department
-from commondata.forms import DateForm
+from commondata.forms import DateForm, DateSelectionForm
 from .forms import WeeklyReportForm
 from .models import WeeklyUserDepartment, WeeklyReport, WeeklyCreatorsSummaryReport
 from .utils import friday_of_week
@@ -66,7 +66,8 @@ def add_general_weekly_report(request):
             weekly_report = form.save(commit=False)  # Создаем объект ежедневного отчёта, не сохраняя его в базу данных
             weekly_report.author = request.user  # Устанавливаем автора отчёта
             weekly_report.save()  # Сохраняем отчёт в базу данных
-            return redirect(success_page)  # Перенаправляем пользователя на success_page в случае успешного сохранения отчёта
+            # Перенаправляем пользователя на success_page в случае успешного сохранения отчёта
+            return redirect(success_page)
     else:
         # Получаем первое подразделение пользователя, если оно есть
         first_user_department = WeeklyUserDepartment.objects.filter(user=request.user).first()
@@ -113,8 +114,34 @@ def edit_general_weekly_report(request, report_id):
 
 @login_required
 @check_general_weekly_summary_report_creator
-def generate_general_weekly_summary_report(request):
-    return HttpResponse('<h1>General</h1>')
+def general_weekly_summary_report(request):
+    if request.method == 'POST':
+        # Если запрос метода POST, обрабатываем форму
+        form = DateSelectionForm(request.POST)
+        if form.is_valid():
+            # Если форма действительна, извлекаем выбранную дату из формы
+            selected_date = friday_of_week(form.cleaned_data['report_date'])
+            # Получаем все отчёты за выбранную дату
+            reports = WeeklyReport.objects.filter(report_date=selected_date)
+            # Получаем все подразделения
+            all_departments = Department.objects.all()
+            # Получаем список подразделений, для которых нет отчётов за выбранную дату
+            departments_without_reports = (all_departments.exclude(weeklyreport__report_date=selected_date)
+                                           .order_by('name'))
+            # Возвращаем HTML-страницу с данными отчётов и формой выбора даты
+            return render(request, 'general_weekly/summary_report.html',
+                          {'form': form, 'reports': reports,
+                           'departments_without_reports': departments_without_reports})
+    else:
+        form = DateSelectionForm(initial={'report_date': friday_of_week(datetime.now())})
+        default_date = friday_of_week(datetime.now())
+        reports = WeeklyReport.objects.filter(report_date=default_date)
+        all_departments = Department.objects.all()
+        departments_without_reports = all_departments.exclude(weeklyreport__report_date=default_date).order_by('name')
+
+        return render(request, 'general_weekly/summary_report.html',
+                      {'form': form, 'reports': reports,
+                       'departments_without_reports': departments_without_reports})
 
 
 def general_weekly_access_denied_page(request):
@@ -124,3 +151,9 @@ def general_weekly_access_denied_page(request):
 @login_required
 def success_page(request):
     return render(request, 'general_weekly/success_page.html')
+
+
+@login_required
+@check_general_weekly_summary_report_creator
+def generate_general_weekly_summary_report(request):
+    return HttpResponse('General weekly')
