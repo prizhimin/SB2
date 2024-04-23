@@ -6,6 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.db.models import Sum
 
 from commondata.models import Department
 from commondata.forms import DateForm, DateSelectionForm
@@ -179,6 +180,22 @@ def generate_general_weekly_summary_report(request):
     """
     Генерация сводного еженедельного отчёта
     """
+
+    def get_last_saturday_and_current_friday_dates():
+        # Получить текущую дату
+        current_date = datetime.now()
+        # Определить день недели (0 - понедельник, 6 - воскресенье)
+        current_weekday = current_date.weekday()
+        # Вычислить дату прошлой субботы
+        _last_saturday = current_date - timedelta(days=current_weekday + 2)
+        # Вычислить дату текущей пятницы
+        _current_friday = current_date + timedelta(days=(4 - current_weekday))
+        # Преобразовать даты обратно в строки в формате '%d.%m.%Y'
+        last_saturday_str = _last_saturday.strftime('%d.%m.%Y')
+        current_friday_str = _current_friday.strftime('%d.%m.%Y')
+        # Вернуть кортеж из строк с датами
+        return last_saturday_str, current_friday_str
+
     if request.method == 'POST':
         # Получаем данные формы
         form = DateSelectionForm(request.POST)
@@ -194,23 +211,28 @@ def generate_general_weekly_summary_report(request):
             # Формируем имя файла отчёта на основе выбранной даты
             report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
                                                         f'{selected_date.strftime('%d.%m.%Y')}.xlsx')
-            # Получаем все отчёты за выбранную дату, отсортированные по дате
-            reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('department__name')
+
             # Создаём xlsx-файл отчёта
             wb = Workbook()
             sheet = wb.active
             sheet.title = f'Отчёт {selected_date.strftime('%d.%m.%Y')}'
             # Заполняем отчёт
+            # Форматируем 1 строку
             sheet.merge_cells(f'A1:C1')
             sheet.column_dimensions['A'].width = 15
             sheet.column_dimensions['B'].width = 59
             sheet.column_dimensions['C'].width = 247
-            # sheet.row_dimensions['1'].hei
+            sheet.row_dimensions[1].height = 100
+            last_saturday, current_friday = get_last_saturday_and_current_friday_dates()
             sheet['A1'].value = f'Еженедельный отчёт\n'\
-                                f'эффективности работы СБ филиалов\n'
-                                # f'c {last_saturday} г. по {current_friday} г.'
-            sheet['A1'].font = Font(name='Tahoma', bold=True)
-            sheet['A1'].alignment = Alignment(horizontal='center', vertical='top')
+                                f'эффективности работы СБ филиалов\n'\
+                                f'c {last_saturday} г. по {current_friday} г.'
+            sheet['A1'].font = Font(name='Tahoma', bold=True, size=24)
+            sheet['A1'].alignment = Alignment(horizontal='center', vertical='top', wrap_text=True)
+            # Получаем все отчёты за выбранную дату, отсортированные по названию филиала
+            reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('department__name')
+            total_field1_sum = reports.aggregate(total_field1_sum=Sum('field1'))['total_field1_sum']
+            sheet['C2'].value = total_field1_sum
             wb.save(report_name)
             return FileResponse(open(report_name, 'rb'), as_attachment=True,
                                 filename=report_name)
