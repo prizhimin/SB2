@@ -16,8 +16,9 @@ from .utils import friday_of_week
 from .decorators import general_weekly_check_user_department, check_general_weekly_summary_report_creator
 
 from openpyxl import Workbook
-from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
-
+from openpyxl.styles import PatternFill, Border, Side, Alignment, Font
+from openpyxl.cell.text import InlineFont
+from openpyxl.cell.rich_text import TextBlock, CellRichText
 
 @login_required
 def general_weekly(request):
@@ -186,47 +187,27 @@ def generate_general_weekly_summary_report(request):
         # 1 значение - строка, "Номер подпункта"
         # 2 значение - строка, "Название раздела"
         # 3 тип - булевая, True - суммируем числовые значения, False - формируем строковое описание
-        ('1', 'Экономический эффект\n(сумма, млн. руб без НДС)', True),
-        ('1.1', 'Наиболее значимый\nпример:', False),
-        ('2', 'Выявлено неучтенным ТМЦ\n(сумма, млн. руб без НДС)', True),
-        ('2.1', 'Наиболее значимый\nпример:', False),
-        ('3', 'Входной контроль\n(сумма, млн. руб без НДС)', True),
-        ('3.1', 'Наиболее значимый\nпример:', False),
-        ('4', 'Количество запросов, актов\n'
-              'реагирования от\n'
-              'контрольно-надзорных и\n'
-              'правоохранительных\n'
-              'органов, поступивших в\n'
-              'отчетном периоде', True),
-        ('4.1', 'Наиболее значимый\nпример:', False),
-        ('5', 'Количество запросов, актов\n'
-              'реагирования, поручений\n'
-              'поступивших из\n'
-              'территориальных органов\n'
-              'власти, поступивших в\n'
-              'отчетном периоде', True),
-        ('5.1', 'Наиболее значимый\nпример:', False),
-        ('6', 'Направлено заявлений в\n'
-              'правоохранительные\n'
-              'органы для защиты\n'
-              'интересов Компании', True),
-        ('6.1', 'Наиболее значимый\nпример:', False),
-        ('7', 'Проведено встреч, рабочих\n'
-              'групп с сотрудниками\n'
-              'правоохранительных,\n'
-              'контрольно-надзорными\n'
-              'органов', True),
-        ('7.1', 'Наиболее значимый\nпример:', False),
-        ('8', 'Выявлено фактов\n'
-              'антикорпоративных\n'
-              'проявлений', True),
-        ('8.1', 'Наиболее значимый\nпример:', False),
-        ('9', 'Инициировано служебных\n'
-              'проверок', True),
-        ('9.1', 'Наиболее значимый\nпример:', False),
-        ('10', 'Значимая информация,\n'
-               'факты, события, риски и\n'
-               'т.д.', False)
+        ('1', 'Экономический эффект (сумма, млн. руб без НДС)', True),
+        ('1.1', 'Наиболее значимый пример:', False),
+        ('2', 'Выявлено неучтенным ТМЦ (сумма, млн. руб без НДС)', True),
+        ('2.1', 'Наиболее значимый пример:', False),
+        ('3', 'Входной контроль (сумма, млн. руб без НДС)', True),
+        ('3.1', 'Наиболее значимый пример:', False),
+        ('4', 'Количество запросов, актов реагирования от контрольно-надзорных и правоохранительных органов, '
+              'поступивших в отчетном периоде', True),
+        ('4.1', 'Наиболее значимый пример:', False),
+        ('5', 'Количество запросов, актов реагирования, поручений поступивших из территориальных органов '
+              'власти, поступивших в отчетном периоде', True),
+        ('5.1', 'Наиболее значимый пример:', False),
+        ('6', 'Направлено заявлений в правоохранительные органы для защиты интересов Компании', True),
+        ('6.1', 'Наиболее значимый пример:', False),
+        ('7', 'Проведено встреч, рабочих групп с сотрудниками правоохранительных, контрольно-надзорными органов', True),
+        ('7.1', 'Наиболее значимый пример:', False),
+        ('8', 'Выявлено фактов антикорпоративных проявлений', True),
+        ('8.1', 'Наиболее значимый пример:', False),
+        ('9', 'Инициировано служебных проверок', True),
+        ('9.1', 'Наиболее значимый пример:', False),
+        ('10', 'Значимая информация, факты, события, риски и т.д.', False)
     )
 
     def get_last_saturday_and_current_friday_dates():
@@ -264,6 +245,10 @@ def generate_general_weekly_summary_report(request):
             sheet = wb.active
             sheet.title = f'Отчёт {selected_date.strftime('%d.%m.%Y')}'
             # Заполняем отчёт
+            # Масштаб 55%
+            sheet.page_setup.scale = 55 # НЕ РАБОТАЕТ!!!
+            border = Border(left=Side(style='thin'), right=Side(style='thin'),
+                            top=Side(style='thin'), bottom=Side(style='thin'))
             # Форматируем 1 строку
             sheet.merge_cells(f'A1:C1')
             sheet.column_dimensions['A'].width = 15
@@ -275,11 +260,57 @@ def generate_general_weekly_summary_report(request):
                                 f'эффективности работы СБ филиалов\n'\
                                 f'c {last_saturday} г. по {current_friday} г.'
             sheet['A1'].font = Font(name='Tahoma', bold=True, size=24)
-            sheet['A1'].alignment = Alignment(horizontal='center', vertical='top', wrap_text=True)
+            sheet['A1'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            sheet['C1'].border = border
             # Получаем все отчёты за выбранную дату, отсортированные по названию филиала
             reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('department__name')
-            total_field1_sum = reports.aggregate(total_field1_sum=Sum('field1'))['total_field1_sum']
-            sheet['C2'].value = total_field1_sum
+            current_row = 2
+            # стиль границ ячейки
+
+            for num, paragraph in enumerate(report_structure, start=1):
+                if paragraph[2]:
+                    # суммируем значения
+                    sheet[f'A{current_row}'] = paragraph[0]
+                    sheet[f'B{current_row}'] = paragraph[1]
+                    sheet[f'C{current_row}'] = reports.aggregate(total_field_sum=Sum(f'field{num}'))[f'total_field_sum']
+                    sheet[f'A{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
+                    sheet[f'B{current_row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
+                    sheet[f'C{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
+                    sheet[f'A{current_row}'].font = Font(name='Tahoma', size=24)
+                    sheet[f'B{current_row}'].font = Font(name='Tahoma', size=24)
+                    sheet[f'B{current_row}'].fill = PatternFill(fill_type='solid', start_color='ffff00', end_color='ffff00')
+                    sheet[f'C{current_row}'].font = Font(name='Tahoma', size=24)
+                    sheet[f'A{current_row}'].border = border
+                    sheet[f'B{current_row}'].border = border
+                    sheet[f'C{current_row}'].border = border
+                    current_row += 1
+                else:
+                    # формируем строковое описание
+                    start_row = current_row
+                    sheet[f'A{current_row}'] = paragraph[0]
+                    sheet[f'B{current_row}'] = paragraph[1]
+                    sheet[f'A{current_row}'].font = Font(name='Tahoma', size=24)
+                    sheet[f'B{current_row}'].font = Font(name='Tahoma', size=24)
+                    sheet[f'A{current_row}'].border = border
+                    sheet[f'B{current_row}'].border = border
+                    sheet[f'A{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
+                    sheet[f'B{current_row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
+                    for report in reports:
+                        if getattr(report, f'field{num}').strip():
+                            sheet[f'C{current_row}'] = CellRichText(
+                                TextBlock(InlineFont(rFont='Tahoma', sz=24, b=True), report.department.name),
+                                ' ',
+                                TextBlock(InlineFont(rFont='Tahoma', sz=24), getattr(report, f'field{num}').strip()),
+                            )
+                            sheet[f'C{current_row}'].font = Font(name='Tahoma', size=24)
+                            sheet[f'C{current_row}'].border = border
+                            sheet[f'C{current_row}'].alignment = Alignment(horizontal='left', vertical='center',
+                                                                           wrap_text=True)
+                            sheet.row_dimensions[current_row].height = 'auto'
+                            current_row += 1
+                    if start_row < current_row:
+                        sheet.merge_cells(f'A{start_row}:A{current_row-1}')
+                        sheet.merge_cells(f'B{start_row}:B{current_row-1}')
             wb.save(report_name)
             return FileResponse(open(report_name, 'rb'), as_attachment=True,
                                 filename=report_name)
