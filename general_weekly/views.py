@@ -1,24 +1,24 @@
 import os
+from datetime import datetime, timedelta
 
 from django.apps import apps
-from django.http import HttpResponse, FileResponse
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
-from datetime import datetime, timedelta
 from django.db.models import Sum
+from django.http import FileResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
+from openpyxl import Workbook
+from openpyxl.cell.rich_text import TextBlock, CellRichText
+from openpyxl.cell.text import InlineFont
+from openpyxl.styles import PatternFill, Border, Side, Alignment, Font
 
-from commondata.models import Department
 from commondata.forms import DateForm, DateSelectionForm
+from commondata.models import Department
+from .decorators import general_weekly_check_user_department, check_general_weekly_summary_report_creator
 from .forms import WeeklyReportForm
 from .models import WeeklyUserDepartment, WeeklyReport, WeeklyCreatorsSummaryReport
 from .utils import friday_of_week
-from .decorators import general_weekly_check_user_department, check_general_weekly_summary_report_creator
 
-from openpyxl import Workbook
-from openpyxl.styles import PatternFill, Border, Side, Alignment, Font
-from openpyxl.cell.text import InlineFont
-from openpyxl.cell.rich_text import TextBlock, CellRichText
 
 @login_required
 def general_weekly(request):
@@ -189,7 +189,7 @@ def generate_general_weekly_summary_report(request):
         # 3 тип - булевая, True - суммируем числовые значения, False - формируем строковое описание
         ('1', 'Экономический эффект (сумма, млн. руб без НДС)', True),
         ('1.1', 'Наиболее значимый пример:', False),
-        ('2', 'Выявлено неучтенным ТМЦ (сумма, млн. руб без НДС)', True),
+        ('2', 'Выявлено неучтенных ТМЦ (сумма, млн. руб без НДС)', True),
         ('2.1', 'Наиболее значимый пример:', False),
         ('3', 'Входной контроль (сумма, млн. руб без НДС)', True),
         ('3.1', 'Наиболее значимый пример:', False),
@@ -246,7 +246,7 @@ def generate_general_weekly_summary_report(request):
             sheet.title = f'Отчёт {selected_date.strftime('%d.%m.%Y')}'
             # Заполняем отчёт
             # Масштаб 55%
-            sheet.page_setup.scale = 55 # НЕ РАБОТАЕТ!!!
+            sheet.page_setup.scale = 55  # НЕ РАБОТАЕТ!!!
             border = Border(left=Side(style='thin'), right=Side(style='thin'),
                             top=Side(style='thin'), bottom=Side(style='thin'))
             # Форматируем 1 строку
@@ -278,7 +278,8 @@ def generate_general_weekly_summary_report(request):
                     sheet[f'C{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
                     sheet[f'A{current_row}'].font = Font(name='Tahoma', size=24)
                     sheet[f'B{current_row}'].font = Font(name='Tahoma', size=24)
-                    sheet[f'B{current_row}'].fill = PatternFill(fill_type='solid', start_color='ffff00', end_color='ffff00')
+                    sheet[f'B{current_row}'].fill = PatternFill(fill_type='solid',
+                                                                start_color='ffff00', end_color='ffff00')
                     sheet[f'C{current_row}'].font = Font(name='Tahoma', size=24)
                     sheet[f'A{current_row}'].border = border
                     sheet[f'B{current_row}'].border = border
@@ -297,16 +298,17 @@ def generate_general_weekly_summary_report(request):
                     sheet[f'B{current_row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
                     for report in reports:
                         if getattr(report, f'field{num}').strip():
+                            sheet.row_dimensions[current_row].auto_size = True
                             sheet[f'C{current_row}'] = CellRichText(
                                 TextBlock(InlineFont(rFont='Tahoma', sz=24, b=True), report.department.name),
-                                ' ',
+                                '     ',
                                 TextBlock(InlineFont(rFont='Tahoma', sz=24), getattr(report, f'field{num}').strip()),
                             )
                             sheet[f'C{current_row}'].font = Font(name='Tahoma', size=24)
                             sheet[f'C{current_row}'].border = border
                             sheet[f'C{current_row}'].alignment = Alignment(horizontal='left', vertical='center',
                                                                            wrap_text=True)
-                            sheet.row_dimensions[current_row].height = 'auto'
+
                             current_row += 1
                     if start_row < current_row:
                         sheet.merge_cells(f'A{start_row}:A{current_row-1}')
