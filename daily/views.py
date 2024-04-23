@@ -146,6 +146,9 @@ def summary_report(request):
 @login_required
 @check_summary_report_creator
 def generate_summary_report(request):
+    """
+    Генерация сводного еженедельного отчёта
+    """
     if request.method == 'POST':
         # Получаем данные формы
         form = DateSelectionForm(request.POST)

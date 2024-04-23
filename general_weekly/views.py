@@ -1,3 +1,6 @@
+import os
+
+from django.apps import apps
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
@@ -177,8 +180,23 @@ def success_page(request):
 @check_general_weekly_summary_report_creator
 def generate_general_weekly_summary_report(request):
     """
-    Генерация сводного отчёта
-    :param request:
-    :return:
+    Генерация сводного еженедельного отчёта
     """
-    return HttpResponse('General weekly')
+    if request.method == 'POST':
+        # Получаем данные формы
+        form = DateSelectionForm(request.POST)
+        if form.is_valid():
+            # Извлекаем выбранную дату из формы
+            selected_date = friday_of_week(form.cleaned_data['report_date'])
+            # Получаем экземпляр класса конфигурации приложения general_weekly
+            general_weekly_config = apps.get_app_config('general_weekly')
+            # Получаем путь к папке для сохранения отчётов
+            path_to_reports = general_weekly_config.PATH_TO_SAVE
+            # Префикс названия отчёта
+            prefix_report_name = 'Еженедельный отчёт филиалов'
+            # Формируем имя файла отчёта на основе выбранной даты
+            report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
+                                                        f'{selected_date.strftime('%d.%m.%Y')}.xlsx')
+            # Получаем все отчёты за выбранную дату, отсортированные по дате
+            reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('-report_date')
+            return HttpResponse(f'<h1>General weekly</h1><br>Имя отчёта {report_name}')
