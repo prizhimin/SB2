@@ -1,7 +1,7 @@
 import os
 
 from django.apps import apps
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -14,12 +14,9 @@ from .models import WeeklyUserDepartment, WeeklyReport, WeeklyCreatorsSummaryRep
 from .utils import friday_of_week
 from .decorators import general_weekly_check_user_department, check_general_weekly_summary_report_creator
 
+from openpyxl import Workbook
+from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
 
-# from django.apps import apps
-# from shutil import copy
-# import os
-# from openpyxl import load_workbook
-# from datetime import timedelta
 
 @login_required
 def general_weekly(request):
@@ -198,5 +195,22 @@ def generate_general_weekly_summary_report(request):
             report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
                                                         f'{selected_date.strftime('%d.%m.%Y')}.xlsx')
             # Получаем все отчёты за выбранную дату, отсортированные по дате
-            reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('-report_date')
-            return HttpResponse(f'<h1>General weekly</h1><br>Имя отчёта {report_name}')
+            reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('department__name')
+            # Создаём xlsx-файл отчёта
+            wb = Workbook()
+            sheet = wb.active
+            sheet.title = f'Отчёт {selected_date.strftime('%d.%m.%Y')}'
+            # Заполняем отчёт
+            sheet.merge_cells(f'A1:C1')
+            sheet.column_dimensions['A'].width = 15
+            sheet.column_dimensions['B'].width = 59
+            sheet.column_dimensions['C'].width = 247
+            # sheet.row_dimensions['1'].hei
+            sheet['A1'].value = f'Еженедельный отчёт\n'\
+                                f'эффективности работы СБ филиалов\n'
+                                # f'c {last_saturday} г. по {current_friday} г.'
+            sheet['A1'].font = Font(name='Tahoma', bold=True)
+            sheet['A1'].alignment = Alignment(horizontal='center', vertical='top')
+            wb.save(report_name)
+            return FileResponse(open(report_name, 'rb'), as_attachment=True,
+                                filename=report_name)
