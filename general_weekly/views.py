@@ -81,9 +81,11 @@ def add_general_weekly_report(request):
         if form.is_valid():  # Проверяем валидность данных формы
             weekly_report = form.save(commit=False)  # Создаем объект ежедневного отчёта, не сохраняя его в базу данных
             weekly_report.author = request.user  # Устанавливаем автора отчёта
+            # Проверяем наличие отчёта для выбранного филиала и даты
             if (WeeklyReport.objects.filter(department=weekly_report.department)
                     .filter(report_date=weekly_report.report_date).exists()):
-                return redirect(denied_add_weekly_report)
+                return redirect(denied_add_weekly_report, department=weekly_report.department.name,
+                                report_date=weekly_report.report_date.strftime('%d.%m.%Y'))
             weekly_report.save()  # Сохраняем отчёт в базу данных
             # Перенаправляем пользователя на success_page в случае успешного сохранения отчёта
             return redirect(success_page)
@@ -321,5 +323,6 @@ def success_page(request):
     return render(request, 'general_weekly/success_page.html')
 
 
-def denied_add_weekly_report(request):
-    return render(request, 'general_weekly/denied_add_report.html')
+def denied_add_weekly_report(request, department, report_date):
+    return render(request, 'general_weekly/denied_add_report.html',
+                  {'department': department, 'report_date': report_date})

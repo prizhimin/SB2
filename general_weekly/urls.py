@@ -13,5 +13,6 @@ urlpatterns = [
     path('summary_report/', general_weekly_summary_report, name='general_weekly_summary_report'),
     path('generate_general_weekly_summary_report/', generate_general_weekly_summary_report,
          name='generate_general_weekly_summary_report'),
-    path('denied_add_weekly_report/', denied_add_weekly_report, name='denied_add_weekly_report')
+    path('denied_add_weekly_report/<str:department>/<str:report_date>', denied_add_weekly_report,
+         name='denied_add_weekly_report'),
 ]
