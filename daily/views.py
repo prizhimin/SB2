@@ -63,6 +63,11 @@ def add_daily_report(request):
         if form.is_valid():  # Проверяем валидность данных формы
             daily_report = form.save(commit=False)  # Создаем объект ежедневного отчёта, не сохраняя его в базу данных
             daily_report.author = request.user  # Устанавливаем автора отчёта
+            # Проверяем наличие отчёта для выбранного филиала и даты
+            if (DailyReport.objects.filter(department=daily_report.department)
+                    .filter(report_date=daily_report.report_date).exists()):
+                return redirect(denied_add_daily_report, department=daily_report.department.name,
+                                report_date=daily_report.report_date.strftime('%d.%m.%Y'))
             daily_report.save()  # Сохраняем отчёт в базу данных
             return redirect(
                 success_page)  # Перенаправляем пользователя на success_page в случае успешного сохранения отчёта
@@ -196,3 +201,8 @@ def success_page(request):
 
 def access_denied_page(request):
     return render(request, 'daily/access_denied_page.html')
+
+
+def denied_add_daily_report(request, department, report_date):
+    return render(request, 'daily/denied_add_report.html', {'department': department,
+                                                            'report_date': report_date})
