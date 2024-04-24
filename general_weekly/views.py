@@ -81,6 +81,9 @@ def add_general_weekly_report(request):
         if form.is_valid():  # Проверяем валидность данных формы
             weekly_report = form.save(commit=False)  # Создаем объект ежедневного отчёта, не сохраняя его в базу данных
             weekly_report.author = request.user  # Устанавливаем автора отчёта
+            if (WeeklyReport.objects.filter(department=weekly_report.department)
+                    .filter(report_date=weekly_report.report_date).exists()):
+                return redirect(denied_add_weekly_report)
             weekly_report.save()  # Сохраняем отчёт в базу данных
             # Перенаправляем пользователя на success_page в случае успешного сохранения отчёта
             return redirect(success_page)
@@ -118,10 +121,10 @@ def edit_general_weekly_report(request, report_id):
         # Если запрос метода POST, обрабатываем форму
         form = WeeklyReportForm(request.user, request.POST, instance=report)
         if form.is_valid():
-            # Если форма валидна, сохраняем отчёт
-            weeklw_report = form.save(commit=False)
-            weeklw_report.author = request.user
-            weeklw_report.save()
+            # Если форма валидна, то сохраняем отчёт
+            weekly_report = form.save(commit=False)
+            weekly_report.author = request.user
+            weekly_report.save()
             # Перенаправляем пользователя на страницу успешного завершения
             return redirect(success_page)
     else:
@@ -164,15 +167,6 @@ def general_weekly_summary_report(request):
         return render(request, 'general_weekly/summary_report.html',
                       {'form': form, 'reports': reports,
                        'departments_without_reports': departments_without_reports})
-
-
-def general_weekly_access_denied_page(request):
-    return render(request, 'general_weekly/access_denied_page.html')
-
-
-@login_required
-def success_page(request):
-    return render(request, 'general_weekly/success_page.html')
 
 
 @login_required
@@ -256,8 +250,8 @@ def generate_general_weekly_summary_report(request):
             sheet.column_dimensions['C'].width = 247
             sheet.row_dimensions[1].height = 100
             last_saturday, current_friday = get_last_saturday_and_current_friday_dates()
-            sheet['A1'].value = f'Еженедельный отчёт\n'\
-                                f'эффективности работы СБ филиалов\n'\
+            sheet['A1'].value = f'Еженедельный отчёт\n' \
+                                f'эффективности работы СБ филиалов\n' \
                                 f'c {last_saturday} г. по {current_friday} г.'
             sheet['A1'].font = Font(name='Tahoma', bold=True, size=24)
             sheet['A1'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
@@ -311,8 +305,21 @@ def generate_general_weekly_summary_report(request):
 
                             current_row += 1
                     if start_row < current_row:
-                        sheet.merge_cells(f'A{start_row}:A{current_row-1}')
-                        sheet.merge_cells(f'B{start_row}:B{current_row-1}')
+                        sheet.merge_cells(f'A{start_row}:A{current_row - 1}')
+                        sheet.merge_cells(f'B{start_row}:B{current_row - 1}')
             wb.save(report_name)
             return FileResponse(open(report_name, 'rb'), as_attachment=True,
                                 filename=report_name)
+
+
+def general_weekly_access_denied_page(request):
+    return render(request, 'general_weekly/access_denied_page.html')
+
+
+@login_required
+def success_page(request):
+    return render(request, 'general_weekly/success_page.html')
+
+
+def denied_add_weekly_report(request):
+    return render(request, 'general_weekly/denied_add_report.html')
