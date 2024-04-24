@@ -243,6 +243,7 @@ def generate_general_weekly_summary_report(request):
             # Заполняем отчёт
             # Масштаб 55%
             sheet.page_setup.scale = 55  # НЕ РАБОТАЕТ!!!
+            # Границы ячейки
             border = Border(left=Side(style='thin'), right=Side(style='thin'),
                             top=Side(style='thin'), bottom=Side(style='thin'))
             # Форматируем 1 строку
@@ -261,8 +262,6 @@ def generate_general_weekly_summary_report(request):
             # Получаем все отчёты за выбранную дату, отсортированные по названию филиала
             reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('department__name')
             current_row = 2
-            # стиль границ ячейки
-
             for num, paragraph in enumerate(report_structure, start=1):
                 if paragraph[2]:
                     # суммируем значения
