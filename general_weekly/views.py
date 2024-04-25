@@ -14,13 +14,15 @@ from openpyxl.styles import PatternFill, Border, Side, Alignment, Font
 
 from commondata.forms import DateForm, DateSelectionForm
 from commondata.models import Department
-from .decorators import general_weekly_check_user_department, check_general_weekly_summary_report_creator
+from .decorators import (general_weekly_check_user_department, check_general_weekly_summary_report_creator,
+                         general_weekly_check_user)
 from .forms import WeeklyReportForm
 from .models import WeeklyUserDepartment, WeeklyReport, WeeklyCreatorsSummaryReport
 from .utils import friday_of_week
 
 
 @login_required
+@general_weekly_check_user
 def general_weekly(request):
     """
     Список отчётов
@@ -84,8 +86,9 @@ def add_general_weekly_report(request):
             # Проверяем наличие отчёта для выбранного филиала и даты
             if (WeeklyReport.objects.filter(department=weekly_report.department)
                     .filter(report_date=weekly_report.report_date).exists()):
-                return redirect(denied_add_weekly_report, department=weekly_report.department.name,
-                                report_date=weekly_report.report_date.strftime('%d.%m.%Y'))
+                return render(request, 'general_weekly/denied_add_report.html',
+                              {'department': weekly_report.department.name,
+                               'report_date': weekly_report.report_date.strftime('%d.%m.%Y')})
             weekly_report.save()  # Сохраняем отчёт в базу данных
             # Перенаправляем пользователя на success_page в случае успешного сохранения отчёта
             return redirect(success_page)
@@ -325,7 +328,3 @@ def general_weekly_access_denied_page(request):
 def success_page(request):
     return render(request, 'general_weekly/success_page.html')
 
-
-def denied_add_weekly_report(request, department, report_date):
-    return render(request, 'general_weekly/denied_add_report.html',
-                  {'department': department, 'report_date': report_date})

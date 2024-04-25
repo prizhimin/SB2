@@ -1,7 +1,20 @@
 from functools import wraps
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib import messages
 from .models import WeeklyCreatorsSummaryReport, WeeklyUserDepartment, WeeklyReport
+
+
+def general_weekly_check_user(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        # Проверяем принадлежность пользователя к подразделению
+        user_departments = WeeklyUserDepartment.objects.filter(user=request.user)
+        if user_departments.count():
+            return view_func(request, *args, **kwargs)
+        else:
+            return render(request, 'general_weekly/access_denied_page.html')
+    return wrapper
+
 
 
 def general_weekly_check_user_department(view_func):
@@ -16,12 +29,15 @@ def general_weekly_check_user_department(view_func):
         report_department = report.department
         # Проверяем принадлежность пользователя к подразделению
         user_departments = WeeklyUserDepartment.objects.filter(user=request.user)
+        if user_departments.count() == 0:
+            return render(request, 'general_weekly/access_denied_page.html')
+        print(user_departments)
         user_department_ids = user_departments.values_list('department__id', flat=True)
         if report_department.id in user_department_ids:
             return view_func(request, report_id, *args, **kwargs)
         else:
             messages.error(request, "У вас нет доступа к этому отчёту.")
-            return redirect('general_weekly_access_denied_page')
+            return render(request, 'general_weekly/access_denied_page.html')
     return wrapper
 
 
