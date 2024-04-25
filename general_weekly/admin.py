@@ -3,6 +3,11 @@ from .models import WeeklyReport, WeeklyUserDepartment, WeeklyCreatorsSummaryRep
 
 
 # Register your models here.
-admin.site.register(WeeklyReport)
+
+class WeeklyReportAdmin(admin.ModelAdmin):
+    list_filter = ('report_date', 'author', 'department')
+
+
+admin.site.register(WeeklyReport, WeeklyReportAdmin)
 admin.site.register(WeeklyUserDepartment)
 admin.site.register(WeeklyCreatorsSummaryReport)
