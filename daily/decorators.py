@@ -1,8 +1,20 @@
 # decorators.py
 from functools import wraps
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.contrib import messages
 from .models import CreatorsSummaryReport, UserDepartment, DailyReport
+
+
+def check_daily_user(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        # Проверяем принадлежность пользователя к подразделению
+        user_departments = UserDepartment.objects.filter(user=request.user)
+        if user_departments.count():
+            return view_func(request, *args, **kwargs)
+        else:
+            return render(request, 'daily/access_denied_page.html')
+    return wrapper
 
 
 def check_summary_report_creator(view_func):
@@ -19,7 +31,7 @@ def check_summary_report_creator(view_func):
         else:
             # Если пользователь не является создателем, перенаправляем его на страницу доступа запрещен
             messages.error(request, "Доступ запрещен")
-            return redirect('access_denied_page')
+            return render(request, 'daily/access_denied_page.html')
     return wrapper
 
 
@@ -40,5 +52,5 @@ def check_user_department(view_func):
             return view_func(request, report_id, *args, **kwargs)
         else:
             messages.error(request, "У вас нет доступа к этому отчёту.")
-            return redirect('access_denied_page')
+            return render(request, 'daily/access_denied_page.html')
     return wrapper

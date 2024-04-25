@@ -8,7 +8,7 @@ from .models import DailyReport, CreatorsSummaryReport, UserDepartment
 from commondata.models import Department
 from commondata.forms import DateForm, DateSelectionForm
 from .forms import DailyReportForm
-from .decorators import check_summary_report_creator, check_user_department
+from .decorators import check_summary_report_creator, check_user_department, check_daily_user
 from .utils import get_date_for_report
 from shutil import copy
 import os
@@ -16,6 +16,7 @@ from openpyxl import load_workbook
 
 
 @login_required
+@check_daily_user
 def daily_reports(request):
     # Получаем текущего пользователя
     user = request.user
@@ -66,8 +67,9 @@ def add_daily_report(request):
             # Проверяем наличие отчёта для выбранного филиала и даты
             if (DailyReport.objects.filter(department=daily_report.department)
                     .filter(report_date=daily_report.report_date).exists()):
-                return redirect(denied_add_daily_report, department=daily_report.department.name,
-                                report_date=daily_report.report_date.strftime('%d.%m.%Y'))
+                return render(request, 'daily/denied_add_report.html',
+                              {'department': daily_report.department.name,
+                               'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
             daily_report.save()  # Сохраняем отчёт в базу данных
             return redirect(
                 success_page)  # Перенаправляем пользователя на success_page в случае успешного сохранения отчёта
@@ -198,9 +200,6 @@ def generate_summary_report(request):
 def success_page(request):
     return render(request, 'daily/success_page.html')
 
-
-def access_denied_page(request):
-    return render(request, 'daily/access_denied_page.html')
 
 
 def denied_add_daily_report(request, department, report_date):
