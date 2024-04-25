@@ -34,7 +34,7 @@ def daily_reports(request):
         form = DateForm(initial={'selected_date': get_date_for_report()})
 
     for report in reports:
-        report.user_full_name = f"{report.author.first_name} {report.author.last_name}"
+        report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
     summary_reports_creators = []
     first_summary_report = CreatorsSummaryReport.objects.first()
     if first_summary_report:

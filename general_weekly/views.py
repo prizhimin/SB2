@@ -206,9 +206,9 @@ def generate_general_weekly_summary_report(request):
         ('10', 'Значимая информация, факты, события, риски и т.д.', False)
     )
 
-    def get_last_saturday_and_current_friday_dates():
+    def get_last_saturday_and_current_friday_dates(current_date):
         # Получить текущую дату
-        current_date = datetime.now()
+        # current_date = datetime.now()
         # Определить день недели (0 - понедельник, 6 - воскресенье)
         current_weekday = current_date.weekday()
         # Вычислить дату прошлой субботы
@@ -252,7 +252,7 @@ def generate_general_weekly_summary_report(request):
             sheet.column_dimensions['B'].width = 59
             sheet.column_dimensions['C'].width = 247
             sheet.row_dimensions[1].height = 100
-            last_saturday, current_friday = get_last_saturday_and_current_friday_dates()
+            last_saturday, current_friday = get_last_saturday_and_current_friday_dates(selected_date)
             sheet['A1'].value = f'Еженедельный отчёт\n' \
                                 f'эффективности работы СБ филиалов\n' \
                                 f'c {last_saturday} г. по {current_friday} г.'
@@ -262,6 +262,7 @@ def generate_general_weekly_summary_report(request):
             # Получаем все отчёты за выбранную дату, отсортированные по названию филиала
             reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('department__name')
             current_row = 2
+            start_row = 0
             for num, paragraph in enumerate(report_structure, start=1):
                 if paragraph[2]:
                     # суммируем значения
@@ -308,6 +309,9 @@ def generate_general_weekly_summary_report(request):
                     if start_row < current_row:
                         sheet.merge_cells(f'A{start_row}:A{current_row - 1}')
                         sheet.merge_cells(f'B{start_row}:B{current_row - 1}')
+            # закрасим ячейку B в посл. строке жёлтым
+            sheet[f'B{start_row}'].fill = PatternFill(fill_type='solid',
+                                                      start_color='ffff00', end_color='ffff00')
             wb.save(report_name)
             return FileResponse(open(report_name, 'rb'), as_attachment=True,
                                 filename=report_name)
