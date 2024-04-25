@@ -144,7 +144,7 @@ def general_weekly_summary_report(request):
     """
     if request.method == 'POST':
         # Если запрос метода POST, обрабатываем форму
-        form = DateSelectionForm(request.POST)
+        form = DateForm(request.POST)
         if form.is_valid():
             # Если форма действительна, извлекаем выбранную дату из формы
             selected_date = friday_of_week(form.cleaned_data['report_date'])
@@ -223,7 +223,7 @@ def generate_general_weekly_summary_report(request):
 
     if request.method == 'POST':
         # Получаем данные формы
-        form = DateSelectionForm(request.POST)
+        form = DateForm(request.POST)
         if form.is_valid():
             # Извлекаем выбранную дату из формы
             selected_date = friday_of_week(form.cleaned_data['report_date'])

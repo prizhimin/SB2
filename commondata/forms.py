@@ -2,7 +2,7 @@ from django import forms
 
 
 class DateForm(forms.Form):
-    selected_date = forms.DateField(label='Выберите дату')
+    selected_date = forms.DateField(label='Выберите дату', input_formats=['%d.%m.%Y'])
 
 
 class DateSelectionForm(forms.Form):
