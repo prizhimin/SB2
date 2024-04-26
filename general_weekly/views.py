@@ -145,6 +145,23 @@ def general_weekly_summary_report(request):
     """
     Сводный отчёт
     """
+
+    def get_users_for_department(department: str) -> list:
+        """
+        department: строковое название филиала
+        users: модель, хранящая отношения пользователя и филиалы
+        return: список пользователей для данного филиала
+        """
+        # return [user for user in users if department in user.department]
+        users = WeeklyUserDepartment.objects.filter(department__name=department)
+        # Получаем всех создателей сводного отчета
+        creators = WeeklyCreatorsSummaryReport.objects.values_list('creators', flat=True)
+        # Исключаем создателей из списка пользователей
+        users = users.exclude(user__in=creators)
+        # Извлекаем всех пользователей из найденных записей
+        users = [f'{user.user.last_name} {user.user.first_name}' for user in users]
+        return users
+
     if request.method == 'POST':
         # Если запрос метода POST, обрабатываем форму
         print('POST!!!!')
@@ -157,8 +174,16 @@ def general_weekly_summary_report(request):
             # Получаем все подразделения
             all_departments = Department.objects.all()
             # Получаем список подразделений, для которых нет отчётов за выбранную дату
-            departments_without_reports = (all_departments.exclude(weeklyreport__report_date=selected_date)
+            # departments_without_reports = (all_departments.exclude(weeklyreport__report_date=selected_date)
+            #                                .order_by('name'))
+            #
+            # Получаем список подразделений, для которых нет отчётов за выбранную дату
+            departments_without_reports = (all_departments.exclude(dailyreport__report_date=selected_date)
                                            .order_by('name'))
+            bad_departments = []
+            for department in departments_without_reports:
+                bad_departments.append(': '.join([department.name, ', '.join(get_users_for_department(department.name))]))
+            departments_without_reports = bad_departments
             # Возвращаем HTML-страницу с данными отчётов и формой выбора даты
             return render(request, 'general_weekly/summary_report.html',
                           {'form': form, 'reports': reports,
@@ -171,7 +196,10 @@ def general_weekly_summary_report(request):
         reports = WeeklyReport.objects.filter(report_date=default_date)
         all_departments = Department.objects.all()
         departments_without_reports = all_departments.exclude(weeklyreport__report_date=default_date).order_by('name')
-
+        bad_departments = []
+        for department in departments_without_reports:
+            bad_departments.append(': '.join([department.name, ', '.join(get_users_for_department(department.name))]))
+        departments_without_reports = bad_departments
         return render(request, 'general_weekly/summary_report.html',
                       {'form': form, 'reports': reports,
                        'departments_without_reports': departments_without_reports})

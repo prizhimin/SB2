@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-
 def friday_of_week(date):
     """
     Функция возвращает дату пятницы

@@ -9,7 +9,7 @@ from commondata.models import Department
 from commondata.forms import DateForm, DateSelectionForm
 from .forms import DailyReportForm
 from .decorators import check_summary_report_creator, check_user_department, check_daily_user
-from .utils import get_date_for_report
+from .utils import get_date_for_report, get_users_for_department
 from shutil import copy
 import os
 from openpyxl import load_workbook
@@ -133,6 +133,10 @@ def summary_report(request):
             # Получаем список подразделений, для которых нет отчётов за выбранную дату
             departments_without_reports = (all_departments.exclude(dailyreport__report_date=selected_date)
                                            .order_by('name'))
+            bad_departments = []
+            for department in departments_without_reports:
+                bad_departments.append(': '.join([department.name, ', '.join(get_users_for_department(department.name))]))
+            departments_without_reports = bad_departments
             # Возвращаем HTML-страницу с данными отчётов и формой выбора даты
             return render(request, 'daily/summary_report.html',
                           {'form': form, 'reports': reports,
@@ -143,7 +147,11 @@ def summary_report(request):
         reports = DailyReport.objects.filter(report_date=default_date)
         all_departments = Department.objects.all()
         departments_without_reports = all_departments.exclude(dailyreport__report_date=default_date).order_by('name')
-
+        # Получаем список подразделений, для которых нет отчётов за выбранную дату
+        bad_departments = []
+        for department in departments_without_reports:
+            bad_departments.append(': '.join([department.name, ', '.join(get_users_for_department(department.name))]))
+        departments_without_reports = bad_departments
         return render(request, 'daily/summary_report.html',
                       {'form': form, 'reports': reports,
                        'departments_without_reports': departments_without_reports})

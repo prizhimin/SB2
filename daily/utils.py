@@ -1,4 +1,5 @@
 from django.utils import timezone
+from .models import UserDepartment, CreatorsSummaryReport
 
 
 def get_date_for_report():
@@ -29,3 +30,20 @@ def get_date_for_report():
         case _:
             # Возвращаем вчерашнюю дату
             return current_datetime.date() - timezone.timedelta(days=1)
+
+
+def get_users_for_department(department: str) -> list:
+    """
+    department: строковое название филиала
+    users: модель, хранящая отношения пользователя и филиалы
+    return: список пользователей для данного филиала
+    """
+    # return [user for user in users if department in user.department]
+    users = UserDepartment.objects.filter(department__name=department)
+    # Получаем всех создателей сводного отчета
+    creators = CreatorsSummaryReport.objects.values_list('creators', flat=True)
+    # Исключаем создателей из списка пользователей
+    users = users.exclude(user__in=creators)
+    # Извлекаем всех пользователей из найденных записей
+    users = [f'{user.user.last_name} {user.user.first_name}' for user in users]
+    return users
