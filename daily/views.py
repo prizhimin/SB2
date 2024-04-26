@@ -122,7 +122,7 @@ def edit_daily_report(request, report_id):
 def summary_report(request):
     if request.method == 'POST':
         # Если запрос метода POST, обрабатываем форму
-        form = DateForm(request.POST)
+        form = DateSelectionForm(request.POST)
         if form.is_valid():
             # Если форма действительна, извлекаем выбранную дату из формы
             selected_date = form.cleaned_data['report_date']
