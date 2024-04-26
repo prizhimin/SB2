@@ -36,9 +36,9 @@
                 <h2>Подразделения без отчётов за выбранную дату:</h2>
                 <ul class="department-list">
                     {% for department in departments_without_reports %}
-                    <li>• {{ department }}</li>
+                        <li>• {{ department }}</li>
                     {% empty %}
-                    <li>Нет подразделений без отчётов</li>
+                        <li>Нет подразделений без отчётов</li>
                     {% endfor %}
                 </ul>
             </div>
