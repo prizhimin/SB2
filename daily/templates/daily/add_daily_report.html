@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 </head>
 <body>
+    <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
     <h1>Добавление ежедневного отчёта</h1>
     <div class="container">
         <form method="post" class="form-group">

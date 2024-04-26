@@ -194,3 +194,24 @@ textarea {
     display: inline-block; /* Для корректного отображения ширины */
 }
 
+.user-info {
+    text-align: right;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #333;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+
+    /* Добавим немного дополнительных стилей для украшения */
+    border: 1px solid #ccc; /* Добавим границу вокруг блока */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Плавное изменение цвета фона и текста при наведении */
+}
+
+.user-info:hover {
+    background-color: #eaeaea; /* Изменяем фон блока при наведении */
+    color: #555; /* Изменяем цвет текста при наведении */
+}

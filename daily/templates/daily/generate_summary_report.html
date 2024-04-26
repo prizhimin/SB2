@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 </head>
 <body>
+    <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
     <h1>Дата {{ selected_date| date:"d.m.Y" }}</h1>
     <h1>Имя файла {{ file_name }}</h1>
 

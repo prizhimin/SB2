@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     </head>
     <body>
+        <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
         <div class="container">
             <h1>Сводный отчёт</h1>
             <!-- Форма для выбора даты -->
@@ -29,7 +30,7 @@
                         </a>
                     </li>
                     {% empty %}
-                    <li>Нет доступных отчётов</li>
+                        <li>Нет доступных отчётов</li>
                     {% endfor %}
                 </ul>
                 <!-- Список подразделений без отчётов за выбранную дату -->

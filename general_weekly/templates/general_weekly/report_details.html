@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     </head>
     <body>
+        <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
         <div class="container">
             <h1>Детали еженедельного отчёта</h1>
             <p><strong>Дата отчёта:</strong> {{ report.report_date | date:"d.m.Y" }}</p>

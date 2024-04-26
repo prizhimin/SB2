@@ -31,7 +31,6 @@ def general_weekly_check_user_department(view_func):
         user_departments = WeeklyUserDepartment.objects.filter(user=request.user)
         if user_departments.count() == 0:
             return render(request, 'general_weekly/access_denied_page.html')
-        print(user_departments)
         user_department_ids = user_departments.values_list('department__id', flat=True)
         if report_department.id in user_department_ids:
             return view_func(request, report_id, *args, **kwargs)

@@ -24,6 +24,7 @@
         </style>
     </head>
     <body>
+        <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
         <h1>Добавление еженедельного отчёта</h1>
             <form method="post">
                 {% csrf_token %}
