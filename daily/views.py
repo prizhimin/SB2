@@ -71,8 +71,7 @@ def add_daily_report(request):
                               {'department': daily_report.department.name,
                                'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
             daily_report.save()  # Сохраняем отчёт в базу данных
-            return redirect(
-                success_page)  # Перенаправляем пользователя на success_page в случае успешного сохранения отчёта
+            return render(request, 'daily/success_page.html')
     else:
         # Получаем первое подразделение пользователя, если оно есть
         first_user_department = UserDepartment.objects.filter(user=request.user).first()
@@ -110,7 +109,7 @@ def edit_daily_report(request, report_id):
             daily_report.author = request.user
             daily_report.save()
             # Перенаправляем пользователя на страницу успешного завершения
-            return redirect(success_page)
+            return render(request, 'daily/success_page.html')
     else:
         # Если запрос метода GET, отображаем форму для редактирования
         form = DailyReportForm(request.user, instance=report)
@@ -200,8 +199,3 @@ def generate_summary_report(request):
 def success_page(request):
     return render(request, 'daily/success_page.html')
 
-
-
-def denied_add_daily_report(request, department, report_date):
-    return render(request, 'daily/denied_add_report.html', {'department': department,
-                                                            'report_date': report_date})
