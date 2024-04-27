@@ -217,15 +217,13 @@ def generate_general_weekly_summary_report(request):
     )
 
     def get_last_saturday_and_current_friday_dates(current_date):
-        # Получить текущую дату
-        # current_date = datetime.now()
         # Определить день недели (0 - понедельник, 6 - воскресенье)
         current_weekday = current_date.weekday()
         # Вычислить дату прошлой субботы
         _last_saturday = current_date - timedelta(days=current_weekday + 2)
         # Вычислить дату текущей пятницы
         _current_friday = current_date + timedelta(days=(4 - current_weekday))
-        # Преобразовать даты обратно в строки в формате '%d.%m.%Y'
+        # Преобразовать даты в строки в формате '%d.%m.%Y'
         last_saturday_str = _last_saturday.strftime('%d.%m.%Y')
         current_friday_str = _current_friday.strftime('%d.%m.%Y')
         # Вернуть кортеж из строк с датами
