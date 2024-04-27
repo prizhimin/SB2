@@ -44,7 +44,6 @@ def general_weekly(request):
         form = DateForm(initial={'selected_date': friday_of_week(datetime.now())})
     for report in reports:
         report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
-    summary_reports_creators = []
     first_summary_report = WeeklyCreatorsSummaryReport.objects.first()
     if first_summary_report:
         summary_reports_creators = [user.username for user in first_summary_report.creators.all()]
