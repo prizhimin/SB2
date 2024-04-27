@@ -1,58 +1,49 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Сводный отчёт</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-    </head>
-    <body>
-        <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
-        <div class="container">
-            <h1>Сводный отчёт</h1>
-            <!-- Форма для выбора даты -->
-            <form method="post" class="form-group">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" formaction="{% url 'general_weekly_summary_report' %}">Показать отчёты за указанную дату</button>
-                <button type="submit" formaction="{% url 'generate_general_weekly_summary_report' %}">Сводный отчёт за указанную дату</button>
-            </form>
-            <div class="report-list">
-                <!-- Список ссылок на отчёты -->
-                <h2>Отчёты за выбранную дату:</h2>
-                <ul>
-                    {% for report in reports %}
-                        <li>
-                            <a href="{% url 'general_weekly_report_details' report.id %}" class="action-button">
-                                {{ report.report_date|date:"d.m.Y" }} - {{ report.department.name }} - {{ report.author.last_name }}
-                                {{ report.author.first_name }}
-                            </a>
-                        </li>
-                        {% empty %}
-                        <li>Нет доступных отчётов</li>
-                    {% endfor %}
-                </ul>
-                <!-- Список подразделений без отчётов за выбранную дату -->
-                <h2>Подразделения без отчётов за выбранную дату:</h2>
-                <ul class="department-list">
-                    {% for department in departments_without_reports %}
-                    <li>• {{ department }}</li>
+{% extends 'base.html' %}
+{% block title %}Сводный отчёт{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Сводный отчёт</h1>
+        <!-- Форма для выбора даты -->
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" formaction="{% url 'general_weekly_summary_report' %}">Показать отчёты за указанную дату</button>
+            <button type="submit" formaction="{% url 'generate_general_weekly_summary_report' %}">Сводный отчёт за указанную дату</button>
+        </form>
+        <div class="report-list">
+            <!-- Список ссылок на отчёты -->
+            <h2>Отчёты за выбранную дату:</h2>
+            <ul>
+                {% for report in reports %}
+                    <li>
+                        <a href="{% url 'general_weekly_report_details' report.id %}" class="action-button">
+                            {{ report.report_date|date:"d.m.Y" }} - {{ report.department.name }} - {{ report.author.last_name }}
+                            {{ report.author.first_name }}
+                        </a>
+                    </li>
                     {% empty %}
-                    <li>Нет подразделений без отчётов</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="actions">
-                <!-- Кнопка "Назад к списку отчётов" -->
-                <a href="{% url 'general_weekly' %}" class="action-link">
-                    <button type="button">Назад к списку отчётов</button>
-                </a>
-                <!-- Кнопка "Вернуться на Главную" -->
-                <a href="{% url 'dashboard' %}" class="action-link">
-                    <button type="button">Вернуться на Главную</button>
-                </a>
-            </div>
+                    <li>Нет доступных отчётов</li>
+                {% endfor %}
+            </ul>
+            <!-- Список подразделений без отчётов за выбранную дату -->
+            <h2>Подразделения без отчётов за выбранную дату:</h2>
+            <ul class="department-list">
+                {% for department in departments_without_reports %}
+                <li>• {{ department }}</li>
+                {% empty %}
+                <li>Нет подразделений без отчётов</li>
+                {% endfor %}
+            </ul>
         </div>
-    </body>
-</html>
+        <div class="actions">
+            <!-- Кнопка "Назад к списку отчётов" -->
+            <a href="{% url 'general_weekly' %}" class="action-link">
+                <button type="button">Назад к списку отчётов</button>
+            </a>
+            <!-- Кнопка "Вернуться на Главную" -->
+            <a href="{% url 'dashboard' %}" class="action-link">
+                <button type="button">Вернуться на Главную</button>
+            </a>
+        </div>
+    </div>
+{% endblock %}

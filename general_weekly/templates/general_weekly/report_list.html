@@ -1,14 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список отчётов</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
+{% extends 'base.html' %}
+{% block title %}Список отчётов{% endblock %}
+{% block content %}
     <div class="container">
             <h1>Список еженедельных отчётов</h1>
             <!-- Контейнер для кнопок -->
@@ -57,5 +49,4 @@
             </a>
         {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}

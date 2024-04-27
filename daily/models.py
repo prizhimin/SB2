@@ -35,6 +35,7 @@ class DailyReport(models.Model):
     field_10 = models.PositiveSmallIntegerField('Количество проведенных проверок СБ за прошедшие сутки', default=0)
     field_11 = models.PositiveSmallIntegerField('Количество направленных претензионных писем за прошедшие сутки',
                                                 default=0)
+
     class Meta:
         ordering = ('-report_date',)
 

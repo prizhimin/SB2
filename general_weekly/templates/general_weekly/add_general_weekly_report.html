@@ -1,54 +1,47 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Добавление еженедельного отчёта</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-        <style>
-            table {
-                width: 100%; /* Установка ширины таблицы на 100% от родительского контейнера */
-            }
+{% extends 'base.html' %}
+{% block title %}Добавление еженедельного отчёта{% endblock %}
+{% block styles %}
+    <style>
+        table {
+            width: 100%; /* Установка ширины таблицы на 100% от родительского контейнера */
+        }
 
-            th:first-child, td:first-child {
-                width: 35%; /* Ширина первого столбца 35% от ширины таблицы */
-            }
+        th:first-child, td:first-child {
+            width: 35%; /* Ширина первого столбца 35% от ширины таблицы */
+        }
 
-            th:last-child, td:last-child {
-                width: 65%; /* Ширина второго столбца 65% от ширины таблицы */
-            }
-            textarea {
-                width: 100%; /* Установка ширины TextArea на 100% от родительского контейнера (второго столбца) */
-            }
-        </style>
-    </head>
-    <body>
-        <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
-        <h1>Добавление еженедельного отчёта</h1>
-            <form method="post">
-                {% csrf_token %}
-                <div class="container">
-                    <table>
-                        {% for f in form %}
-                            <tr>
-                                <th>{{ f.label }} </th>
-                                <th>{{ f }} </th>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div class="actions">
-                    <button type="submit">Внести данные</button>
-                    <!-- Кнопка "Назад к списку отчётов" -->
-                    <a href="{% url 'general_weekly' %}" class="action-link">
-                        <button type="button">Назад к списку отчётов</button>
-                    </a>
-                    <!-- Кнопка "Вернуться на Главную" -->
-                    <a href="{% url 'dashboard' %}" class="action-link">
-                        <button type="button">Вернуться на Главную</button>
-                    </a>
-                </div>
-            </form>
-    </body>
-</html>
+        th:last-child, td:last-child {
+            width: 65%; /* Ширина второго столбца 65% от ширины таблицы */
+        }
+        textarea {
+            width: 100%; /* Установка ширины TextArea на 100% от родительского контейнера (второго столбца) */
+        }
+    </style>
+{%  endblock %}
+{% block content %}
+    <h1>Добавление еженедельного отчёта</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="container">
+                <table>
+                    {% for f in form %}
+                        <tr>
+                            <th>{{ f.label }} </th>
+                            <th>{{ f }} </th>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="actions">
+                <button type="submit">Внести данные</button>
+                <!-- Кнопка "Назад к списку отчётов" -->
+                <a href="{% url 'general_weekly' %}" class="action-link">
+                    <button type="button">Назад к списку отчётов</button>
+                </a>
+                <!-- Кнопка "Вернуться на Главную" -->
+                <a href="{% url 'dashboard' %}" class="action-link">
+                    <button type="button">Вернуться на Главную</button>
+                </a>
+            </div>
+        </form>
+{% endblock %}
