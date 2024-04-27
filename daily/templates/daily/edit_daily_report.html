@@ -1,14 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Редактирование ежедневного отчёта</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
+{% extends 'base.html' %}
+{% block title%}Редактирование ежедневного отчёта{% endblock %}
+{% block content %}
     <h1>Редактирование ежедневного отчёта</h1>
     <form method="post" class="form-group" action="{% url 'edit_daily_report' report_id %}">
         {% csrf_token %}
@@ -78,5 +70,4 @@
             </a>
         </div>
     </form>
-</body>
-</html>
+{% endblock %}

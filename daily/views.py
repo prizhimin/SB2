@@ -23,7 +23,7 @@ def daily_reports(request):
     # Получаем филиалы, к которым пользователь имеет отношение
     user_departments = UserDepartment.objects.filter(user=user).values_list('department', flat=True)
     # Получаем все отчёты, связанные с этими филиалами, и сортируем их по дате отчёта
-    reports = DailyReport.objects.filter(department__in=user_departments).order_by('-report_date')
+    reports = DailyReport.objects.filter(department__in=user_departments)
     # Если форма отправлена методом POST
     if request.method == 'POST':
         form = DateForm(request.POST)
@@ -33,7 +33,6 @@ def daily_reports(request):
             reports = reports.filter(report_date=selected_date)
     else:
         form = DateForm(initial={'selected_date': get_date_for_report()})
-
     for report in reports:
         report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
     summary_reports_creators = []
@@ -125,36 +124,18 @@ def summary_report(request):
         form = DateSelectionForm(request.POST)
         if form.is_valid():
             # Если форма действительна, извлекаем выбранную дату из формы
-            selected_date = form.cleaned_data['report_date']
-            # Получаем все отчёты за выбранную дату
-            reports = DailyReport.objects.filter(report_date=selected_date)
-            # Получаем все подразделения
-            all_departments = Department.objects.all()
-            # Получаем список подразделений, для которых нет отчётов за выбранную дату
-            departments_without_reports = (all_departments.exclude(dailyreport__report_date=selected_date)
-                                           .order_by('name'))
-            bad_departments = []
-            for department in departments_without_reports:
-                bad_departments.append(': '.join([department.name, ', '.join(get_users_for_department(department.name))]))
-            departments_without_reports = bad_departments
-            # Возвращаем HTML-страницу с данными отчётов и формой выбора даты
-            return render(request, 'daily/summary_report.html',
-                          {'form': form, 'reports': reports,
-                           'departments_without_reports': departments_without_reports})
+            date = form.cleaned_data['report_date']
     else:
         form = DateSelectionForm(initial={'report_date': get_date_for_report()})
-        default_date = get_date_for_report()
-        reports = DailyReport.objects.filter(report_date=default_date)
-        all_departments = Department.objects.all()
-        departments_without_reports = all_departments.exclude(dailyreport__report_date=default_date).order_by('name')
-        # Получаем список подразделений, для которых нет отчётов за выбранную дату
-        bad_departments = []
-        for department in departments_without_reports:
-            bad_departments.append(': '.join([department.name, ', '.join(get_users_for_department(department.name))]))
-        departments_without_reports = bad_departments
-        return render(request, 'daily/summary_report.html',
-                      {'form': form, 'reports': reports,
-                       'departments_without_reports': departments_without_reports})
+        date = get_date_for_report()
+    reports = DailyReport.objects.filter(report_date=date)
+    # Получаем список подразделений и пользователей, без отчётов за дату date
+    departments_without_reports = [': '.join([department.name, ', '.join(get_users_for_department(department.name))])
+                                   for department in Department.objects.all().exclude(dailyreport__report_date=date)
+                                   .order_by('name')]
+    return render(request, 'daily/summary_report.html',
+                  {'form': form, 'reports': reports,
+                   'departments_without_reports': departments_without_reports})
 
 
 @login_required
@@ -206,4 +187,3 @@ def generate_summary_report(request):
 @login_required
 def success_page(request):
     return render(request, 'daily/success_page.html')
-

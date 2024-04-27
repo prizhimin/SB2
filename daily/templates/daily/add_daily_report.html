@@ -1,14 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добавление ежедневного отчёта</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
+{% extends 'base.html' %}
+{% block title %}Добавление ежедневного отчёта{% endblock %}
+{% block content %}
     <h1>Добавление ежедневного отчёта</h1>
     <div class="container">
         <form method="post" class="form-group">
@@ -80,5 +72,4 @@
             </div>
         </form>
     </div>
-</body>
-</html>
+{% endblock %}

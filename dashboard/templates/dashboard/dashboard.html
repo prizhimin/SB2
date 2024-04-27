@@ -1,14 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+{% block content %}
     <div class="container">
         <h1>Список доступных приложений</h1>
         <ul class="report-list">
@@ -29,5 +21,4 @@
             <button type="button">Смена пароля</button>
         </a>
     </div>
-</body>
-</html>
+{% endblock %}

@@ -1,19 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сводный отчёт</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <p class="user-info">Пользователь: <b>{{ user.last_name }} {{ user.first_name }}</b></p>
+{% extends 'base.html' %}
+{% block title %}Сводный отчёт{% endblock %}
+{% block content %}
     <h1>Дата {{ selected_date| date:"d.m.Y" }}</h1>
     <h1>Имя файла {{ file_name }}</h1>
 
     <!-- Список ссылок на отчёты -->
-    <h2>тчёты за выбранную дату:</h2>
+    <h2>Отчёты за выбранную дату:</h2>
     <ul class="report-list">
         {% for report in reports %}
         <li>
@@ -25,5 +17,4 @@
         <li>Нет доступных отчётов</li>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}
