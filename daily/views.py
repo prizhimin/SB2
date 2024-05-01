@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
@@ -119,6 +119,7 @@ def edit_daily_report(request, report_id):
 @login_required
 @check_summary_report_creator
 def summary_report(request):
+    date = None
     if request.method == 'POST':
         # Если запрос метода POST, обрабатываем форму
         form = DateSelectionForm(request.POST)
@@ -158,7 +159,7 @@ def generate_summary_report(request):
             prefix_report_name = 'Ежедневный отчёт по охране'
             # Формируем имя файла отчёта на основе выбранной даты
             report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
-                                                        f'{selected_date.strftime('%d.%m.%Y')}.xlsx')
+                                                        f'{selected_date.strftime("%d.%m.%Y")}.xlsx')
             # Копируем шаблон отчёта
             copy(os.path.join(path_to_reports, 'daily_summary_report_blank.xlsx'), report_name)
             # Получаем все отчёты за выбранную дату, отсортированные по дате

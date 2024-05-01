@@ -70,4 +70,4 @@ sudo systemctl restart apache2
 
 
 # загрузка списка филиалов
-python manage.py loaddata --app daily.Department  ./docs/Department.json
+python manage.py loaddata ./docs/Department.json

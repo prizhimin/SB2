@@ -242,11 +242,11 @@ def generate_general_weekly_summary_report(request):
             prefix_report_name = 'Еженедельный отчёт филиалов'
             # Формируем имя файла отчёта на основе выбранной даты
             report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
-                                                        f'{selected_date.strftime('%d.%m.%Y')}.xlsx')
+                                                        f'{selected_date.strftime("%d.%m.%Y")}.xlsx')
             # Создаём xlsx-файл отчёта
             wb = Workbook()
             sheet = wb.active
-            sheet.title = f'Отчёт {selected_date.strftime('%d.%m.%Y')}'
+            sheet.title = f'Отчёт {selected_date.strftime("%d.%m.%Y")}'
             # Заполняем отчёт
             # Масштаб 55%
             sheet.page_setup.scale = 55  # НЕ РАБОТАЕТ!!!
