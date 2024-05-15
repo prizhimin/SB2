@@ -28,7 +28,7 @@ ALTER DATABASE djangoproject OWNER TO djangouser;
 \q
 sudo mcedit /etc/apache2/sites-available/000-default.conf
 <VirtualHost *:80>
-    ServerName 10.168.11.206
+    ServerName 10.168.0.235
     ServerAdmin prinv@ya.ru
 
     # Путь к каталогу проекта Django
