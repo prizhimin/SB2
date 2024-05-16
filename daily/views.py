@@ -143,7 +143,7 @@ def summary_report(request):
 @check_summary_report_creator
 def generate_summary_report(request):
     """
-    Генерация сводного еженедельного отчёта
+    Генерация сводного ежедневного отчёта
     """
     if request.method == 'POST':
         # Получаем данные формы

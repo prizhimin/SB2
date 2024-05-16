@@ -43,10 +43,10 @@
         <a href="{% url 'daily_reports' %}" class="action-link">
             <button type="button">Показать все отчёты</button>
         </a>
-        <!-- Кнопка "Сводный отчёт" -->
+        <!-- Кнопка "Сводный ежедневный отчёт" -->
         {% if request.user.username in summary_reports_creators %}
         <a href="{% url 'summary_report' %}" class="action-link">
-            <button type="button" class="yellow-button">Сводный отчёт</button>
+            <button type="button" class="yellow-button">Сводный ежедневный отчёт</button>
         </a>
         {% endif %}
     </div>
