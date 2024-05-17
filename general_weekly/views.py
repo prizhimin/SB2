@@ -103,7 +103,7 @@ def add_general_weekly_report(request):
         # передавая текущего пользователя и первое доступное пользователю подразделение
         form = WeeklyReportForm(request.user, initial={
             'department': first_department})  # Передаем объект пользователя и начальные значения в форму
-    # Отображаем шаблон add_weekly_report.html с переданной формой
+    # Отображаем шаблон add_general_weekly_report.html с переданной формой
     return render(request, 'general_weekly/add_general_weekly_report.html', {'form': form})
 
 
