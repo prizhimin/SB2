@@ -70,10 +70,8 @@ python manage.py createsuperuser --username prinv --email n.prizhimin@tplusgroup
 deactivate
 sudo systemctl restart apache2
 
-
 # загрузка списка филиалов
 python manage.py loaddata ./docs/Department.json
-
 
 # дамр всех БД
 sudo -u postgres pg_dumpall -f /tmp/backup.sql
