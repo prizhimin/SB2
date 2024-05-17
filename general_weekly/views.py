@@ -173,7 +173,7 @@ def general_weekly_summary_report(request):
     reports = WeeklyReport.objects.filter(report_date=date)
     # Получаем список подразделений и пользователей, без отчётов за дату date
     departments_without_reports = [': '.join([department.name, ', '.join(get_users_for_department(department.name))])
-                                   for department in Department.objects.all().exclude(dailyreport__report_date=date)
+                                   for department in Department.objects.all().exclude(weeklyreport__report_date=date)
                                    .order_by('name')]
     return render(request, 'general_weekly/summary_report.html',
                   {'form': form, 'reports': reports,
