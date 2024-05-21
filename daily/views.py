@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
 from django.utils import timezone
 from django.apps import apps
-from django.db import IntegrityError
+# from django.db import IntegrityError
 from .models import DailyReport, CreatorsSummaryReport, UserDepartment
 from commondata.models import Department
 from commondata.forms import DateForm, DateSelectionForm
@@ -76,7 +76,8 @@ def add_daily_report(request):
             #     return render(request, 'daily/denied_add_report.html',
             #                   {'department': daily_report.department.name,
             #                    'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
-            # return render(request, 'daily/success_page.html')
+        daily_report.save()  # Сохраняем отчёт в базу данных
+        return render(request, 'daily/success_page.html')
     else:
         # Получаем первое подразделение пользователя, если оно есть
         first_user_department = UserDepartment.objects.filter(user=request.user).first()
@@ -98,6 +99,7 @@ def add_daily_report(request):
 def edit_daily_report(request, report_id):
     # Получаем отчёт по его идентификатору
     report = get_object_or_404(DailyReport, id=report_id)
+    old_report_date = report.report_date
     # Получаем текущее время в часовом поясе Москвы
     current_time = timezone.now()
     # Проверяем, прошло ли меньше 1 часа с момента создания отчёта
@@ -112,12 +114,15 @@ def edit_daily_report(request, report_id):
             # Если форма валидна, сохраняем отчёт
             daily_report = form.save(commit=False)
             daily_report.author = request.user
-            # Проверяем наличие отчёта для выбранного филиала и даты
-            # if DailyReport.objects.filter(department=daily_report.department,
-            #                               report_date=daily_report.report_date).exists():
-            #     return render(request, 'daily/denied_add_report.html',
-            #                   {'department': daily_report.department.name,
-            #                    'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
+            # В случае, если в отчёте изменилась дата, то проверяем наличие отчёта для выбранного филиала и даты
+            print(daily_report.report_date, old_report_date)
+            if daily_report.report_date != old_report_date:
+                print('Дата изменилась!!!')
+                if DailyReport.objects.filter(department=daily_report.department,
+                                              report_date=daily_report.report_date).exists():
+                    return render(request, 'daily/denied_add_report.html',
+                                  {'department': daily_report.department.name,
+                                   'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
             daily_report.save()
             # Перенаправляем пользователя на страницу успешного завершения
             return render(request, 'daily/success_page.html')
