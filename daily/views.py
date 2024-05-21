@@ -99,6 +99,7 @@ def add_daily_report(request):
 def edit_daily_report(request, report_id):
     # Получаем отчёт по его идентификатору
     report = get_object_or_404(DailyReport, id=report_id)
+    # Сохраняем дату отчёта до редактирования
     old_report_date = report.report_date
     # Получаем текущее время в часовом поясе Москвы
     current_time = timezone.now()
@@ -117,7 +118,6 @@ def edit_daily_report(request, report_id):
             # В случае, если в отчёте изменилась дата, то проверяем наличие отчёта для выбранного филиала и даты
             print(daily_report.report_date, old_report_date)
             if daily_report.report_date != old_report_date:
-                print('Дата изменилась!!!')
                 if DailyReport.objects.filter(department=daily_report.department,
                                               report_date=daily_report.report_date).exists():
                     return render(request, 'daily/denied_add_report.html',
