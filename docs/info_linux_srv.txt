@@ -78,3 +78,13 @@ sudo -u postgres pg_dumpall -f /tmp/backup.sql
 
 # восстановление из дампа
 sudo -u postgres psql < /tmp/backup.sql
+
+# настрйка разрешений
+chmod 644 *.py
+
+Chat
+
+find /path/to/your/project -name "*.py" -exec chmod 644 {} \;
+find /path/to/your/project -type d -exec chmod 755 {} \;
+
+

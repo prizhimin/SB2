@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
 from django.utils import timezone
 from django.apps import apps
+from django.db import IntegrityError
 from .models import DailyReport, CreatorsSummaryReport, UserDepartment
 from commondata.models import Department
 from commondata.forms import DateForm, DateSelectionForm
@@ -63,14 +64,19 @@ def add_daily_report(request):
         if form.is_valid():  # Проверяем валидность данных формы
             daily_report = form.save(commit=False)  # Создаем объект ежедневного отчёта, не сохраняя его в базу данных
             daily_report.author = request.user  # Устанавливаем автора отчёта
-            # Проверяем наличие отчёта для выбранного филиала и даты
+            # # Проверяем наличие отчёта для выбранного филиала и даты
             if DailyReport.objects.filter(department=daily_report.department,
                                           report_date=daily_report.report_date).exists():
                 return render(request, 'daily/denied_add_report.html',
                               {'department': daily_report.department.name,
                                'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
-            daily_report.save()  # Сохраняем отчёт в базу данных
-            return render(request, 'daily/success_page.html')
+            # try:
+            #     daily_report.save()  # Сохраняем отчёт в базу данных
+            # except IntegrityError:
+            #     return render(request, 'daily/denied_add_report.html',
+            #                   {'department': daily_report.department.name,
+            #                    'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
+            # return render(request, 'daily/success_page.html')
     else:
         # Получаем первое подразделение пользователя, если оно есть
         first_user_department = UserDepartment.objects.filter(user=request.user).first()
@@ -107,11 +113,11 @@ def edit_daily_report(request, report_id):
             daily_report = form.save(commit=False)
             daily_report.author = request.user
             # Проверяем наличие отчёта для выбранного филиала и даты
-            if DailyReport.objects.filter(department=daily_report.department,
-                                          report_date=daily_report.report_date).exists():
-                return render(request, 'daily/denied_add_report.html',
-                              {'department': daily_report.department.name,
-                               'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
+            # if DailyReport.objects.filter(department=daily_report.department,
+            #                               report_date=daily_report.report_date).exists():
+            #     return render(request, 'daily/denied_add_report.html',
+            #                   {'department': daily_report.department.name,
+            #                    'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
             daily_report.save()
             # Перенаправляем пользователя на страницу успешного завершения
             return render(request, 'daily/success_page.html')

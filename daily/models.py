@@ -40,6 +40,9 @@ class DailyReport(models.Model):
 
     class Meta:
         ordering = ('-report_date',)
+        # constraints = [
+        #     models.UniqueConstraint(fields=['report_date', 'department'], name='unique_report_date_department')
+        # ]
 
     def __str__(self):
         return (f"{self.report_date.strftime('%d.%m.%Y')} - {self.department.name} - {self.author.last_name} "
