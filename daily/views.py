@@ -64,8 +64,8 @@ def add_daily_report(request):
             daily_report = form.save(commit=False)  # Создаем объект ежедневного отчёта, не сохраняя его в базу данных
             daily_report.author = request.user  # Устанавливаем автора отчёта
             # Проверяем наличие отчёта для выбранного филиала и даты
-            if (DailyReport.objects.filter(department=daily_report.department)
-                    .filter(report_date=daily_report.report_date).exists()):
+            if DailyReport.objects.filter(department=daily_report.department,
+                                          report_date=daily_report.report_date).exists():
                 return render(request, 'daily/denied_add_report.html',
                               {'department': daily_report.department.name,
                                'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
@@ -106,6 +106,12 @@ def edit_daily_report(request, report_id):
             # Если форма валидна, сохраняем отчёт
             daily_report = form.save(commit=False)
             daily_report.author = request.user
+            # Проверяем наличие отчёта для выбранного филиала и даты
+            if DailyReport.objects.filter(department=daily_report.department,
+                                          report_date=daily_report.report_date).exists():
+                return render(request, 'daily/denied_add_report.html',
+                              {'department': daily_report.department.name,
+                               'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
             daily_report.save()
             # Перенаправляем пользователя на страницу успешного завершения
             return render(request, 'daily/success_page.html')
@@ -188,3 +194,9 @@ def generate_summary_report(request):
 @login_required
 def success_page(request):
     return render(request, 'daily/success_page.html')
+
+
+@login_required
+@check_summary_report_creator
+def summary_weekly_report():
+    pass

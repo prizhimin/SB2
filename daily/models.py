@@ -1,6 +1,8 @@
 from django.db import models
+from django.db.models import Sum
 from django.contrib.auth.models import User
 from commondata.models import Department
+from datetime import timedelta
 
 
 class UserDepartment(models.Model):
@@ -46,6 +48,23 @@ class DailyReport(models.Model):
     @staticmethod
     def get_daily_reports_by_date(date):
         return DailyReport.objects.filter(report_date=date)
+
+    @classmethod
+    def get_weekly_sums(cls, monday_date):
+        end_date = monday_date + timedelta(days=6)
+        return cls.objects.filter(report_date__range=(monday_date, end_date)).aggregate(
+            total_field_1=Sum('field_1'),
+            total_field_2=Sum('field_2'),
+            total_field_3=Sum('field_3'),
+            total_field_4=Sum('field_4'),
+            total_field_5=Sum('field_5'),
+            total_field_6=Sum('field_6'),
+            total_field_7=Sum('field_7'),
+            total_field_8=Sum('field_8'),
+            total_field_9=Sum('field_9'),
+            total_field_10=Sum('field_10'),
+            total_field_11=Sum('field_11'),
+        )
 
 
 class CreatorsSummaryReport(models.Model):
