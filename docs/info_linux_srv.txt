@@ -80,13 +80,6 @@ sudo -u postgres pg_dump -d djangoproject -f /tmp/djangoproject-22-05-2024.sql
 # восстановление из дампа
 sudo -u postgres psql -d djangoproject -f /tmp/djangoproject-22-05-2024.sql
 
-# настройка разрешений
-find /srv/SB2 -name "*.py" -exec chmod 644 {} \;
-find /srv/SB2 -type d -exec chmod 755 {} \;
-chmod 775 /srv/SB2/daily/reports/
-chmod 775 /srv/SB2/general_weekly/reports/
-chown www-data:www-data -R /srv/SB2
-
 # создание резервной копии сайта
 cd /srv && tar -cjf /var/backups/SB2-$(date +\%Y-\%m-\%d-\%H:\%M:\%S).tar.bz2 SB2
 
