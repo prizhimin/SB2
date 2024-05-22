@@ -75,16 +75,16 @@ python manage.py loaddata ./docs/Department.json
 
 # дамр всех БД
 sudo -u postgres pg_dumpall -f /tmp/backup.sql
-
+# дамп БД djangoproject
+sudo -u postgres pg_dump -d djangoproject -f /tmp/djangoproject-22-05-2024.sql
 # восстановление из дампа
-sudo -u postgres psql < /tmp/backup.sql
+sudo -u postgres psql -d djangoproject -f /tmp/djangoproject-22-05-2024.sql
 
-# настрйка разрешений
-chmod 644 *.py
-
-Chat
-
-find /path/to/your/project -name "*.py" -exec chmod 644 {} \;
-find /path/to/your/project -type d -exec chmod 755 {} \;
+# настройка разрешений
+find /srv/SB2 -name "*.py" -exec chmod 644 {} \;
+find /srv/SB2 -type d -exec chmod 755 {} \;
+chmod 775 /srv/SB2/daily/reports/
+chmod 775 /srv/SB2/general_weekly/reports/
+chown www-data:www-data -R /srv/SB2
 
 
