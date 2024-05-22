@@ -87,4 +87,11 @@ chmod 775 /srv/SB2/daily/reports/
 chmod 775 /srv/SB2/general_weekly/reports/
 chown www-data:www-data -R /srv/SB2
 
+# создание резервной копии сайта
+cd /srv && tar -cjf /var/backups/SB2-$(date +\%Y-\%m-\%d-\%H:\%M:\%S).tar.bz2 SB2
 
+# crontab
+# РК PostgreSQL
+0 10 * * * PGHOST=localhost PGPORT=5432 PGUSER=djangouser PGPASSWORD=1234 /usr/bin/pg_dump -h localhost -U djangouser -d djangoproject | gzip > /var/backups/django/djangoproject-$(date +\%Y-\%m-\%d-\%H:\%M:\%S).sql.gz
+# РК сайта (без каталога venv)
+5 10 * * * tar czf /var/backups/django/SB2-$(date +\%Y-\%m-\%d-\%H:\%M:\%S).tar.gz --exclude=/srv/SB2/venv /srv/SB2
