@@ -20,7 +20,8 @@
 {%  endblock %}
 {% block content %}
     <h1>Добавление еженедельного отчёта</h1>
-        <form method="post">
+    <div class="container">
+        <form method="post" class="form-group">
             {% csrf_token %}
             <div class="container">
                 <table>
@@ -44,4 +45,7 @@
                 </a>
             </div>
         </form>
+    </div>
+{% endblock %}
+{% block buttons %}
 {% endblock %}

@@ -19,9 +19,10 @@
     </style>
 {% endblock %}
 {% block content %}
-        <h1>Редактирование еженедельного отчёта</h1>
-        <form method="post" class="form-group" action="{% url 'edit_general_weekly_report' report_id %}">
-            {% csrf_token %}
+    <h1>Редактирование еженедельного отчёта</h1>
+    <div class="container">
+    <form method="post" class="form-group" action="{% url 'edit_general_weekly_report' report_id %}">
+        {% csrf_token %}
             <div class="container">
                 <table class="form-table">
                     {% for f in form %}
@@ -44,4 +45,5 @@
                 </a>
             </div>
         </form>
+    </div>
 {% endblock %}

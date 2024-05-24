@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from datetime import timedelta
+from datetime import timedelta, date
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
 from django.utils import timezone
 from django.apps import apps
 # from django.db import IntegrityError
@@ -209,5 +209,11 @@ def success_page(request):
 
 @login_required
 @check_summary_report_creator
-def summary_weekly_report():
-    pass
+def summary_weekly_report(request):
+    monday_date = date(2024, 4, 22)
+    weekly_sums = {}
+    # Считаем суммы за неделю, начиная с указанного понедельника
+    for department in Department.objects.all():
+        weekly_sums[department] = DailyReport.get_weekly_sums(department, monday_date)
+    print(weekly_sums)
+    return HttpResponse('ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ')

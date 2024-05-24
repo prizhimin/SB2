@@ -53,9 +53,11 @@ class DailyReport(models.Model):
         return DailyReport.objects.filter(report_date=date)
 
     @classmethod
-    def get_weekly_sums(cls, monday_date):
+    def get_weekly_sums(cls, department, monday_date):
         end_date = monday_date + timedelta(days=6)
-        return cls.objects.filter(report_date__range=(monday_date, end_date)).aggregate(
+        return cls.objects.filter(
+            department=department,
+            report_date__range=(monday_date, end_date)).aggregate(
             total_field_1=Sum('field_1'),
             total_field_2=Sum('field_2'),
             total_field_3=Sum('field_3'),
@@ -68,7 +70,6 @@ class DailyReport(models.Model):
             total_field_10=Sum('field_10'),
             total_field_11=Sum('field_11'),
         )
-
 
 class CreatorsSummaryReport(models.Model):
     """

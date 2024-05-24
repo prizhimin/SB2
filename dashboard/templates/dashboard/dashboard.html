@@ -13,6 +13,8 @@
             {% endfor %}
         </ul>
     </div>
+{% endblock %}
+{% block buttons %}
     <div class="actions">
         <a href="{% url 'accounts:custom_logout'  %}">
             <button type="button">Выход</button>

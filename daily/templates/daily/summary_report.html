@@ -35,15 +35,17 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="actions">
-                <!-- Кнопка "Назад к списку отчётов" -->
-                <a href="{% url 'daily_reports' %}" class="action-link">
-                    <button type="button">Назад к списку отчётов</button>
-                </a>
-                <!-- Кнопка "Вернуться на Главную" -->
-                <a href="{% url 'dashboard' %}" class="action-link">
-                    <button type="button">Вернуться на Главную</button>
-                </a>
-            </div>
-        </div>
+    </div>
+{% endblock %}
+{% block buttons %}
+    <div class="actions">
+        <!-- Кнопка "Назад к списку отчётов" -->
+        <a href="{% url 'daily_reports' %}" class="action-link">
+            <button type="button">Назад к списку отчётов</button>
+        </a>
+        <!-- Кнопка "Вернуться на Главную" -->
+        <a href="{% url 'dashboard' %}" class="action-link">
+            <button type="button">Вернуться на Главную</button>
+        </a>
+    </div>
 {% endblock %}

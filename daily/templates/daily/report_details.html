@@ -59,19 +59,21 @@
                 </tr>
             </table>
         </div>
-        <div class="actions">
-            <!-- Кнопка "Редактирование отчёта" -->
-            <a href="{% url 'edit_daily_report' report.id %}" class="action-link">
-                <button type="button">Редактирование отчёта</button>
-            </a>
-            <!-- Кнопка "Добавить новый ежедневный отчёт" -->
-            <a href="{% url 'add_daily_report' %}" class="action-link">
-                    <button type="button">Добавить новый ежедневный отчёт</button>
-            </a>
-            <!-- Кнопка "Назад к списку отчётов" -->
-            <a href="{% url 'daily_reports' %}" class="action-link">
-                <button type="button">Назад к списку отчётов</button>
-            </a>
-        </div>
+    </div>
+{% endblock %}
+{% block buttons %}
+    <div class="actions">
+        <!-- Кнопка "Редактирование отчёта" -->
+        <a href="{% url 'edit_daily_report' report.id %}" class="action-link">
+            <button type="button">Редактирование отчёта</button>
+        </a>
+        <!-- Кнопка "Добавить новый ежедневный отчёт" -->
+        <a href="{% url 'add_daily_report' %}" class="action-link">
+                <button type="button">Добавить новый ежедневный отчёт</button>
+        </a>
+        <!-- Кнопка "Назад к списку отчётов" -->
+        <a href="{% url 'daily_reports' %}" class="action-link">
+            <button type="button">Назад к списку отчётов</button>
+        </a>
     </div>
 {% endblock %}
