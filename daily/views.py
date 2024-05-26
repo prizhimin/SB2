@@ -210,10 +210,10 @@ def success_page(request):
 @login_required
 @check_summary_report_creator
 def summary_weekly_report(request):
-    monday_date = date(2024, 4, 22)
+    monday_date = date(2024, 5, 20)
     weekly_sums = {}
     # Считаем суммы за неделю, начиная с указанного понедельника
     for department in Department.objects.all():
-        weekly_sums[department] = DailyReport.get_weekly_sums(department, monday_date)
+        weekly_sums[department.name] = DailyReport.get_weekly_sums(department, monday_date)
     print(weekly_sums)
     return HttpResponse('ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ')

@@ -71,6 +71,7 @@ class DailyReport(models.Model):
             total_field_11=Sum('field_11'),
         )
 
+
 class CreatorsSummaryReport(models.Model):
     """
     Список создателей сводного отчёта
