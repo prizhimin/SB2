@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Детали отчёта{% endblock %}
+{% block styles %}
+/* Стили для первой колонки таблицы */
+tr, td:first-child {
+    width: 40%; /* Ширина первой колонки равна 40% от общей ширины таблицы */
+}
+{% endblock %}
 {% block content %}
     <div class="container">
         <h1>Детали еженедельного отчёта</h1>
