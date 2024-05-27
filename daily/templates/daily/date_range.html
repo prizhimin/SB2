@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Еженедельные отчёты по охране{% endblock %}
+{% block content %}
+    <h1>Выбор диапазона дат</h1>
+    <div class="container">
+        <form method="POST" class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Показать отчёты</button>
+            <button type="submit" formaction="{% url 'generate_weekly_summary_report' %}">Сводный отчёт за указанный диапазон дат</button>
+        </form>
+        <!-- Список ссылок на отчёты -->
+        <ul class="report-list">
+            {% for report in reports %}
+                <li>
+                    <a href="{% url 'report_details' report.id %}" class="action-button">
+                        {{ report.report_date|date:"d.m.Y" }} - {{ report.department.name }}
+                        - {{ report.user_full_name }}
+                    </a>
+                </li>
+            {% empty %}
+                <li>Нет доступных отчётов</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+{% block buttons %}
+    <div class="actions">
+        <!-- Кнопка "Назад к списку отчётов" -->
+        <a href="{% url 'daily_reports' %}" class="action-link">
+            <button type="button">Назад к списку отчётов</button>
+        </a>
+        <!-- Кнопка "Вернуться на Главную" -->
+        <a href="{% url 'dashboard' %}" class="action-link">
+            <button type="button">Вернуться на Главную</button>
+        </a>
+    </div>
+{% endblock %}

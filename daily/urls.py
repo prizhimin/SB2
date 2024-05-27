@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (daily_reports, report_details, add_daily_report, edit_daily_report, summary_report,
-                    generate_summary_report, summary_weekly_report)
+                    generate_summary_report, summary_weekly_report, generate_weekly_summary_report)
 
 urlpatterns = [
     path('', daily_reports, name='daily_reports'),  # Маршрут по умолчанию для списка отчётов
@@ -9,5 +9,6 @@ urlpatterns = [
     path('edit_daily_report/<int:report_id>', edit_daily_report, name='edit_daily_report'),
     path('summary_report/', summary_report, name='summary_report'),
     path('generate_summary_report/', generate_summary_report, name='generate_summary_report'),
-    path('generate_summay_weekly_report/', summary_weekly_report, name='summary_weekly_report')
+    path('summary_weekly_report/', summary_weekly_report, name='summary_weekly_report'),
+    path('generate_weekly_summary_report/', generate_weekly_summary_report, name='generate_weekly_summary_report'),
 ]

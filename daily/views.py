@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from datetime import timedelta, date
+from datetime import timedelta, datetime
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponse
 from django.utils import timezone
@@ -7,7 +7,7 @@ from django.apps import apps
 # from django.db import IntegrityError
 from .models import DailyReport, CreatorsSummaryReport, UserDepartment
 from commondata.models import Department
-from commondata.forms import DateForm, DateSelectionForm
+from commondata.forms import DateForm, DateSelectionForm, DateRangeForm
 from .forms import DailyReportForm
 from .decorators import check_summary_report_creator, check_user_department, check_daily_user
 from .utils import get_date_for_report, get_users_for_department
@@ -210,10 +210,111 @@ def success_page(request):
 @login_required
 @check_summary_report_creator
 def summary_weekly_report(request):
-    monday_date = date(2024, 5, 20)
-    weekly_sums = {}
-    # Считаем суммы за неделю, начиная с указанного понедельника
-    for department in Department.objects.all():
-        weekly_sums[department.name] = DailyReport.get_weekly_sums(department, monday_date)
-    print(weekly_sums)
-    return HttpResponse('ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ')
+    # monday_date = date(2024, 5, 20)
+    # weekly_sums = {}
+    # # Считаем суммы за неделю, начиная с указанного понедельника
+    # for department in Department.objects.all():
+    #     weekly_sums[department.name] = DailyReport.get_weekly_sums(department, monday_date)
+    # print(weekly_sums)
+    # return HttpResponse('ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ')
+
+    def get_week_range(input_date=None):
+        """"
+        Возвращает даты понедельника и воскресенья недели, к которой принадлежит указанная дата.
+        Если дата не указана, используется сегодняшняя дата.
+        Аргументы:
+        input_date (datetime.date или datetime.datetime, опционально):
+        Дата, для которой необходимо определить диапазон недели.
+        Если не указана, используется текущая дата.
+        Возвращает:
+        tuple: Две даты (datetime.date), представляющие понедельник и воскресенье соответствующей недели.
+        """
+        if input_date is None:
+            input_date = datetime.today().date()
+        else:
+            if isinstance(input_date, datetime):
+                input_date = input_date.date()
+        # Определяем день недели: понедельник - 0, ..., воскресенье - 6
+        weekday = input_date.weekday()
+        # Определяем дату понедельника и воскресенья
+        start_date = input_date - timedelta(days=weekday)
+        end_date = start_date + timedelta(days=6)
+        return start_date, end_date
+
+    # reports = None
+    start_date, end_date = get_week_range()
+    reports = DailyReport.objects.filter(report_date__range=(start_date, end_date)).order_by('-report_date')
+    for report in reports:
+        report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
+    if request.method == "POST":
+        form = DateRangeForm(request.POST)
+        if form.is_valid():
+            # Обработка данных формы
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            reports = DailyReport.objects.filter(report_date__range=(start_date, end_date)).order_by('-report_date')
+            for report in reports:
+                report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
+    else:
+        form = DateRangeForm(initial={'start_date': start_date, 'end_date': end_date})
+    return render(request, 'daily/date_range.html', {'reports': reports, 'form': form})
+
+
+def generate_weekly_summary_report(request):
+    if request.method == "POST":
+        form = DateRangeForm(request.POST)
+        if form.is_valid():
+            # Извлекаем выбранные даты из формы
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            # Получаем экземпляр класса конфигурации приложения daily
+            daily_config = apps.get_app_config('daily')
+            # Получаем путь к папке для сохранения отчётов
+            path_to_reports = daily_config.PATH_TO_SAVE
+            # Префикс названия отчёта
+            prefix_report_name = 'Сводный отчёт по охране'
+            # Формируем имя файла отчёта на основе выбранной даты
+            report_name = os.path.join(path_to_reports, f'{prefix_report_name} с '
+                                                        f'{start_date.strftime("%d.%m.%Y")} по '
+                                                        f'{end_date.strftime("%d.%m.%Y")}.xlsx')
+            # Копируем шаблон отчёта
+            copy(os.path.join(path_to_reports, 'daily_summary_report_blank.xlsx'), report_name)
+            # # Получаем все отчёты за выбранные даты
+            # reports = DailyReport.objects.filter(report_date__range=(start_date, end_date))
+            # Загружаем созданный отчёт в Excel
+            report_workbook = load_workbook(report_name)
+            report_sheet = report_workbook.active
+            # Словарь, соотносящий названия подразделений с соответствующими столбцами в Excel
+            departments_cols = {k: v for k, v in zip(('Марий Эл и Чувашии', 'Ульяновский', 'Удмуртский', 'Свердловский',
+                                                      'Саратовский', 'Самарский', 'Пермский', 'Оренбургский',
+                                                      'Нижегородский', 'Мордовский', 'Коми', 'Кировский',
+                                                      'Владимирский', 'Пензенский'), 'CDEFGHIJKLMNOP')}
+            weekly_sums = {}
+            # Считаем суммы за указанный диапазон дат
+            for department in Department.objects.all():
+                weekly_sums[department.name] = DailyReport.get_weekly_sums(department, start_date, end_date)
+            # Копируем посчитанные суммы в сводный отчёт
+            for department in Department.objects.all():
+                # print(department.name, weekly_sums[department.name]['total_field_1'])
+                for idx, line in enumerate(tuple(range(3, 12)) + (16, 17), start=1):
+                    report_sheet[f'{departments_cols[department.name]}{line}'] = (
+                        0 if weekly_sums[department.name].get(f'total_field_{idx}') is None
+                        else weekly_sums[department.name][f'total_field_{idx}']
+                    )
+            # Сохраняем изменения в отчёте
+            report_workbook.save(report_name)
+            # Возвращаем файл отчёта в HTTP-ответе
+            response = FileResponse(open(report_name, 'rb'), as_attachment=True,
+                                    filename=report_name)
+            return response
+        else:
+            return HttpResponse('Invalid form data')  # Сообщение о неверных данных формы
+    else:
+        form = DateRangeForm()
+        return HttpResponse('Only POST requests are allowed')  # Сообщение о неправильном методе запроса
+
+# # Копируем данные из отчётов филиалов в сводный отчёт
+# for report in reports:
+#     for idx, line in enumerate(tuple(range(3, 12)) + (16, 17), start=1):
+#         report_sheet[f'{departments_cols[report.department.name]}{line}'] = getattr(report,
+#                                                                                     f'field_{idx}')

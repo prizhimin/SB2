@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$_lr9*y@i%fb-etw&1zjqorncw+t9)w@i*60m$o&*kr++73(lt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.168.11.219', '10.168.11.207',
                  '192.168.0.9', '192.168.0.34', '10.168.0.235']
@@ -147,6 +147,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'static/css'),
-    os.path.join(BASE_DIR, 'static/admin/css')
+    # os.path.join(BASE_DIR, 'static/css'),
+    # os.path.join(BASE_DIR, 'static/admin/css'),
 ]

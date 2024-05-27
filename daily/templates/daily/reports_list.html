@@ -44,11 +44,12 @@
         <a href="{% url 'daily_reports' %}" class="action-link">
             <button type="button">Показать все отчёты</button>
         </a>
-        <!-- Кнопка "Сводный ежедневный отчёт" -->
+        <!-- Кнопка "Ежедневный отчёт" -->
         {% if request.user.username in summary_reports_creators %}
         <a href="{% url 'summary_report' %}" class="action-link">
             <button type="button" class="yellow-button">Ежедневный отчёт</button>
         </a>
+        <!-- Кнопка "Еженедельный отчёт" -->
         <a href="{% url 'summary_weekly_report' %}" class="action-link">
             <button type="button" class="yellow-button">Еженедельный отчёт</button>
         </a>
