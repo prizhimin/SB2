@@ -313,8 +313,3 @@ def generate_weekly_summary_report(request):
         form = DateRangeForm()
         return HttpResponse('Only POST requests are allowed')  # Сообщение о неправильном методе запроса
 
-# # Копируем данные из отчётов филиалов в сводный отчёт
-# for report in reports:
-#     for idx, line in enumerate(tuple(range(3, 12)) + (16, 17), start=1):
-#         report_sheet[f'{departments_cols[report.department.name]}{line}'] = getattr(report,
-#                                                                                     f'field_{idx}')
