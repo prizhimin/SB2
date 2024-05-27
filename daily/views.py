@@ -210,13 +210,6 @@ def success_page(request):
 @login_required
 @check_summary_report_creator
 def summary_weekly_report(request):
-    # monday_date = date(2024, 5, 20)
-    # weekly_sums = {}
-    # # Считаем суммы за неделю, начиная с указанного понедельника
-    # for department in Department.objects.all():
-    #     weekly_sums[department.name] = DailyReport.get_weekly_sums(department, monday_date)
-    # print(weekly_sums)
-    # return HttpResponse('ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ')
 
     def get_week_range(input_date=None):
         """"
@@ -310,6 +303,4 @@ def generate_weekly_summary_report(request):
         else:
             return HttpResponse('Invalid form data')  # Сообщение о неверных данных формы
     else:
-        form = DateRangeForm()
         return HttpResponse('Only POST requests are allowed')  # Сообщение о неправильном методе запроса
-
