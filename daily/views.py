@@ -211,7 +211,7 @@ def success_page(request):
 def summary_weekly_report(request):
 
     def get_week_range(input_date=None):
-        """"
+        """
         Возвращает даты понедельника и воскресенья недели, к которой принадлежит указанная дата.
         Если дата не указана, используется сегодняшняя дата.
         Аргументы:
