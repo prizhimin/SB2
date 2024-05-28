@@ -296,6 +296,7 @@ def generate_weekly_summary_report(request):
                     )
             report_sheet['A16'] = 'Количество проведенных проверок СБ'
             report_sheet['A17'] = 'Количество направленных претензионных писем'
+            # Высота строки
             report_sheet.row_dimensions[16].height = 15
             report_sheet.row_dimensions[17].height = 15
             # Сохраняем изменения в отчёте
