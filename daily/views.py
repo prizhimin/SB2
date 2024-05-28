@@ -76,8 +76,8 @@ def add_daily_report(request):
             #     return render(request, 'daily/denied_add_report.html',
             #                   {'department': daily_report.department.name,
             #                    'report_date': daily_report.report_date.strftime('%d.%m.%Y')})
-        daily_report.save()  # Сохраняем отчёт в базу данных
-        return render(request, 'daily/success_page.html')
+            daily_report.save()  # Сохраняем отчёт в базу данных
+            return render(request, 'daily/success_page.html')
     else:
         # Получаем первое подразделение пользователя, если оно есть
         first_user_department = UserDepartment.objects.filter(user=request.user).first()
@@ -232,8 +232,6 @@ def summary_weekly_report(request):
         start_date = input_date - timedelta(days=weekday)
         end_date = start_date + timedelta(days=6)
         return start_date, end_date
-
-    # reports = None
     start_date, end_date = get_week_range()
     reports = DailyReport.objects.filter(report_date__range=(start_date, end_date)).order_by('-report_date')
     for report in reports:
