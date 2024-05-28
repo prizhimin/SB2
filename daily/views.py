@@ -116,7 +116,6 @@ def edit_daily_report(request, report_id):
             daily_report = form.save(commit=False)
             daily_report.author = request.user
             # В случае, если в отчёте изменилась дата, то проверяем наличие отчёта для выбранного филиала и даты
-            print(daily_report.report_date, old_report_date)
             if daily_report.report_date != old_report_date:
                 if DailyReport.objects.filter(department=daily_report.department,
                                               report_date=daily_report.report_date).exists():
@@ -288,7 +287,6 @@ def generate_weekly_summary_report(request):
                 weekly_sums[department.name] = DailyReport.get_weekly_sums(department, start_date, end_date)
             # Копируем посчитанные суммы в сводный отчёт
             for department in Department.objects.all():
-                # print(department.name, weekly_sums[department.name]['total_field_1'])
                 for idx, line in enumerate(tuple(range(3, 12)) + (16, 17), start=1):
                     report_sheet[f'{departments_cols[department.name]}{line}'] = (
                         0 if weekly_sums[department.name].get(f'total_field_{idx}') is None
