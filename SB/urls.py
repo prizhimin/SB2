@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, reverse_lazy, include
 from django.views.generic import RedirectView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', RedirectView.as_view(url=reverse_lazy('dashboard')), name='home'),
@@ -26,3 +28,6 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('general_weekly/', include('general_weekly.urls')),
 ]
+
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
