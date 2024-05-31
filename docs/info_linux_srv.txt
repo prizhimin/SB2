@@ -88,3 +88,47 @@ cd /srv && tar -cjf /var/backups/SB2-$(date +\%Y-\%m-\%d-\%H:\%M:\%S).tar.bz2 SB
 0 10 * * * PGHOST=localhost PGPORT=5432 PGUSER=djangouser PGPASSWORD=1234 /usr/bin/pg_dump -h localhost -U djangouser -d djangoproject | gzip > /var/backups/django/djangoproject-$(date +\%Y-\%m-\%d-\%H:\%M:\%S).sql.gz
 # РК сайта (без каталога venv)
 5 10 * * * tar czf /var/backups/django/SB2-$(date +\%Y-\%m-\%d-\%H:\%M:\%S).tar.gz --exclude=/srv/SB2/venv /srv/SB2
+
+/usr/local/bin/backup_sb2.sh
+#!/bin/bash
+tar cf /var/backups/django/SB2-$(date +\%Y-%m-%d-%H:%M:%S).tar --exclude=/srv/SB2/venv /srv/SB2
+
+chmod +x /usr/local/bin/backup_sb2.sh
+
+/usr/local/bin/backup_db.sh
+#!/bin/bash
+export PGPASSWORD="1234"
+pg_dump -h localhost -U djangouser -d djangoproject > /var/backups/django/djangoproject-$(date +\%Y-%m-%d-%H:%M:%S).sql
+
+chmod +x /usr/local/bin/backup_db.sh
+
+/etc/logrotate.d/backup_db
+/var/backups/django/djangoproject-*.sql {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 640 root adm
+    sharedscripts
+    postrotate
+        /usr/local/bin/backup_db.sh
+    endscript
+}
+
+/etc/logrotate.d/backup_sb2
+/var/backups/django/SB2-*.tar {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 640 root adm
+    sharedscripts
+    postrotate
+        /usr/local/bin/backup_sb2.sh
+    endscript
+}
+

@@ -1,0 +1,16 @@
+#
+# /etc/logrotate.d/backup_sb2
+
+/var/backups/django/SB2-*.tar {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 640 root adm
+    sharedscripts
+    postrotate
+        /usr/local/bin/backup_sb2.sh
+    endscript
+}

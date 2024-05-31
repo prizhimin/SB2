@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'commondata',
     'daily.apps.DailyConfig',
     'dashboard',
+    'investigations',
     'general_weekly.apps.GeneralWeeklyConfig',
     'django.contrib.admin',
     'django.contrib.auth',

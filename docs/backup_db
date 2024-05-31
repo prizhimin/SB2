@@ -1,0 +1,15 @@
+# /etc/logrotate.d/backup_db
+
+/var/backups/django/djangoproject-*.sql {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 640 root adm
+    sharedscripts
+    postrotate
+        /usr/local/bin/backup_db.sh
+    endscript
+}
