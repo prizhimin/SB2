@@ -8,6 +8,10 @@ html, body {
     font-family: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; /* Добавляем список шрифтов */
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+}
 /* Стили для header */
 header {
     position: fixed; /* Фиксируем заголовок */
