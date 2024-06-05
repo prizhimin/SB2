@@ -7,19 +7,34 @@
         <title>{% block title %}{% endblock %}</title>
         <!-- Подключаем административные стили -->
         <link rel="stylesheet" type="text/css" href="{% static 'admin/css/base.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
-        <!-- Подключаем jQuery -->
-        <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-        <!-- Подключаем интернационализацию -->
-        <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-        <!-- Подключаем административные скрипты -->
-        <script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
-        <script type="text/javascript" src="{% static 'admin/js/vendor/xregexp/xregexp.js' %}"></script>
-        <script type="text/javascript" src="{% static 'admin/js/actions.js' %}"></script>
-        <script type="text/javascript" src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
-        <script type="text/javascript" src="{% static 'admin/js/admin/DateTimeShortcuts.js' %}"></script>
-        <script type="text/javascript" src="{% static 'admin/js/calendar.js' %}"></script>
         <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script>
+            $(function(){
+                $.datepicker.regional['ru'] = {
+                    closeText: 'Закрыть',
+                    prevText: 'Предыдущий',
+                    nextText: 'Следующий',
+                    currentText: 'Сегодня',
+                    monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                    'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+                    monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн',
+                    'Июл','Авг','Сен','Окт','Ноя','Дек'],
+                    dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
+                    dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
+                    dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+                    weekHeader: 'Не',
+                    dateFormat: 'dd.mm.yy',
+                    firstDay: 1,
+                    isRTL: false,
+                    showMonthAfterYear: false,
+                    yearSuffix: ''};
+                $.datepicker.setDefaults($.datepicker.regional['ru']);
+                $(".datepicker").datepicker();
+            });
+        </script>
         {% block styles %}
         {% endblock %}
     </head>
@@ -37,5 +52,12 @@
             {% block buttons %}
             {% endblock %}
         </footer>
+        <script>
+            $(document).ready(function(){
+                $('.datepicker').datepicker({
+                    dateFormat: 'dd.mm.yy'
+                });
+            });
+        </script>
     </body>
 </html>

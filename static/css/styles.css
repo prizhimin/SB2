@@ -5,6 +5,7 @@ html, body {
     margin: 0; /* Убираем внешние отступы */
     padding: 0; /* Убираем внутренние отступы */
     height: 100%; /* Задаем высоту страницы в 100% высоты окна браузера */
+    font-family: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; /* Добавляем список шрифтов */
 }
 
 /* Стили для header */
@@ -27,17 +28,13 @@ footer {
     position: fixed; /* Фиксируем подвал */
     bottom: 0; /* Прикрепляем подвал к нижней границе окна браузера */
     width: 100%; /* Ширина равна 100% ширины окна браузера */
+    text-align: center; /* Выравниваем кнопки по центру */
 }
 
 /* Стили для .container внутри main */
 main .container {
     max-width: 1200px; /* Максимальная ширина контейнера main */
     margin: 0 auto; /* Выравниваем контейнер по центру */
-}
-
-/* Стили для footer */
-footer {
-    text-align: center; /* Выравниваем кнопки по центру */
 }
 
 /* Стили для формы входа */
