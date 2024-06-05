@@ -10,6 +10,7 @@ class DailyReportForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         user_departments = UserDepartment.objects.filter(user=user)
         department_ids = user_departments.values_list('department__id', flat=True)
+        self.fields['report_date'].input_formats = ['%d.%m.%Y']
         self.fields['department'].queryset = Department.objects.filter(id__in=department_ids).order_by('name')
         self.fields['report_date'].initial = get_date_for_report()
 
@@ -18,4 +19,6 @@ class DailyReportForm(forms.ModelForm):
         fields = ['department', 'report_date', 'field_1', 'field_2', 'field_3', 'field_4', 'field_5', 'field_6',
                   'field_7', 'field_8', 'field_9', 'field_10', 'field_11']
 
-
+        widgets = {
+            'report_date': forms.DateInput(attrs={'class': 'datepicker'}),
+        }
