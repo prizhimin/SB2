@@ -6,58 +6,12 @@
         <form method="post" class="form-group">
             {% csrf_token %}
             <table class="form-table">
-                <tr>
-                    <th>{{ form.department.label }} </th>
-                    <th>{{ form.department }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.report_date.label }} </th>
-                    <th>{{ form.report_date }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_1.label }} </th>
-                    <th>{{ form.field_1 }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_2.label }} </th>
-                    <th>{{ form.field_2 }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_3.label }} </th>
-                    <th>{{ form.field_3 }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_4.label }} </th>
-                    <th>{{ form.field_4 }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_5.label }} </th>
-                    <th>{{ form.field_5 }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_6.label }} </th>
-                    <th>{{ form.field_6 }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_7.label }} </th>
-                    <th>{{ form.field_7 }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_8.label }} </th>
-                    <th>{{ form.field_8 }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_9.label }} </th>
-                    <th>{{ form.field_9 }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_10.label }} </th>
-                    <th>{{ form.field_10 }} </th>
-                </tr>
-                <tr>
-                    <th>{{ form.field_11.label }} </th>
-                    <th>{{ form.field_11 }} </th>
-                </tr>
+                {% for field in form %}
+                    <tr>
+                        <td>{{ field.label_tag }}</td>
+                        <td>{{ field }}</td>
+                    </tr>
+                {% endfor %}
             </table>
             <div class="actions">
                 <button type="submit">Внести данные</button>

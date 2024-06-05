@@ -5,58 +5,12 @@
     <form method="post" class="form-group" action="{% url 'edit_daily_report' report_id %}">
         {% csrf_token %}
         <table class="form-table">
-            <tr>
-                <th>{{ form.department.label }} </th>
-                <td>{{ form.department }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.report_date.label }} </th>
-                <td>{{ form.report_date }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_1.label }} </th>
-                <td>{{ form.field_1 }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_2.label }} </th>
-                <td>{{ form.field_2 }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_3.label }} </th>
-                <td>{{ form.field_3 }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_4.label }} </th>
-                <td>{{ form.field_4 }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_5.label }} </th>
-                <td>{{ form.field_5 }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_6.label }} </th>
-                <td>{{ form.field_6 }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_7.label }} </th>
-                <td>{{ form.field_7 }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_8.label }} </th>
-                <td>{{ form.field_8 }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_9.label }} </th>
-                <td>{{ form.field_9 }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_10.label }} </th>
-                <td>{{ form.field_10 }} </td>
-            </tr>
-            <tr>
-                <th>{{ form.field_11.label }} </th>
-                <td>{{ form.field_11 }} </td>
-            </tr>
+            {% for field in form %}
+                <tr>
+                    <td>{{ field.label_tag }}</td>
+                    <td>{{ field }}</td>
+                </tr>
+            {% endfor %}
         </table>
         <p></p>
         <div class="actions">
