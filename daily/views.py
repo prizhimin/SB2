@@ -246,7 +246,6 @@ def summary_weekly_report(request):
             for report in reports:
                 report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
     else:
-        print(type(start_date))
         form = DateRangeForm(initial={'start_date': start_date.strftime('%d.%m.%Y'),
                                       'end_date': end_date.strftime('%d.%m.%Y')})
     return render(request, 'daily/date_range.html', {'reports': reports, 'form': form})
