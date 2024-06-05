@@ -33,7 +33,7 @@ def daily_reports(request):
             # Фильтруем отчёты по выбранной дате
             reports = reports.filter(report_date=selected_date)
     else:
-        form = DateForm(initial={'selected_date': get_date_for_report()})  # .strftime('%d.%m.%Y')
+        form = DateForm(initial={'selected_date': get_date_for_report()})
     for report in reports:
         report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
     summary_reports_creators = []
@@ -143,7 +143,7 @@ def summary_report(request):
             # Если форма действительна, извлекаем выбранную дату из формы
             date = form.cleaned_data['report_date']
     else:
-        form = DateSelectionForm(initial={'report_date': get_date_for_report()})  # .strftime('%d.%m.%Y')
+        form = DateSelectionForm(initial={'report_date': get_date_for_report()})
         date = get_date_for_report()
     reports = DailyReport.objects.filter(report_date=date)
     # Получаем список подразделений и пользователей, без отчётов за дату date

@@ -39,9 +39,9 @@ def general_weekly(request):
         if form.is_valid():
             selected_date = form.cleaned_data['selected_date']
             # Фильтруем отчёты по выбранной дате
-            reports = reports.filter(report_date=friday_of_week(selected_date))  # .strftime('%d.%m.%Y')
+            reports = reports.filter(report_date=friday_of_week(selected_date))
     else:
-        form = DateForm(initial={'selected_date': friday_of_week(datetime.now())})  # .strftime('%d.%m.%Y')
+        form = DateForm(initial={'selected_date': friday_of_week(datetime.now())})
     for report in reports:
         report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
     first_summary_report = WeeklyCreatorsSummaryReport.objects.first()
@@ -168,7 +168,7 @@ def general_weekly_summary_report(request):
             # Если форма действительна, извлекаем выбранную дату из формы
             date = friday_of_week(form.cleaned_data['report_date'])
     else:
-        form = DateSelectionForm(initial={'report_date': friday_of_week(datetime.now())})  # .strftime('%d.%m.%Y')
+        form = DateSelectionForm(initial={'report_date': friday_of_week(datetime.now())})
         date = friday_of_week(datetime.now())
     reports = WeeklyReport.objects.filter(report_date=date)
     # Получаем список подразделений и пользователей, без отчётов за дату date
