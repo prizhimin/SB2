@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User
 from commondata.models import Department
-from datetime import timedelta
 
 
 class UserDepartment(models.Model):
