@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'dashboard',
     'investigations',
     'general_weekly.apps.GeneralWeeklyConfig',
+    'sixmonths2024.apps.Sixmonths2024Config',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

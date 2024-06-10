@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Report List</title>
+</head>
+<body>
+    <h1>Report List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Company</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+                <tr>
+                    <td>{{ report.id }}</td>
+                    <td>{{ report.user.username }}</td>
+                    <td>{{ report.company.name }}</td>
+                    <td>{{ report.created_at }}</td>
+                    <td>
+                        <a href="{% url 'update_report' report.pk %}">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'create_report' %}">Create New Report</a>
+</body>
+</html>

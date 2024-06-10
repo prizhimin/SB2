@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Отчёт филиала за 6 месяцев 2024 года</title>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            .header {
+                font-weight: bold;
+                text-align: center;
+                text-decoration: underline;
+            }
+            .subheader {
+                font-weight: bold;
+                text-align: center;
+                text-decoration: underline;
+                {#background-color: #f0f0f0; /* задайте цвет фона по вашему усмотрению */#}
+            }
+            .background1 {
+                background-color: #C0C0C0;
+            }
+            .background2 {
+                background-color: #808080;
+            }
+        </style>
+</head>
+<body>
+    <h1>Отчёт филиала за 6 месяцев 2024 года</h1>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td>{{ form.company.label_tag }}</td>
+                <td>{{ form.company }}</td>
+            </tr>
+            <!-- ------------------ КАДРЫ -->
+            <tr>
+                <td colspan="2" class="header">КАДРЫ</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_1.label_tag }}</td>
+                <td>{{ form.field_1 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_2.label_tag }}</td>
+                <td>{{ form.field_2 }}</td>
+            </tr>
+            <!-- ------------------ УД БЕЗ ДЗ -->
+            <tr>
+                <td colspan="2" class="header">УД БЕЗ ДЗ</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_3.label_tag }}</td>
+                <td>{{ form.field_3 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_4.label_tag }}</td>
+                <td>{{ form.field_4 }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="subheader background1">осуществлялось в 2024 году сопровождение расследования уголовных дел (с остатком прошлых лет)</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_5.label_tag }}</td>
+                <td class="background1">{{ form.field_5 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_6.label_tag }}</td>
+                <td class="background1">{{ form.field_6 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_7.label_tag }}</td>
+                <td class="background1">{{ form.field_7 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_8.label_tag }}</td>
+                <td class="background1">{{ form.field_8 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_9.label_tag }}</td>
+                <td class="background1">{{ form.field_9 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_10.label_tag }}</td>
+                <td class="background1">{{ form.field_10 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_11.label_tag }}</td>
+                <td class="background1">{{ form.field_11 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_12.label_tag }}</td>
+                <td>{{ form.field_12 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_13.label_tag }}</td>
+                <td>{{ form.field_13 }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="subheader background1">по фактам бездействия правоохранительных органов, в том числе на нарушения процессуальных сроков в надзорные органы в период с 01.01 по 31.05.2024 направлено</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_14.label_tag }}</td>
+                <td class="background1">{{ form.field_14 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_15.label_tag }}</td>
+                <td class="background1">{{ form.field_15 }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="subheader background2">за период с 01.01 по 31.05.2024 по дату отчета возмещен причиненный ущерб по результатам (с учетом заявлений прошлых лет) (млн руб.)</td>
+            </tr>
+            <tr>
+                <td class="background2">{{ form.field_16.label_tag }}</td>
+                <td class="background2">{{ form.field_16 }}</td>
+            </tr>
+            <tr>
+                <td class="background2">{{ form.field_17.label_tag }}</td>
+                <td class="background2">{{ form.field_17 }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="subheader background1">на 01.06.2024 осуществляется сопровождение (с остатком прошлых лет)</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_18.label_tag }}</td>
+                <td class="background1">{{ form.field_18 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_19.label_tag }}</td>
+                <td class="background1">{{ form.field_19 }}</td>
+            </tr>
+            <!-- ------------------ АНТИКОРПОРАТИВ И КОРРУПЦИОННЫЕ -->
+            <tr>
+                <td colspan="2" class="header">АНТИКОРПОРАТИВ И КОРРУПЦИОННЫЕ</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_20.label_tag }}</td>
+                <td>{{ form.field_20 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_21.label_tag }}</td>
+                <td>{{ form.field_21 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_22.label_tag }}</td>
+                <td>{{ form.field_22 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_23.label_tag }}</td>
+                <td>{{ form.field_23 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_24.label_tag }}</td>
+                <td>{{ form.field_24 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_25.label_tag }}</td>
+                <td>{{ form.field_25 }}</td>
+            </tr>
+            <!-- ------------------ ОХРАНА -->
+            <tr>
+                <td colspan="2" class="header">ОХРАНА</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_26.label_tag }}</td>
+                <td>{{ form.field_26 }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="subheader background1">по результатам проверок выявлено нарушений</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_27.label_tag }}</td>
+                <td class="background1">{{ form.field_27 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_28.label_tag }}</td>
+                <td class="background1">{{ form.field_28 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_29.label_tag }}</td>
+                <td class="background1">{{ form.field_29 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_30.label_tag }}</td>
+                <td>{{ form.field_30 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_31.label_tag }}</td>
+                <td>{{ form.field_31 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_32.label_tag }}</td>
+                <td>{{ form.field_32 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_33.label_tag }}</td>
+                <td>{{ form.field_33 }}</td>
+            </tr>
+            <!-- ------------------ ПРОВЕРКА ЮЛ И ФЛ -->
+            <tr>
+                <td colspan="2" class="header">ПРОВЕРКА ЮЛ И ФЛ</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_34.label_tag }}</td>
+                <td>{{ form.field_34 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_35.label_tag }}</td>
+                <td>{{ form.field_35 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_36.label_tag }}</td>
+                <td>{{ form.field_36 }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.field_37.label_tag }}</td>
+                <td>{{ form.field_37 }}</td>
+            </tr>
+            <!-- ------------------ ТРАВМАТИЗМ -->
+            <tr>
+                <td colspan="2" class="header">ТРАВМАТИЗМ</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="subheader background1">пострадало лиц от оперативной деятельности за период с 01.01. по 31.05.2024</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_38.label_tag }}</td>
+                <td class="background1">{{ form.field_38 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_39.label_tag }}</td>
+                <td class="background1">{{ form.field_39 }}</td>
+            </tr>
+            <tr>
+                <td class="background1">{{ form.field_40.label_tag }}</td>
+                <td class="background1">{{ form.field_40 }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="subheader background2">в том числе с летальным исходом</td>
+            </tr>
+            <tr>
+                <td class="background2">{{ form.field_41.label_tag }}</td>
+                <td class="background2">{{ form.field_41 }}</td>
+            </tr>
+            <tr>
+                <td class="background2">{{ form.field_42.label_tag }}</td>
+                <td class="background2">{{ form.field_42 }}</td>
+            </tr>
+            <tr>
+                <td class="background2">{{ form.field_43.label_tag }}</td>
+                <td class="background2">{{ form.field_43 }}</td>
+            </tr>
+            <!-- ------------------ АВАРИЙНОСТЬ -->
+            <tr>
+                <td colspan="2" class="header">АВАРИЙНОСТЬ</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="subheader background1">Зафиксировано аварий на оборудовании за период с 01.01. по 31.05.2024</td>
+            </tr>
+           <tr>
+                <td class="background1">{{ form.field_44.label_tag }}</td>
+                <td class="background1">{{ form.field_44 }}</td>
+           </tr>
+           <tr>
+                <td class="background1">{{ form.field_45.label_tag }}</td>
+                <td class="background1">{{ form.field_45 }}</td>
+           </tr>
+           <tr>
+                <td colspan="2" class="subheader background2">зафиксировано инцидентов на тепловых сетях за период с 01.01. по 31.05.2024</td>
+           </tr>
+           <tr>
+                <td class="background2">{{ form.field_46.label_tag }}</td>
+                <td class="background2">{{ form.field_46 }}</td>
+           </tr>
+           <tr>
+                <td class="background2">{{ form.field_47.label_tag }}</td>
+                <td class="background2">{{ form.field_47 }}</td>
+           </tr>
+            <!-- ------------------ АНАЛИТИКА -->
+            <tr>
+                <td colspan="2" class="header">АНАЛИТИКА</td>
+            </tr>
+           <tr>
+                <td colspan="2" class="subheader background1">направлено в СБ КЦ за период с 01.01. по 31.05.2024 (без сводок)</td>
+           </tr>
+           <tr>
+                <td class="background1">{{ form.field_48.label_tag }}</td>
+                <td class="background1">{{ form.field_48 }}</td>
+           </tr>
+           <tr>
+                <td class="background1">{{ form.field_49.label_tag }}</td>
+                <td class="background1">{{ form.field_49 }}</td>
+           </tr>
+           <tr>
+                <td>{{ form.field_50.label_tag }}</td>
+                <td>{{ form.field_50 }}</td>
+           </tr>
+           <tr>
+                <td>{{ form.field_51.label_tag }}</td>
+                <td>{{ form.field_51 }}</td>
+           </tr>
+        </table>
+        <br>
+        <button type="submit">Сохранить изменения</button>
+                        <!-- Кнопка "Вернуться на Главную" -->
+                <a href="{% url 'dashboard' %}" class="action-link">
+                    <button type="button">Вернуться на Главную</button>
+    </form>
+</body>
