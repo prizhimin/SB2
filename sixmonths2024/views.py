@@ -27,7 +27,7 @@ def update_report(request, pk):
         form = ReportForm(request.POST, instance=report)
         if form.is_valid():
             form.save()
-            return redirect('report_list')  # Замените 'report_list' на имя вашего URL-шаблона
+            return redirect('report_list')
     else:
         form = ReportForm(instance=report)
     return render(request, 'sixmonths2024/report_form.html', {'form': form})
