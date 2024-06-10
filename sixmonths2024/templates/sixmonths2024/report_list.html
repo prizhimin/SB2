@@ -1,34 +1,40 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <title>Report List</title>
-</head>
-<body>
-    <h1>Report List</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>User</th>
-                <th>Company</th>
-                <th>Created At</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for report in reports %}
+{% extends 'base.html' %}
+{% block title %}Список отчётов{% endblock %}
+{% block content %}
+    <h1>Список отчётов за 6 месяцев 2024 года</h1>
+    <div class="container">
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ report.id }}</td>
-                    <td>{{ report.user.username }}</td>
-                    <td>{{ report.company.name }}</td>
-                    <td>{{ report.created_at }}</td>
-                    <td>
-                        <a href="{% url 'update_report' report.pk %}">Edit</a>
-                    </td>
+                    <th>ID отчёта</th>
+                    <th>Пользователь</th>
+                    <th>Компания/Филиал ПАО "Т Плюс"</th>
+                    <th>Создано</th>
+                    <th>Действия</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="{% url 'create_report' %}">Create New Report</a>
-</body>
-</html>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                    <tr>
+                        <td>{{ report.id }}</td>
+                        <td>{{ report.user.username }}</td>
+                        <td>{{ report.company.name }}</td>
+                        <td>{{ report.created_at }}</td>
+                        <td>
+                            <a href="{% url 'update_report' report.pk %}">Редактировать</a>
+                            <a href="{% url 'delete_report' report.pk %}">Удалить</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+{% block buttons %}
+    <div class="actions">
+        <a href="{% url 'create_report' %}" class="action-link"><button type="button">Создать новый отчёт</button></a>
+        <a href="{% url 'dashboard' %}" class="action-link"><button type="button">Вернуться на Главную</button></a>
+        <a href="{% url 'generate_sixmonths_2024_summary_report' %}" class="action-link"><button type="button">Отчёт</button></a>
+    
+    </div>
+{% endblock %}
