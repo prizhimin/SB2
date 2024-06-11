@@ -85,16 +85,13 @@ def generate_sixmonths_2024_summary_report(request):
     # Получаем путь к папке для сохранения отчётов
     path_to_reports = sixmonths2024_config.PATH_TO_SAVE
     # Префикс названия отчёта
-    report_name = 'Сводный отчёт за 6 месяцев 2024 г.'
+    report_name = 'Сводный отчёт за 6 месяцев 2024 г..xlsx'
     # Формируем имя файла отчёта на основе выбранной даты
     report_name = path.join(path_to_reports, f'{report_name}')
-    print(report_name)
     # Копируем шаблон отчёта
-    # copy(path.join(path_to_reports, 'sixmonths2024_blank.xlsx'), report_name)
-    # # Загружаем созданный отчёт в Excel
-    # report_workbook = load_workbook(report_name)
-    # report_sheet = report_workbook.active
-    cols ='CD'
+    copy(path.join(path_to_reports, 'sixmonths2024_blank.xlsx'), report_name)
+    # Загружаем созданный отчёт в Excel
+    workbook = load_workbook(report_name)
     # Получаем список названий всех компаний из модели SemiAnnual2024Company
     company_names = SemiAnnual2024Company.objects.values_list('name', flat=True)
     # Итерируемся по списку названий компаний
@@ -103,86 +100,55 @@ def generate_sixmonths_2024_summary_report(request):
         company = SemiAnnual2024Company.objects.get(name=company_name)
         # Проверяем, существует ли отчет для этой компании
         if SemiAnnual2024Report.objects.filter(company=company).exists():
-            # Если отчет существует, выводим название компании
-            print(company_name)
             # Объект отчёт филиал company_name
             report = SemiAnnual2024Report.objects.filter(company=company).first()
+            # Получаем номер строки в таблице
+            line_number = company.line_number
+            print(f'Номер строки в таблице {line_number}')
             # Начинаем формировать отчёт
             for idx_field in range(1, 52):
-                # закладка охрана поля 26..33
                 match idx_field:
                     # закладка кадры поля 1,2
                     case 1 | 2:
-                        print(idx_field, '1 или 2')
                         cols = 'CD'
-                        print(f'Колонка {cols[idx_field - 1]}')
+                        sheet = workbook[workbook.sheetnames[0]]
+                        sheet[f'{cols[idx_field - 1]}{line_number-1}'] = getattr(report, f'field_{idx_field}')
                     # закладка уд и дз поля 3..19
                     case n if 3 <= n <= 19:
-                        print(idx_field, 'От 3 до 5')
                         cols = 'CDEFGHIJKMNOPQRST'
-                        print(f'Колонка {cols[idx_field - 3]}')
+                        sheet = workbook[workbook.sheetnames[1]]
+                        sheet[f'{cols[idx_field - 3]}{line_number}'] = getattr(report, f'field_{idx_field}')
+                        # print(f'Колонка {cols[idx_field - 3]}')
                     # закладка антикорпоратив и коррупционные поля 20..25
                     case n if 20 <= n <= 25:
-                        print(idx_field, 'От 20 до 25')
+                        sheet = workbook[workbook.sheetnames[2]]
                         cols = 'CDEFGH'
-                        print(f'Колонка {cols[idx_field - 20]}')
+                        sheet[f'{cols[idx_field - 20]}{line_number-1}'] = getattr(report, f'field_{idx_field}')
                     # закладка охрана поля 26..33
                     case n if 26 <= n <= 33:
-                        print(idx_field, 'От 26 до 33')
+                        sheet = workbook[workbook.sheetnames[3]]
                         cols = 'CDEFHIJK'
-                        print(f'Колонка {cols[idx_field - 26]}')
+                        sheet[f'{cols[idx_field - 26]}{line_number}'] = getattr(report, f'field_{idx_field}')
                     # закладка проверка физ. юр. лиц поля 34..37
                     case n if 34 <= n <= 37:
-                        print(idx_field, 'От 34 до 37')
+                        sheet = workbook[workbook.sheetnames[4]]
                         cols = 'CDEF'
-                        print(f'Колонка {cols[idx_field - 34]}')
+                        sheet[f'{cols[idx_field - 34]}{line_number}'] = getattr(report, f'field_{idx_field}')
                     # закладка травматизм поля 38..43
                     case n if 38 <= n <= 43:
-                        print(idx_field, 'От 38 до 43')
+                        sheet = workbook[workbook.sheetnames[5]]
                         cols = 'CDEGHIJ'
-                        print(f'Колонка {cols[idx_field - 38]}')
+                        sheet[f'{cols[idx_field - 38]}{line_number}'] = getattr(report, f'field_{idx_field}')
                     # закладка аварийность поля 44..47
                     case n if 44 <= n <= 47:
-                        print(idx_field, 'От 44 до 47')
-                        cols = 'CDEGHI'
-                        print(f'Колонка {cols[idx_field - 44]}')
+                        sheet = workbook[workbook.sheetnames[6]]
+                        cols = 'CDEFGH'
+                        sheet[f'{cols[idx_field - 44]}{line_number}'] = getattr(report, f'field_{idx_field}')
                     # закладка аналитика поля 48..51
                     case n if 48 <= n <= 51:
-                        print(idx_field, 'От 38 до 43')
+                        sheet = workbook[workbook.sheetnames[7]]
                         cols = 'CDEF'
-                        print(f'Колонка {cols[idx_field-48]}')
-    return HttpResponse('Отчёт нах!')
-
-
-    #
-    #         # Словарь, соотносящий названия подразделений с соответствующими столбцами в Excel
-    #         departments_cols = {k: v for k, v in zip(('Марий Эл и Чувашии', 'Ульяновский', 'Удмуртский', 'Свердловский',
-    #                                                   'Саратовский', 'Самарский', 'Пермский', 'Оренбургский',
-    #                                                   'Нижегородский', 'Мордовский', 'Коми', 'Кировский',
-    #                                                   'Владимирский', 'Пензенский'), 'CDEFGHIJKLMNOP')}
-    #         weekly_sums = {}
-    #         # Считаем суммы за указанный диапазон дат
-    #         for department in Department.objects.all():
-    #             weekly_sums[department.name] = DailyReport.get_weekly_sums(department, start_date, end_date)
-    #         # Копируем посчитанные суммы в сводный отчёт
-    #         for department in Department.objects.all():
-    #             for idx, line in enumerate(tuple(range(3, 12)) + (16, 17), start=1):
-    #                 report_sheet[f'{departments_cols[department.name]}{line}'] = (
-    #                     0 if weekly_sums[department.name].get(f'total_field_{idx}') is None
-    #                     else weekly_sums[department.name][f'total_field_{idx}']
-    #                 )
-    #         report_sheet['A16'] = 'Количество проведенных проверок СБ'
-    #         report_sheet['A17'] = 'Количество направленных претензионных писем'
-    #         # Высота строки
-    #         report_sheet.row_dimensions[16].height = 15
-    #         report_sheet.row_dimensions[17].height = 15
-    #         # Сохраняем изменения в отчёте
-    #         report_workbook.save(report_name)
-    #         # Возвращаем файл отчёта в HTTP-ответе
-    #         response = FileResponse(open(report_name, 'rb'), as_attachment=True,
-    #                                 filename=report_name)
-    #         return response
-    #     else:
-    #         return HttpResponse('Invalid form data')  # Сообщение о неверных данных формы
-    # else:
-    #     return HttpResponse('Only POST requests are allowed')  # Сообщение о неправильном методе запроса
+                        sheet[f'{cols[idx_field - 48]}{line_number}'] = getattr(report, f'field_{idx_field}')
+    workbook.save(report_name)
+    # Возвращаем файл отчёта в HTTP-ответе
+    return FileResponse(open(report_name, 'rb'), as_attachment=True, filename=report_name)
