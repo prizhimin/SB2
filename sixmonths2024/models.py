@@ -35,10 +35,10 @@ class SemiAnnual2024Report(models.Model):
 
     # ------------------ КАДРЫ
     field_1 = models.PositiveIntegerField(verbose_name="Штатная численность СБ (чел.)", default=0)
-    field_2 = models.PositiveIntegerField(verbose_name="Фактическая численность СБ (чел.) на 31.05.2024", default=0)
+    field_2 = models.PositiveIntegerField(verbose_name="Фактическая численность СБ (чел.) на 30.06.2024", default=0)
     # ------------------ УД БЕЗ ДЗ
     field_3 = models.PositiveIntegerField(verbose_name="Направлено заявлений в правоохранительные органы за период с "
-                                                       "01.01 по 31.05.2024 (кол-во без дебиторской задолженности)",
+                                                       "01.01 по 30.06.2024 (кол-во без дебиторской задолженности)",
                                           default=0)
     field_4 = models.DecimalField(max_digits=10, decimal_places=3, verbose_name="Заявленный причиненный ущерб по "
                                                                                 "заявлениям из предыдущего столбца ("
@@ -53,10 +53,10 @@ class SemiAnnual2024Report(models.Model):
     field_11 = models.PositiveIntegerField(verbose_name="др.", default=0)
     # ^^^^^^^^^^^^^^^^^^^
     field_12 = models.PositiveIntegerField(verbose_name="Кол-во оконченых расследованием уд с направлением в суд за "
-                                                        "период с 01.01 по 31.05.2024 из сопровождаемых (с остатком "
+                                                        "период с 01.01 по 30.06.2024 из сопровождаемых (с остатком "
                                                         "прошлых лет)", default=0)
     field_13 = models.PositiveIntegerField(verbose_name="Кол-во приговоров вступивших в законную силу за период с "
-                                                        "01.01 по 31.05.2024 по сопровождаемым уголовным делам (с "
+                                                        "01.01 по 30.06.2024 по сопровождаемым уголовным делам (с "
                                                         "остатком прошлых лет)", default=0)
     # *по фактам бездействия правоохранительных органов, в том числе на нарушения процессуальных сроков в надзорные органы в период с 01.01 по 31.05.2024 направлено
     field_14 = models.PositiveIntegerField(verbose_name="Ходатайств", default=0)
@@ -71,7 +71,7 @@ class SemiAnnual2024Report(models.Model):
     field_19 = models.PositiveIntegerField(verbose_name="Материалов проверок", default=0)
     # ^^^^^^^^^^^^^^^^^^^
     # ------------------ АНТИКОРПОРАТИВ И КОРРУПЦИОННЫЕ
-    field_20 = models.PositiveIntegerField(verbose_name="Выявлено фактов с 01.01. по 31.05.2024", default=0)
+    field_20 = models.PositiveIntegerField(verbose_name="Выявлено фактов с 01.01. по 30.06.2024", default=0)
     field_21 = models.DecimalField(max_digits=10, decimal_places=3, verbose_name="По данным фактам причинен ущерб ("
                                                                                  "млн руб.)", default=0)
     field_22 = models.DecimalField(max_digits=10, decimal_places=3, verbose_name="По данным фактам возмещен ущерб ("
@@ -81,7 +81,7 @@ class SemiAnnual2024Report(models.Model):
     field_25 = models.PositiveIntegerField(verbose_name="Уволено", default=0)
     # ------------------ ОХРАНА
     field_26 = models.PositiveIntegerField(verbose_name="Проведено проверок несения службы за период с 01.01. по "
-                                                        "31.05.2024", default=0)
+                                                        "30.06.2024", default=0)
     # *по результатам проверок выявлено нарушений
     field_27 = models.PositiveIntegerField(verbose_name="Пропускного и внутриобъектового режимов", default=0)
     field_28 = models.PositiveIntegerField(verbose_name="Исполнения работниками охранных предприятий своих "
@@ -89,13 +89,13 @@ class SemiAnnual2024Report(models.Model):
     field_29 = models.PositiveIntegerField(verbose_name="др.", default=0)
     # ^^^^^^^^^^^^^^^^^^^
     field_30 = models.PositiveIntegerField(verbose_name="По выявленным нарушениям направлено претензионных писем за "
-                                                        "период с 01.01 по 31.05.2024", default=0)
+                                                        "период с 01.01 по 30.06.2024", default=0)
     field_31 = models.PositiveIntegerField(verbose_name="Привлечено к дисциплинарной ответственности", default=0)
     field_32 = models.PositiveIntegerField(verbose_name="Уволено", default=0)
     field_33 = models.DecimalField(max_digits=10, decimal_places=3, verbose_name="Удержана неустойка "
                                                                                  "на сумму (млн руб)", default=0)
     # ------------------ ПРОВЕРКА ЮЛ И ФЛ
-    field_34 = models.PositiveIntegerField(verbose_name="В период с 01.01 по 31.05.2024 изучено юр. лиц (подрядчики , "
+    field_34 = models.PositiveIntegerField(verbose_name="В период с 01.01 по 30.06.2024 изучено юр. лиц (подрядчики , "
                                                         "субподрядчики), принявшие участие в закупочных процедурах ("
                                                         "кол-во)", default=0)
     field_35 = models.PositiveIntegerField(verbose_name="Из них обоснованно отклонены", default=0)
