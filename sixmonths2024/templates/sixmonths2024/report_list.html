@@ -6,9 +6,8 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID отчёта</th>
-                    <th>Пользователь</th>
                     <th>Компания/Филиал ПАО "Т Плюс"</th>
+                    <th>Пользователь</th>
                     <th>Создано</th>
                     <th>Действия</th>
                 </tr>
@@ -16,9 +15,8 @@
             <tbody>
                 {% for report in reports %}
                     <tr>
-                        <td>{{ report.id }}</td>
-                        <td>{{ report.user.username }}</td>
                         <td>{{ report.company.name }}</td>
+                        <td>{{ report.user.last_name }} {{ report.user.first_name }}</td>
                         <td>{{ report.created_at }}</td>
                         <td>
                             <a href="{% url 'update_report' report.pk %}">Редактировать</a>
