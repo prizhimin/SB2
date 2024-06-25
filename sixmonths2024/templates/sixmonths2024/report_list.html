@@ -15,9 +15,9 @@
             <tbody>
                 {% for report in reports %}
                     <tr>
-                        <td>{{ report.company.name }}</td>
-                        <td>{{ report.user.last_name }} {{ report.user.first_name }}</td>
-                        <td>{{ report.created_at }}</td>
+                        <td><a href="{% url 'update_report' report.pk %}">{{ report.company.name }}</a></td>
+                        <td><a href="{% url 'update_report' report.pk %}">{{ report.user.last_name }} {{ report.user.first_name }}</a></td>
+                        <td><a href="{% url 'update_report' report.pk %}">{{ report.created_at }}</a></td>
                         <td>
                             <a href="{% url 'update_report' report.pk %}">Редактировать</a>
                             <a href="{% url 'delete_report' report.pk %}">Удалить</a>
