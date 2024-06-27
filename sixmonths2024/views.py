@@ -55,7 +55,7 @@ def report_list(request):
 
     creators_summary_report = SemiAnnual2024CreatorsSummaryReport.objects.first()
     if creators_summary_report and user in creators_summary_report.creators.all():
-        reports = SemiAnnual2024Report.objects.all()
+        reports = SemiAnnual2024Report.objects.all().order_by('company')
         return render(request, 'sixmonths2024/report_list.html', {'reports': reports})
     else:
         user_company = SemiAnnual2024UserCompany.objects.get(user=user)
