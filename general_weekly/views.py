@@ -281,8 +281,8 @@ def generate_general_weekly_summary_report(request):
                     sheet[f'A{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
                     sheet[f'B{current_row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
                     sheet[f'C{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
-                    sheet[f'A{current_row}'].font = Font(name='Tahoma', size=11) # size=24)
-                    sheet[f'B{current_row}'].font = Font(name='Tahoma', size=11) # size=24)
+                    sheet[f'A{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
+                    sheet[f'B{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
                     sheet[f'B{current_row}'].fill = PatternFill(fill_type='solid',
                                                                 start_color='ffff00', end_color='ffff00')
                     sheet[f'C{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
@@ -333,4 +333,3 @@ def general_weekly_access_denied_page(request):
 @login_required
 def success_page(request):
     return render(request, 'general_weekly/success_page.html')
-
