@@ -255,15 +255,15 @@ def generate_general_weekly_summary_report(request):
                             top=Side(style='thin'), bottom=Side(style='thin'))
             # Форматируем 1 строку
             sheet.merge_cells(f'A1:C1')
-            sheet.column_dimensions['A'].width = 15
-            sheet.column_dimensions['B'].width = 59
-            sheet.column_dimensions['C'].width = 247
-            sheet.row_dimensions[1].height = 100
+            sheet.column_dimensions['A'].width = 4  # 15
+            sheet.column_dimensions['B'].width = 44  # 59
+            sheet.column_dimensions['C'].width = 115  # 247
+            sheet.row_dimensions[1].height = 43  # 100
             last_saturday, current_friday = get_last_saturday_and_current_friday_dates(selected_date)
             sheet['A1'].value = f'Еженедельный отчёт\n' \
                                 f'эффективности работы СБ филиалов\n' \
                                 f'c {last_saturday} г. по {current_friday} г.'
-            sheet['A1'].font = Font(name='Tahoma', bold=True, size=24)
+            sheet['A1'].font = Font(name='Tahoma', bold=True, size=11)  # size=24)
             sheet['A1'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             sheet['C1'].border = border
             # Получаем все отчёты за выбранную дату, отсортированные по названию филиала
@@ -279,11 +279,11 @@ def generate_general_weekly_summary_report(request):
                     sheet[f'A{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
                     sheet[f'B{current_row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
                     sheet[f'C{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
-                    sheet[f'A{current_row}'].font = Font(name='Tahoma', size=24)
-                    sheet[f'B{current_row}'].font = Font(name='Tahoma', size=24)
+                    sheet[f'A{current_row}'].font = Font(name='Tahoma', size=11) # size=24)
+                    sheet[f'B{current_row}'].font = Font(name='Tahoma', size=11) # size=24)
                     sheet[f'B{current_row}'].fill = PatternFill(fill_type='solid',
                                                                 start_color='ffff00', end_color='ffff00')
-                    sheet[f'C{current_row}'].font = Font(name='Tahoma', size=24)
+                    sheet[f'C{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
                     sheet[f'A{current_row}'].border = border
                     sheet[f'B{current_row}'].border = border
                     sheet[f'C{current_row}'].border = border
@@ -293,8 +293,8 @@ def generate_general_weekly_summary_report(request):
                     start_row = current_row
                     sheet[f'A{current_row}'] = paragraph[0]
                     sheet[f'B{current_row}'] = paragraph[1]
-                    sheet[f'A{current_row}'].font = Font(name='Tahoma', size=24)
-                    sheet[f'B{current_row}'].font = Font(name='Tahoma', size=24)
+                    sheet[f'A{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
+                    sheet[f'B{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
                     sheet[f'A{current_row}'].border = border
                     sheet[f'B{current_row}'].border = border
                     sheet[f'A{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
@@ -303,11 +303,11 @@ def generate_general_weekly_summary_report(request):
                         if getattr(report, f'field{num}').strip():
                             sheet.row_dimensions[current_row].auto_size = True
                             sheet[f'C{current_row}'] = CellRichText(
-                                TextBlock(InlineFont(rFont='Tahoma', sz=24, b=True), report.department.name),
+                                TextBlock(InlineFont(rFont='Tahoma', sz=11, b=True), report.department.name),
                                 '     ',
-                                TextBlock(InlineFont(rFont='Tahoma', sz=24), getattr(report, f'field{num}').strip()),
+                                TextBlock(InlineFont(rFont='Tahoma', sz=11), getattr(report, f'field{num}').strip()),
                             )
-                            sheet[f'C{current_row}'].font = Font(name='Tahoma', size=24)
+                            sheet[f'C{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
                             sheet[f'C{current_row}'].border = border
                             sheet[f'C{current_row}'].alignment = Alignment(horizontal='left', vertical='center',
                                                                            wrap_text=True)
