@@ -265,6 +265,8 @@ def generate_general_weekly_summary_report(request):
                                 f'c {last_saturday} г. по {current_friday} г.'
             sheet['A1'].font = Font(name='Tahoma', bold=True, size=11)  # size=24)
             sheet['A1'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            sheet['A1'].border = border
+            sheet['B1'].border = border
             sheet['C1'].border = border
             # Получаем все отчёты за выбранную дату, отсортированные по названию филиала
             reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('department__name')
