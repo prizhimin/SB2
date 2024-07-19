@@ -124,6 +124,8 @@ def generate_sixmonths_2024_summary_report(request):
                         sheet = workbook[workbook.sheetnames[2]]
                         cols = 'CDEFGH'
                         sheet[f'{cols[idx_field - 20]}{line_number-1}'] = getattr(report, f'field_{idx_field}')
+                        if n == 25:
+                            sheet[f'I{line_number-1}'] = getattr(report, f'field_25_100')
                     # закладка охрана поля 26..33
                     case n if 26 <= n <= 33:
                         sheet = workbook[workbook.sheetnames[3]]
