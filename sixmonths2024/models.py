@@ -58,11 +58,11 @@ class SemiAnnual2024Report(models.Model):
     field_13 = models.PositiveIntegerField(verbose_name="Кол-во приговоров вступивших в законную силу за период с "
                                                         "01.01 по 30.06.2024 по сопровождаемым уголовным делам (с "
                                                         "остатком прошлых лет)", default=0)
-    # *по фактам бездействия правоохранительных органов, в том числе на нарушения процессуальных сроков в надзорные органы в период с 01.01 по 31.05.2024 направлено
+    # *по фактам бездействия правоохранительных органов, в том числе на нарушения процессуальных сроков в надзорные органы в период с 01.01 по 30.06.2024 направлено
     field_14 = models.PositiveIntegerField(verbose_name="Ходатайств", default=0)
     field_15 = models.PositiveIntegerField(verbose_name="Жалоб", default=0)
     # ^^^^^^^^^^^^^^^^^^^
-    # *за период с 01.01 по 31.05.2024 по дату отчета возмещен причиненный ущерб по результатам (с учетом заявлений прошлых лет) (млн руб.)
+    # *за период с 01.01 по 30.06.2024 по дату отчета возмещен причиненный ущерб по результатам (с учетом заявлений прошлых лет) (млн руб.)
     field_16 = models.DecimalField(max_digits=10, decimal_places=3, verbose_name="Уголовного преследования", default=0)
     field_17 = models.DecimalField(max_digits=10, decimal_places=3, verbose_name="Доследственных проверок", default=0)
     # ^^^^^^^^^^^^^^^^^^^
@@ -78,7 +78,8 @@ class SemiAnnual2024Report(models.Model):
                                                                                  "млн руб.)", default=0)
     field_23 = models.PositiveIntegerField(verbose_name="Привлечено к ответственности", default=0)
     field_24 = models.PositiveIntegerField(verbose_name="В т.ч. руководителей", default=0)
-    field_25 = models.PositiveIntegerField(verbose_name="Уволено", default=0)
+    field_25 = models.PositiveIntegerField(verbose_name="Уволено по результатам служебных проверок", default=0)
+    field_25_100 = models.PositiveIntegerField(verbose_name="Уволено по иным причинам", default=0)
     # ------------------ ОХРАНА
     field_26 = models.PositiveIntegerField(verbose_name="Проведено проверок несения службы за период с 01.01. по "
                                                         "30.06.2024", default=0)
@@ -104,7 +105,7 @@ class SemiAnnual2024Report(models.Model):
                                                         "кол-во)", default=0)
     field_37 = models.PositiveIntegerField(verbose_name="Из них обоснованно отклонены", default=0)
     # ------------------ ТРАВМАТИЗМ
-    # *пострадало лиц от оперативной деятельности за период с 01.01. по 31.05.2024
+    # *пострадало лиц от оперативной деятельности за период с 01.01. по 30.06.2024
     field_38 = models.PositiveIntegerField(verbose_name="Работники компании", default=0)
     field_39 = models.PositiveIntegerField(verbose_name="Подрядчики", default=0)
     field_40 = models.PositiveIntegerField(verbose_name="Сторонние лица", default=0)
@@ -115,16 +116,16 @@ class SemiAnnual2024Report(models.Model):
     field_43 = models.PositiveIntegerField(verbose_name="Сторонние лица", default=0)
     # ^^^^^^^^^^^^^^^^^^^
     # ------------------ АВАРИЙНОСТЬ
-    # *зафиксировано аварий на оборудовании за период с 01.01. по 31.05.2024
+    # *зафиксировано аварий на оборудовании за период с 01.01. по 30.06.2024
     field_44 = models.PositiveIntegerField(verbose_name="Кол-во", default=0)
     field_45 = models.DecimalField(max_digits=10, decimal_places=3, verbose_name="Ущерб (млн руб)", default=0)
     # ^^^^^^^^^^^^^^^^^^^
-    # *зафиксировано инцидентов на тепловых сетях за период с 01.01. по 31.05.2024
+    # *зафиксировано инцидентов на тепловых сетях за период с 01.01. по 30.06.2024
     field_46 = models.PositiveIntegerField(verbose_name="Кол-во", default=0)
     field_47 = models.DecimalField(max_digits=10, decimal_places=3, verbose_name="Ущерб (млн руб)", default=0)
     # ^^^^^^^^^^^^^^^^^^^
     # ------------------ АНАЛИТИКА
-    # *направлено в СБ КЦ за период с 01.01. по 31.05.2024 (без сводок)
+    # *направлено в СБ КЦ за период с 01.01. по 30.06.2024 (без сводок)
     field_48 = models.PositiveIntegerField(verbose_name="Тематические сообщения о деятельности СБ", default=0)
     field_49 = models.PositiveIntegerField(verbose_name="Справочные материалы в рамках установленной отчетности",
                                            default=0)
