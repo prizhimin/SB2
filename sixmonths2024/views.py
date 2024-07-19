@@ -104,7 +104,6 @@ def generate_sixmonths_2024_summary_report(request):
             report = SemiAnnual2024Report.objects.filter(company=company).first()
             # Получаем номер строки в таблице
             line_number = company.line_number
-            print(f'Номер строки в таблице {line_number}')
             # Начинаем формировать отчёт
             for idx_field in range(1, 52):
                 match idx_field:
@@ -118,7 +117,6 @@ def generate_sixmonths_2024_summary_report(request):
                         cols = 'CDEFGHIJKMNOPQRST'
                         sheet = workbook[workbook.sheetnames[1]]
                         sheet[f'{cols[idx_field - 3]}{line_number}'] = getattr(report, f'field_{idx_field}')
-                        # print(f'Колонка {cols[idx_field - 3]}')
                     # закладка антикорпоратив и коррупционные поля 20..25
                     case n if 20 <= n <= 25:
                         sheet = workbook[workbook.sheetnames[2]]
