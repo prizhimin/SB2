@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="{% static 'jquery/ui/jquery-ui.css' %}">
         <script src="{% static 'jquery/jquery-3.7.1.min.js' %}"></script>
         <script src="{% static 'jquery/ui/jquery-ui.js' %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/pagination.css' %}">
         <script>
             $(function(){
                 $.datepicker.regional['ru'] = {
@@ -35,8 +36,7 @@
                 $(".datepicker").datepicker();
             });
         </script>
-        {% block styles %}
-        {% endblock %}
+        {% block styles %}{% endblock %}
     </head>
     <body>
         <header>
@@ -49,8 +49,7 @@
             {% endblock %}
         </main>
         <footer>
-            {% block buttons %}
-            {% endblock %}
+            {% block buttons %}{% endblock %}
         </footer>
         <script>
             $(document).ready(function(){

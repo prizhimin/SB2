@@ -4,7 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponse
 from django.utils import timezone
 from django.apps import apps
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # from django.db import IntegrityError
+
 from .models import DailyReport, CreatorsSummaryReport, UserDepartment
 from commondata.models import Department
 from commondata.forms import DateForm, DateSelectionForm, DateRangeForm
@@ -21,11 +23,14 @@ from openpyxl import load_workbook
 def daily_reports(request):
     # Получаем текущего пользователя
     user = request.user
+
     # Получаем филиалы, к которым пользователь имеет отношение
     user_departments = UserDepartment.objects.filter(user=user).values_list('department', flat=True)
-    # Получаем все отчёты, связанные с этими филиалами, и сортируем их по дате отчёта
-    reports = DailyReport.objects.filter(department__in=user_departments).order_by('-created_at')
-    # Если форма отправлена методом POST
+
+    # Получаем все отчёты, связанные с этими филиалами, и сортируем их по дате создания в порядке убывания
+    reports = DailyReport.objects.filter(department__in=user_departments).order_by('-report_date')
+
+    # Если форма была отправлена методом POST, обрабатываем её
     if request.method == 'POST':
         form = DateForm(request.POST)
         if form.is_valid():
@@ -33,17 +38,68 @@ def daily_reports(request):
             # Фильтруем отчёты по выбранной дате
             reports = reports.filter(report_date=selected_date)
     else:
+        # Если форма не отправлена, создаем форму с начальной датой для отчета
         form = DateForm(initial={'selected_date': get_date_for_report()})
+
+    # Добавляем полное имя автора к каждому отчету
     for report in reports:
         report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
+
+    # Получаем список создателей сводных отчетов, если таковые имеются
     summary_reports_creators = []
     first_summary_report = CreatorsSummaryReport.objects.first()
     if first_summary_report:
+        # Сохраняем имена пользователей, создавших первый сводный отчет
         summary_reports_creators = [user.username for user in first_summary_report.creators.all()]
+
+    # Пагинация: создаем объект пагинатора, указывая количество элементов на странице (14)
+    paginator = Paginator(reports, 14)
+    # Получаем номер страницы из параметров запроса (по умолчанию 1)
+    page = request.GET.get('page', 1)
+
+    try:
+        # Пытаемся получить отчеты для указанной страницы
+        reports = paginator.page(page)
+    except PageNotAnInteger:
+        # Если номер страницы не является целым числом, показываем первую страницу
+        reports = paginator.page(1)
+    except EmptyPage:
+        # Если номер страницы превышает количество страниц, показываем последнюю страницу
+        reports = paginator.page(paginator.num_pages)
+
+    # Отображаем шаблон 'daily/reports_list.html' с отчетами, формой и создателями сводных отчетов
     return render(request, 'daily/reports_list.html',
                   {'reports': reports,
                    'form': form,
                    'summary_reports_creators': summary_reports_creators})
+
+
+# def daily_reports(request):
+#     # Получаем текущего пользователя
+#     user = request.user
+#     # Получаем филиалы, к которым пользователь имеет отношение
+#     user_departments = UserDepartment.objects.filter(user=user).values_list('department', flat=True)
+#     # Получаем все отчёты, связанные с этими филиалами, и сортируем их по дате отчёта
+#     reports = DailyReport.objects.filter(department__in=user_departments).order_by('-created_at')
+#     # Если форма отправлена методом POST
+#     if request.method == 'POST':
+#         form = DateForm(request.POST)
+#         if form.is_valid():
+#             selected_date = form.cleaned_data['selected_date']
+#             # Фильтруем отчёты по выбранной дате
+#             reports = reports.filter(report_date=selected_date)
+#     else:
+#         form = DateForm(initial={'selected_date': get_date_for_report()})
+#     for report in reports:
+#         report.user_full_name = f"{report.author.last_name} {report.author.first_name}"
+#     summary_reports_creators = []
+#     first_summary_report = CreatorsSummaryReport.objects.first()
+#     if first_summary_report:
+#         summary_reports_creators = [user.username for user in first_summary_report.creators.all()]
+#     return render(request, 'daily/reports_list.html',
+#                   {'reports': reports,
+#                    'form': form,
+#                    'summary_reports_creators': summary_reports_creators})
 
 
 @login_required
