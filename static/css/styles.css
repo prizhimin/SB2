@@ -96,7 +96,6 @@ main .container {
     flex-direction: row;
     justify-content: center; /* Выравнивание пагинации по центру */
     padding: 10px 0; /* Отступ сверху и снизу для кнопок пагинации */
-    background-color: #f1f1f1; /* Цвет фона для наглядности */
 }
 
 /* Стили для элемента пагинации */
