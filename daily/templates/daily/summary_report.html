@@ -7,8 +7,8 @@
             <form method="post" class="form-group">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" formaction="{% url 'summary_report' %}">Показать отчёты за указанную дату</button>
-                <button type="submit" formaction="{% url 'generate_summary_report' %}">Сводный отчёт за указанную дату</button>
+                <button type="submit" formaction="{% url 'daily_reports:summary_report' %}">Показать отчёты за указанную дату</button>
+                <button type="submit" formaction="{% url 'daily_reports:generate_summary_report' %}">Сводный отчёт за указанную дату</button>
             </form>
             <div class="report-list">
                 <!-- Список ссылок на отчёты -->
@@ -40,7 +40,7 @@
 {% block buttons %}
     <div class="actions">
         <!-- Кнопка "Назад к списку отчётов" -->
-        <a href="{% url 'daily_reports' %}" class="action-link">
+        <a href="{% url 'daily_reports:daily_reports' %}" class="action-link">
             <button type="button">Назад к списку отчётов</button>
         </a>
         <!-- Кнопка "Вернуться на Главную" -->

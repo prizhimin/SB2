@@ -2,6 +2,8 @@ from django.urls import path
 from .views import (daily_reports, report_details, add_daily_report, edit_daily_report, summary_report,
                     generate_summary_report, summary_weekly_report, generate_weekly_summary_report)
 
+app_name = 'daily_reports'
+
 urlpatterns = [
     path('', daily_reports, name='daily_reports'),  # Маршрут по умолчанию для списка отчётов
     path('report/<int:report_id>/', report_details, name='report_details'),  # Маршрут для деталей отчёта
