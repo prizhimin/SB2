@@ -35,7 +35,7 @@
 {% endblock %}
 {% block content %}
     <h1>Отчёт филиала за 6 месяцев 2024 года</h1>
-    <div class="container">
+    <div  class="container report-list">
         <form method="post" class="form-group">
             {% csrf_token %}
             <table>
@@ -315,9 +315,8 @@
                </tr>
             </table>
             <br>
-            <div class="actions">
+            <div class="actions" style="text-align: center">
                 <button type="submit">Сохранить изменения</button>
-                <a href="{% url 'dashboard' %}" class="action-link"><button type="button">Вернуться на Главную</button></a>
             </div>
         </form>
         <br>
@@ -325,4 +324,14 @@
     </div>
 {% endblock %}
 {% block buttons %}
+    <div class="actions">
+        <!-- Кнопка "Вернуться на Главную" -->
+        <a href="{% url 'dashboard' %}" class="action-link">
+            <button type="button">Вернуться на Главную</button>
+        </a>
+        <!-- Кнопка "Вернуться на Главную" -->
+        <a href="{% url 'sixmonths2024:report_list' %}" class="action-link">
+            <button type="button">Вернуться к списку отчётов</button>
+        </a>
+    </div>
 {% endblock %}

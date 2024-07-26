@@ -20,7 +20,7 @@
 {% endblock %}
 {% block content %}
     <h1>Редактирование еженедельного отчёта</h1>
-    <div class="container">
+    <div class="container report-list">
     <form method="post" class="form-group" action="{% url 'edit_general_weekly_report' report_id %}">
         {% csrf_token %}
             <div class="container">
@@ -33,17 +33,21 @@
                     {% endfor %}
                 </table>
             </div>
-            <div class="actions">
+            <div class="actions" style="text-align: center; margin-top: 10px">
                 <button type="submit">Сохранить изменения</button>
-                <!-- Кнопка "Назад к списку отчётов" -->
-                <a href="{% url 'general_weekly' %}" class="action-link">
-                    <button type="button">Назад к списку отчётов</button>
-                </a>
-                <!-- Кнопка "Вернуться на Главную" -->
-                <a href="{% url 'dashboard' %}" class="action-link">
-                    <button type="button">Вернуться на Главную</button>
-                </a>
             </div>
         </form>
+    </div>
+{% endblock %}
+{% block buttons %}
+    <div class="actions">
+        <!-- Кнопка "Назад к списку отчётов" -->
+        <a href="{% url 'general_weekly' %}" class="action-link">
+            <button type="button">Назад к списку отчётов</button>
+        </a>
+        <!-- Кнопка "Вернуться на Главную" -->
+        <a href="{% url 'dashboard' %}" class="action-link">
+            <button type="button">Вернуться на Главную</button>
+        </a>
     </div>
 {% endblock %}

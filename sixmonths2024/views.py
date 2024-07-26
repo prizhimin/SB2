@@ -11,6 +11,7 @@ from shutil import copy
 from os import path
 from openpyxl import load_workbook
 
+
 @login_required
 def create_report(request):
     if request.method == 'POST':
@@ -19,7 +20,7 @@ def create_report(request):
             report = form.save(commit=False)
             report.user = request.user  # Установите поле user
             report.save()
-            return redirect('report_list')
+            return redirect('sixmonths2024:report_list')
     else:
         form = ReportForm()
     return render(request, 'sixmonths2024/report_form.html', {'form': form})
@@ -32,7 +33,7 @@ def update_report(request, pk):
         form = ReportForm(request.POST, instance=report)
         if form.is_valid():
             form.save()
-            return redirect('report_list')
+            return redirect('sixmonths2024:report_list')
     else:
         form = ReportForm(instance=report)
     return render(request, 'sixmonths2024/report_form.html', {'form': form})
@@ -45,7 +46,7 @@ def delete_report(request, pk):
     if request.method == 'POST':
         report.delete()
         # messages.success(request, 'Отчет успешно удален.')
-        return redirect('report_list')
+        return redirect('sixmonths2024:report_list')
 
     return render(request, 'sixmonths2024/report_confirm_delete.html', {'report': report})
 
@@ -71,7 +72,7 @@ def report_list(request):
                 report = form.save(commit=False)
                 report.user = request.user  # Устанавливаем текущего пользователя
                 report.save()
-                return redirect('report_list')
+                return redirect('sixmonths2024:report_list')
         else:
             form = ReportForm(instance=report, initial={'company': company})
             user_company = SemiAnnual2024UserCompany.objects.filter(user=user).first()

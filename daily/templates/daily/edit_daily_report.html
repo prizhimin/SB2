@@ -2,27 +2,33 @@
 {% block title%}Редактирование ежедневного отчёта{% endblock %}
 {% block content %}
     <h1>Редактирование ежедневного отчёта</h1>
-    <form method="post" class="form-group" action="{% url 'edit_daily_report' report_id %}">
-        {% csrf_token %}
-        <table class="form-table">
-            {% for field in form %}
-                <tr>
-                    <td>{{ field.label_tag }}</td>
-                    <td>{{ field }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-        <p></p>
-        <div class="actions">
-            <button type="submit">Сохранить изменения</button>
-            <!-- Кнопка "Назад к списку отчётов" -->
-            <a href="{% url 'daily_reports' %}" class="action-link">
-                <button type="button">Назад к списку отчётов</button>
-            </a>
-            <!-- Кнопка "Вернуться на Главную" -->
-            <a href="{% url 'dashboard' %}" class="action-link">
-                <button type="button">Вернуться на Главную</button>
-            </a>
-        </div>
-    </form>
+    <div class="container report-list">
+        <form method="post" class="form-group" action="{% url 'edit_daily_report' report_id %}">
+            {% csrf_token %}
+            <table class="form-table">
+                {% for field in form %}
+                    <tr>
+                        <td>{{ field.label_tag }}</td>
+                        <td>{{ field }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <p></p>
+            <div class="actions" style="text-align: center; margin-top: 10px">
+                <button type="submit">Сохранить изменения</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block buttons %}
+    <div class="actions">
+        <!-- Кнопка "Назад к списку отчётов" -->
+        <a href="{% url 'daily_reports' %}" class="action-link">
+            <button type="button">Назад к списку отчётов</button>
+        </a>
+        <!-- Кнопка "Вернуться на Главную" -->
+        <a href="{% url 'dashboard' %}" class="action-link">
+            <button type="button">Вернуться на Главную</button>
+        </a>
+    </div>
 {% endblock %}

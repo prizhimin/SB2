@@ -15,12 +15,12 @@
             <tbody>
                 {% for report in reports %}
                     <tr>
-                        <td><a href="{% url 'update_report' report.pk %}">{{ report.company.name }}</a></td>
-                        <td><a href="{% url 'update_report' report.pk %}">{{ report.user.last_name }} {{ report.user.first_name }}</a></td>
-                        <td><a href="{% url 'update_report' report.pk %}">{{ report.created_at }}</a></td>
+                        <td><a href="{% url 'sixmonths2024:update_report' report.pk %}">{{ report.company.name }}</a></td>
+                        <td><a href="{% url 'sixmonths2024:update_report' report.pk %}">{{ report.user.last_name }} {{ report.user.first_name }}</a></td>
+                        <td><a href="{% url 'sixmonths2024:update_report' report.pk %}">{{ report.created_at }}</a></td>
                         <td>
-                            <a href="{% url 'update_report' report.pk %}">Редактировать</a>
-                            <a href="{% url 'delete_report' report.pk %}">Удалить</a>
+                            <a href="{% url 'sixmonths2024:update_report' report.pk %}">Редактировать</a>
+                            <a href="{% url 'sixmonths2024:delete_report' report.pk %}">Удалить</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -30,9 +30,8 @@
 {% endblock %}
 {% block buttons %}
     <div class="actions">
-        <a href="{% url 'create_report' %}" class="action-link"><button type="button">Создать новый отчёт</button></a>
+        <a href="{% url 'sixmonths2024:create_report' %}" class="action-link"><button type="button">Создать новый отчёт</button></a>
         <a href="{% url 'dashboard' %}" class="action-link"><button type="button">Вернуться на Главную</button></a>
-        <a href="{% url 'generate_sixmonths_2024_summary_report' %}" class="action-link"><button type="button">Отчёт</button></a>
-    
+        <a href="{% url 'sixmonths2024:generate_sixmonths_2024_summary_report' %}" class="action-link"><button type="button">Отчёт</button></a>
     </div>
 {% endblock %}
