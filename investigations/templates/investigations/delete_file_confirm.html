@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Удалить вложение{% endblock %}
+{% block content %}
+    <h1>Вы хотите удалить вложение "{{ short_name }}"?</h1>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Удалить</button>
+    </form>
+    <a href="{% url 'investigations:investigation_list' %}">Отмена</a>
+{% endblock %}

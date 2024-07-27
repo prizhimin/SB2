@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}
+Добавить проверку
+{% endblock %}
+{% block styles %}
+    <style>
+        textarea, input[type="text"] {
+            width: 99%;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <h1>Добавить проверку</h1>
+    <div class="container report-list">
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            <table style="width: 100%;">
+                <col style="width: 30%;">
+                <col style="width: 70%;">
+                <tbody>
+                    {% for field in form %}
+                        <tr>
+                            <td>{{ field.label_tag }}</td>
+                            <td>{{ field }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="actions" style="text-align: center; margin-top: 10px">
+                <button type="submit">Внести данные</button>
+            </div>
+                
+        </form>
+    </div>
+{% endblock %}
+{% block buttons %}
+<!-- Кнопки  -->
+    <div class="actions">
+        <!-- Кнопка "Показать все проверки" -->
+        <a href="{% url 'investigations:investigation_list' %}" class="action-link">
+            <button type="button">Показать все проверки</button>
+        </a>
+    </div>
+{% endblock %}

@@ -12,6 +12,7 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('general_weekly/', include('general_weekly.urls')),
     path('sixmonths2024/', include('sixmonths2024.urls')),
+    path('investigations/', include('investigations.urls')),
 ]
 
 

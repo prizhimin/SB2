@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block styles %}
+    <style>
+    table {
+        width: 100%; /* Установка ширины таблицы на 100% от родительского контейнера */
+    }
+
+    th:first-child, td:first-child {
+        width: 85%; /* Ширина первого столбца 35% от ширины таблицы */
+    }
+
+    th:last-child, td:last-child {
+        width: 15%; /* Ширина второго столбца 65% от ширины таблицы */
+    }
+    textarea {
+        width: 100%; /* Установка ширины TextArea на 100% от родительского контейнера (второго столбца) */
+    }
+    </style>
+{% endblock %}
+{% block content %}
+<h1>Управление вложениями для расследования: {{ investigation.title }}</h1>
+<h1>Список вложений</h1>
+<div class="container">
+    <table>
+        <thead>
+            <tr>
+                <th>Имя файла</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in attached_files %}
+                <tr>
+                    <td>
+                        <a href="{% url 'investigations:download_file' file.id %}">{{ file.get_filename }}</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'investigations:delete_file' file.id %}">
+                            <button type="button" class="">Удалить</button>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">Нет вложений</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+{% block buttons %}
+    <div class="actions">
+        <!-- Кнопка "Добавить вложение" -->
+        <a href="{% url 'investigations:attach_file' investigation.id %}" class="action-link">
+            <button type="button" class="">Добавить вложение</button>
+        </a>
+        <a href="{% url 'investigations:download_attaches_zip' investigation.id %}" class="action-link">
+            <button type="button" class="">Сохранить все вложения в zip-файле</button>
+        </a>
+        
+        <!-- Кнопка "Вернуться к проверке" -->
+        <a href="{% url 'investigations:investigation_detail' investigation.id %}">
+            <button type="button" class="">Вернуться к проверке</button>
+        </a>
+        <!-- Кнопка "Показать все проверки" -->
+        <a href="{% url 'investigations:investigation_list' %}" class="action-link">
+            <button type="button" class="">Показать все проверки</button>
+        </a>
+    </div>
+{% endblock %}

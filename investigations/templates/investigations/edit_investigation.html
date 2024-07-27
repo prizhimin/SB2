@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Редактирование проверки{% endblock %}
+{% block styles %}
+<style>
+    /* Добавляем новые стили для custom-table */
+    .custom-table {
+        width: 100%; /* Установка ширины таблицы на 100% от родительского контейнера */
+    }
+
+    .custom-table th:first-child, .custom-table td:first-child {
+        width: 30%; /* Ширина первого столбца 30% от ширины таблицы */
+    }
+
+    .custom-table th:last-child, .custom-table td:last-child {
+        width: 70%; /* Ширина последнего столбца 70% от ширины таблицы */
+    }
+
+    .custom-table textarea, input[type="text"] {
+        width: 99%; /* Установка ширины TextArea и input[type="text"] на 99% от родительского контейнера (ячейки столбца) */
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container report-list">
+    <h1>Редактирование проверки</h1>
+    <form method="post" class="form-group" action="{% url 'investigations:edit_investigation' investigation_pk %}">
+        {% csrf_token %}
+        <table class="form-table custom-table">
+            {% for field in form %}
+                <tr>
+                    <td>{{ field.label_tag }}</td>
+                    <td>{{ field }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>Вложения</td>
+                <td>
+                    <a href="{% url 'investigations:manage_attach' investigation_pk %}">
+                        {% if has_attach > 0 %}
+                            {{ has_attach }}
+                        {% else %}
+                            Нет вложений
+                        {% endif %}
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <p></p>
+        <div class="actions" style="text-align: center; margin-top: 10px">
+            <button type="submit">Сохранить изменения</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block buttons %}
+    <div class="actions">
+        <!-- Кнопка "Показать все проверки" -->
+        <a href="{% url 'investigations:investigation_list' %}" class="action-link">
+            <button type="button">Показать все проверки</button>
+        </a>
+        <!-- Кнопка "Управлять вложениями" -->
+        <a href="{% url 'investigations:manage_attach' investigation_pk %}" class="action-link">
+            <button type="button">Управлять вложениями
+                {% if has_attach > 0 %}
+                    ({{ has_attach }})
+                {% endif %}
+            </button>
+        </a>
+        <!-- Кнопка "Вернуться на Главную" -->
+{#        <a href="{% url 'dashboard' %}" class="action-link">#}
+{#            <button type="button">Вернуться на Главную</button>#}
+{#        </a>#}
+    </div>
+{% endblock %}
