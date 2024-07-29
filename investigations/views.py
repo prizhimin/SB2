@@ -8,7 +8,7 @@ from django.http import FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import InvestigationForm, AttachedFileForm, DateForm
-from .models import Investigation, AttachedFile, InvestigationUserDepartment
+from .models import Investigation, AttachedFile, InvestigationUserDepartment, InvestigationCreatorsSummaryReport
 from .decorators import check_user_department, check_summary_report_creator
 from django.utils import timezone
 
@@ -31,11 +31,19 @@ def investigation_list(request):
     else:
         # Если форма не отправлена, создаем форму с начальной датой для отчета
         form = DateForm(initial={'selected_date': timezone.now().astimezone(tz=timezone.get_current_timezone())})
+    # Получаем список создателей сводных отчетов, если таковые имеются
+    summary_reports_creators = []
+    first_summary_report = InvestigationCreatorsSummaryReport.objects.first()
+    if first_summary_report:
+        # Сохраняем имена пользователей, создавших первый сводный отчет
+        summary_reports_creators = [user.username for user in first_summary_report.creators.all()]
     paginator = Paginator(investigations, 14)  # X расследования на страницу
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'investigations/investigation_list.html', {'page_obj': page_obj,
-                                                                      'form': form})
+    return render(request, 'investigations/investigation_list.html',
+                  {'page_obj': page_obj,
+                   'form': form,
+                   'summary_reports_creators': summary_reports_creators})
 
 
 @login_required
@@ -148,8 +156,9 @@ def delete_investigation(request, pk):
 def manage_attach(request, pk):
     investigation = get_object_or_404(Investigation, id=pk)
     attached_files = AttachedFile.objects.filter(investigation=investigation)
-    return render(request, 'investigations/manage_attach.html', {'investigation': investigation,
-                                                                 'attached_files': attached_files})
+    return render(request, 'investigations/manage_attach.html',
+                  {'investigation': investigation,
+                   'attached_files': attached_files})
 
 
 @login_required
@@ -162,3 +171,8 @@ def download_attaches_zip(request, investigation_id):
         return HttpResponse('ZIPZIPZIP!!!')
     else:
         return HttpResponse('Нечего скачивать')
+
+
+@login_required
+def summary_report(request):
+    return HttpResponse('ЭТО СВОДНЫЙ ОТЧЁТ')

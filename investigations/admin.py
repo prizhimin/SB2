@@ -1,5 +1,5 @@
 from django.contrib import admin
-from investigations.models import Department, InvestigationUserDepartment, InvestigantionCreatorsSummaryReport
+from investigations.models import Department, InvestigationUserDepartment, InvestigationCreatorsSummaryReport
 
 
 class DepartmentAdmin(admin.ModelAdmin):
@@ -10,5 +10,5 @@ class DepartmentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Department, DepartmentAdmin)
-admin.site.register(InvestigantionCreatorsSummaryReport)
+admin.site.register(InvestigationCreatorsSummaryReport)
 admin.site.register(InvestigationUserDepartment)

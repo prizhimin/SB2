@@ -109,7 +109,7 @@ class AttachedFile(models.Model):
 
 
 
-class InvestigantionCreatorsSummaryReport(models.Model):
+class InvestigationCreatorsSummaryReport(models.Model):
     """
     Список создателей сводного отчёта
     """

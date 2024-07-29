@@ -64,11 +64,25 @@
 {% block buttons %}
     <!-- Кнопки  -->
     <div class="actions">
+        <!-- Кнопка "Выход" -->
+        <a href="{% url 'accounts:custom_logout' %}" class="action-link">
+            <button type="button">Выход</button>
+        </a>
+        <!-- Кнопка "Вернуться на Главную" -->
+        <a href="{% url 'dashboard' %}" class="action-link">
+            <button type="button">Вернуться на Главную</button>
+        </a>
         <a href="{% url 'investigations:add_investigation' %}" class="action-link">
             <button type="button">Новая служебная проверка</button>
         </a>
         <a href="{% url 'investigations:investigation_list' %}" class="action-link">
             <button type="button">Показать все проверки</button>
         </a>
+        <!-- Кнопка "Отчёт" -->
+        {% if request.user.username in summary_reports_creators %}
+            <a href="{% url 'investigations:summary_report' %}" class="action-link">
+                <button type="button" class="yellow-button">Отчёт</button>
+            </a>
+        {% endif %}
     </div>
 {% endblock %}

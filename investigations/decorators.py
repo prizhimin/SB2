@@ -1,7 +1,7 @@
 # decorators.py
 from functools import wraps
 from django.shortcuts import get_object_or_404, render
-from .models import InvestigantionCreatorsSummaryReport, InvestigationUserDepartment, Investigation
+from .models import InvestigationCreatorsSummaryReport, InvestigationUserDepartment, Investigation
 
 
 def check_user_department(view_func):
@@ -23,7 +23,7 @@ def check_summary_report_creator(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
         # Получаем список создателей сводных отчётов
-        summary_reports_creators = InvestigantionCreatorsSummaryReport.objects.first().creators.all()
+        summary_reports_creators = InvestigationCreatorsSummaryReport.objects.first().creators.all()
         # Проверяем, имеет ли пользователь права на создание сводного отчёта
         if request.user in summary_reports_creators:
             return view_func(request, *args, **kwargs)
