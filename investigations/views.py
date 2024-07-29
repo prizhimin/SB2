@@ -9,13 +9,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import InvestigationForm, AttachedFileForm, DateForm
 from .models import Investigation, AttachedFile, InvestigationUserDepartment
-
+from .decorators import check_user_department, check_summary_report_creator
 from django.utils import timezone
 
 
 # @login_required
 def investigation_list(request):
-    investigations = Investigation.objects.all().order_by('-order_date')
+    # Получаем текущего пользователя
+    user = request.user
+    # Получаем филиалы, к которым пользователь имеет отношение
+    user_departments = InvestigationUserDepartment.objects.filter(user=user).values_list('department', flat=True)
+    # Получаем СЗ, к которым у пользователя есть доступ
+    investigations = Investigation.objects.filter(department__in=user_departments).order_by('-order_date')
     # Если форма была отправлена методом POST, обрабатываем её
     if request.method == 'POST':
         form = DateForm(request.POST)
@@ -47,6 +52,7 @@ def add_investigation(request):
 
 
 @login_required
+@check_user_department
 def investigation_detail(request, pk):
     investigation = get_object_or_404(Investigation, pk=pk)
     return render(request, 'investigations/investigation_detail.html',
@@ -54,13 +60,15 @@ def investigation_detail(request, pk):
 
 
 @login_required
+@check_user_department
 def edit_investigation(request, pk):
     # Получаем объект по первичному ключу или возвращаем 404 ошибку, если объект не найден
     investigation = get_object_or_404(Investigation, pk=pk)
 
     # Проверяем, что это POST запрос
     if request.method == "POST":
-        form = InvestigationForm(request.user, request.POST, instance=investigation)  # Передаем экземпляр объекта и данные формы
+        # Передаем экземпляр объекта и данные формы
+        form = InvestigationForm(request.user, request.POST, instance=investigation)
         if form.is_valid():  # Проверка на валидность данных формы
             investigation = form.save(commit=False)  # Сохраняем объект формы в переменную, но пока не записываем в БД
             investigation.save()  # Теперь сохраняем изменения в БД
@@ -78,6 +86,7 @@ def edit_investigation(request, pk):
 # Функции для работы с прикрепленными файлами
 
 @login_required
+# @check_user_department
 def attach_file(request, investigation_id):
     investigation = get_object_or_404(Investigation, id=investigation_id)
     if request.method == 'POST':
@@ -91,6 +100,7 @@ def attach_file(request, investigation_id):
 
 
 @login_required
+# @check_user_department
 def delete_file(request, file_id):
     attached_file = get_object_or_404(AttachedFile, id=file_id)
     investigation_id = attached_file.investigation.id
@@ -101,8 +111,9 @@ def delete_file(request, file_id):
         if os.path.exists(file_path):
             os.remove(file_path)
         return redirect('investigations:manage_attach', pk=investigation_id)
-    return render(request, 'investigations/delete_file_confirm.html', {'attached_file': attached_file,
-                                                                       'short_name': os.path.basename(attached_file.file.name)})
+    return render(request,
+                  'investigations/delete_file_confirm.html',
+                  {'attached_file': attached_file, 'short_name': os.path.basename(attached_file.file.name)})
 
 
 @login_required
