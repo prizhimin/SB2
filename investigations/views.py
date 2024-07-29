@@ -13,7 +13,7 @@ from .decorators import check_user_department, check_summary_report_creator
 from django.utils import timezone
 
 
-# @login_required
+@login_required
 def investigation_list(request):
     # Получаем текущего пользователя
     user = request.user
@@ -174,5 +174,6 @@ def download_attaches_zip(request, investigation_id):
 
 
 @login_required
+@check_summary_report_creator
 def summary_report(request):
     return HttpResponse('ЭТО СВОДНЫЙ ОТЧЁТ')
