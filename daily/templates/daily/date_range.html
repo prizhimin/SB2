@@ -7,7 +7,7 @@
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Показать отчёты</button>
-            <button type="submit" formaction="{% url 'generate_weekly_summary_report' %}">Сводный отчёт за указанный диапазон дат</button>
+            <button type="submit" formaction="{% url 'daily_reports:generate_weekly_summary_report' %}">Сводный отчёт за указанный диапазон дат</button>
         </form>
         <!-- Список ссылок на отчёты -->
         <ul class="report-list">

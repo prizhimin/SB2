@@ -16,4 +16,5 @@ urlpatterns = [
     path('file/<int:file_id>/delete/', views.delete_file, name='delete_file'),
     path('file/<int:file_id>/download/', views.download_file, name='download_file'),
     path('summary_report/', views.summary_report, name='summary_report'),
+    path('generate_summary_report/<int:operation_id>', views.generate_summary_report, name='generate_summary_report'),
 ]

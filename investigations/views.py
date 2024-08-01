@@ -11,7 +11,8 @@ from .forms import InvestigationForm, AttachedFileForm, DateForm
 from .models import Investigation, AttachedFile, InvestigationUserDepartment, InvestigationCreatorsSummaryReport
 from .decorators import check_user_department, check_summary_report_creator
 from django.utils import timezone
-
+from commondata.forms import DateRangeForm
+from openpyxl import Workbook, load_workbook
 
 @login_required
 def investigation_list(request):
@@ -148,7 +149,8 @@ def delete_investigation(request, pk):
             shutil.rmtree(investigation_dir)
         investigation.delete()
         return redirect('investigations:investigation_list')
-    return render(request, 'investigations/investigation_confirm_delete.html', {'investigation': investigation})
+    return render(request, 'investigations/investigation_confirm_delete.html',
+                  {'investigation': investigation})
 
 
 
@@ -176,4 +178,48 @@ def download_attaches_zip(request, investigation_id):
 @login_required
 @check_summary_report_creator
 def summary_report(request):
-    return HttpResponse('ЭТО СВОДНЫЙ ОТЧЁТ')
+    investigations = None
+    # Получаем список создателей сводных отчетов, если таковые имеются
+    summary_reports_creators = []
+    first_summary_report = InvestigationCreatorsSummaryReport.objects.first()
+    if first_summary_report:
+        # Сохраняем имена пользователей, создавших первый сводный отчет
+        summary_reports_creators = [user.username for user in first_summary_report.creators.all()]
+    if request.method == "POST":
+        form = DateRangeForm(request.POST)
+        if form.is_valid():
+            # Обработка данных формы
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            investigations = Investigation.objects.filter(order_date__range=(start_date, end_date)).order_by('-order_date')
+    else:
+        form = DateRangeForm()
+    return render(request, 'investigations/investigations_report.html',
+                  {'investigations': investigations,
+                   'form': form,
+                   'summary_reports_creators':summary_reports_creators})
+
+
+def generate_summary_report(request, operation_id):
+    if request.method == "POST":
+        form = DateRangeForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            match operation_id:
+                case 0:
+                    investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
+                                      .order_by('order_date'))
+                case 1:
+                    investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
+                                      .filter(department__name__startswith='ПАО "Т Плюс"')
+                                      .order_by('order_date'))
+                case 2:
+                    investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
+                                      .filter(department__name__startswith='АО "ЭнергосбыТ Плюс"')
+                                      .order_by('order_date'))
+                case 3:
+                    investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
+                                      .filter(department__name__startswith='АО "ЭнергоремонТ Плюс"')
+                                      .order_by('order_date'))
+    return HttpResponse('Сводный отчёт по СЗ')
