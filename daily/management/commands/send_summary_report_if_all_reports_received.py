@@ -4,7 +4,7 @@ from django.apps import apps
 from exchangelib import Credentials, Account, Message, DELEGATE, HTMLBody, FileAttachment
 
 from daily.views import create_daily_report  # Импортируем функцию создания отчета из views.py
-from daily.utils import get_date_for_report
+from daily.utils import get_date_for_report, get_users_for_department
 from commondata.models import Department
 from daily.models import DailyReport
 
@@ -40,7 +40,7 @@ class Command(BaseCommand):
         if missing_departments.exists():
             # Создание сообщения с информацией о недостающих данных
             missing_departments_info = [
-                f"{department.name}: {', '.join(self.get_users_for_department(department.name))}"
+                f"{department.name}: {', '.join(get_users_for_department(department.name))}"
                 for department in missing_departments
             ]
             missing_departments_text = '\n'.join(missing_departments_info)
