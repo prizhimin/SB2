@@ -50,7 +50,7 @@ class Command(BaseCommand):
             account = Account(email_user, credentials=credentials, autodiscover=True, access_type=DELEGATE)
 
             # Получаем получателей из строковой переменной
-            recipients = os.getenv('SW_REPORT_RECIPIENTS', '').split(';')
+            recipients = os.getenv('SW_DAILY_REPORT_RECIPIENTS', '').split(';')
 
             subject = 'Не все отчёты представлены'
             body = (
