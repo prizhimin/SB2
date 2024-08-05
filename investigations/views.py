@@ -16,6 +16,7 @@ from openpyxl import Workbook, load_workbook
 from datetime import date
 from datetime import datetime
 
+
 @login_required
 def investigation_list(request):
     # Получаем текущего пользователя
@@ -201,9 +202,9 @@ def summary_report(request):
         # Устанавливаем первоначальный диапазон дат, равный текущему году
         form = DateRangeForm(initial={'start_date': f'01.01.{current_year}',
                                       'end_date': f'31.12.{current_year}'})
-        investigations = (Investigation.
-                          objects.filter(order_date__range=(datetime.strptime(f'01.01.{current_year}', '%d.%m.%Y').date(),
-                                                            datetime.strptime(f'31.12.{current_year}', '%d.%m.%Y').date()))
+        investigations = (Investigation.objects
+                          .filter(order_date__range=(datetime.strptime(f'01.01.{current_year}', '%d.%m.%Y').date(),
+                                                     datetime.strptime(f'31.12.{current_year}', '%d.%m.%Y').date()))
                           .order_by('-order_date'))
     return render(request, 'investigations/investigations_report.html',
                   {'investigations': investigations,
@@ -211,6 +212,8 @@ def summary_report(request):
                    'summary_reports_creators': summary_reports_creators})
 
 
+@login_required
+@check_summary_report_creator
 def generate_summary_report(request, operation_id):
     if request.method == "POST":
         form = DateRangeForm(request.POST)

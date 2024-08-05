@@ -29,8 +29,9 @@ class Command(BaseCommand):
 
         # Получаем e-mail пользователей, чьи отделы не заполнили отчёт
         emails = self.get_emails_of_users_without_reports(date_obj)
+        print(emails)
+        # Если список пустой, то возврат
         if not emails:
-            self.stdout.write(self.style.SUCCESS('No users to notify.'))
             return
 
         # Настройка e-mail клиента
@@ -39,13 +40,13 @@ class Command(BaseCommand):
                           autodiscover=True, access_type=DELEGATE)
 
         # Создание и отправка сообщения
-        subject = 'Напоминание о внесении данных для ежедневного отчёта'
+        subject = f"Напоминание о внесении данных для ежедневного отчёта по охране за {date_obj.strftime('%d.%m.%Y')}"
         body = (
-            'Здравствуйте!\n\n'
-            'Пожалуйста, внесите данные для ежедневного отчёта по охране.\n\n'
-            'Спасибо!'
+            f'Здравствуйте!\n\n'
+            f'Пожалуйста, внесите данные для ежедневного отчёта по охране за {date_obj.strftime("%d.%m.%Y")}.\n\n'
+            f'Спасибо!'
         )
-
+        print(subject, body)
         message = Message(
             account=account,
             subject=subject,
@@ -55,7 +56,7 @@ class Command(BaseCommand):
 
         # Отправка сообщения
         # message.send()
-        self.stdout.write(self.style.SUCCESS('Reminder email sent successfully.'))
+        # self.stdout.write(self.style.SUCCESS('Reminder email sent successfully.'))
 
     @staticmethod
     def get_emails_of_users_without_reports(date):
