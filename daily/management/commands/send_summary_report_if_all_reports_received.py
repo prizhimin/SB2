@@ -59,9 +59,6 @@ class Command(BaseCommand):
                 f'отделов и пользователей, которые не внесли данные:\n\n'
                 f'{missing_departments_text}\n\n'
             )
-            print(subject)
-            print(body)
-            print(recipients)
             message = Message(
                 account=account,
                 subject=subject,
@@ -71,7 +68,6 @@ class Command(BaseCommand):
 
             # Отправка сообщения
             message.send()
-            # self.stdout.write(self.style.SUCCESS('Notification email sent successfully.'))
             return
 
         # Создание отчёта и получение пути к файлу
@@ -105,4 +101,3 @@ class Command(BaseCommand):
 
         # Отправка сообщения
         message.send()
-        # self.stdout.write(self.style.SUCCESS('Summary report sent successfully.'))

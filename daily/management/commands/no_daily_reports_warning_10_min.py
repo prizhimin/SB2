@@ -31,7 +31,6 @@ class Command(BaseCommand):
 
         # Получаем e-mail пользователей, чьи отделы не заполнили отчёт
         emails = self.get_emails_of_users_without_reports(date_obj)
-        # print(emails)
         # Если список пустой, то возврат
         if not emails:
             return
@@ -48,7 +47,6 @@ class Command(BaseCommand):
             f'Пожалуйста, внесите данные для ежедневного отчёта по охране за {date_obj.strftime("%d.%m.%Y")}.\n\n'
             f'Спасибо!'
         )
-        print(subject, body)
         message = Message(
             account=account,
             subject=subject,
