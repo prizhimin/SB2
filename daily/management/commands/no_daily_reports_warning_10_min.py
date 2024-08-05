@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.management import BaseCommand
 
 from commondata.models import Department
-from daily.models import UserDepartment
+from daily.models import UserDepartment, CreatorsSummaryReport
 from daily.utils import get_date_for_report
 
 from exchangelib import Credentials, Account, Message, DELEGATE, HTMLBody
@@ -24,6 +24,8 @@ class Command(BaseCommand):
         # Получаем учетные данные из переменных окружения
         email_user = os.getenv('EMAIL_USER')
         email_password = os.getenv('EMAIL_PASSWORD')
+        # Получаем список адресов для копий из переменных окружения
+        cc_emails = os.getenv('CC_EMAILS', '').split(';')
         # Получаем дату для отчета
         date_obj = get_date_for_report()
 
@@ -51,7 +53,8 @@ class Command(BaseCommand):
             account=account,
             subject=subject,
             body=HTMLBody(body),
-            to_recipients=[email for email in emails.split('; ') if email]
+            to_recipients=[email for email in emails.split('; ') if email],
+            cc_recipients=[email for email in cc_emails if email]
         )
 
         # Отправка сообщения
@@ -77,8 +80,9 @@ class Command(BaseCommand):
             department__in=departments_without_reports
         ).values_list('user_id', flat=True)
 
-        # Находим пользователей по их ID
-        users = User.objects.filter(id__in=user_ids).distinct()
+        # Находим пользователей по их ID, исключая пользователей из CreatorsSummaryReport
+        creators_summary_report_users = CreatorsSummaryReport.objects.values_list('creators', flat=True)
+        users = User.objects.filter(id__in=user_ids).exclude(id__in=creators_summary_report_users).distinct()
 
         # Собираем e-mail пользователей
         emails = [user.email for user in users]
