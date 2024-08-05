@@ -22,8 +22,8 @@ class Command(BaseCommand):
         сводный отчёт по электронной почте, если все отчёты представлены.
         """
         # Получаем учетные данные из переменных окружения
-        email_user = os.getenv('EMAIL_USER')
-        email_password = os.getenv('EMAIL_PASSWORD')
+        email_user = os.getenv('SW_EMAIL_USER')
+        email_password = os.getenv('SW_EMAIL_PASSWORD')
 
         if not email_user or not email_password:
             self.stdout.write(self.style.ERROR('EMAIL_USER or EMAIL_PASSWORD environment variable is not set.'))
@@ -50,7 +50,7 @@ class Command(BaseCommand):
             account = Account(email_user, credentials=credentials, autodiscover=True, access_type=DELEGATE)
 
             # Получаем получателей из строковой переменной
-            recipients = os.getenv('REPORT_RECIPIENTS', '').split(';')
+            recipients = os.getenv('SW_REPORT_RECIPIENTS', '').split(';')
 
             subject = 'Не все отчёты представлены'
             body = (
@@ -61,7 +61,7 @@ class Command(BaseCommand):
                 'Пожалуйста, проверьте информацию и внесите необходимые данные.\n\n'
                 'Спасибо!'
             )
-
+            print(body)
             message = Message(
                 account=account,
                 subject=subject,
@@ -70,7 +70,7 @@ class Command(BaseCommand):
             )
 
             # Отправка сообщения
-            message.send()
+            # message.send()
             self.stdout.write(self.style.SUCCESS('Notification email sent successfully.'))
             return
 
@@ -82,7 +82,7 @@ class Command(BaseCommand):
         account = Account(email_user, credentials=credentials, autodiscover=True, access_type=DELEGATE)
 
         # Получаем получателей из строковой переменной
-        recipients = os.getenv('REPORT_RECIPIENTS', '').split(';')
+        recipients = os.getenv('SW_DAILY_REPORT_RECIPIENTS', '').split(';')
 
         subject = 'Сводный ежедневный отчёт по охране'
         body = (
@@ -105,5 +105,5 @@ class Command(BaseCommand):
             message.attach(file_attachment)
 
         # Отправка сообщения
-        message.send()
+        # message.send()
         self.stdout.write(self.style.SUCCESS('Summary report sent successfully.'))

@@ -22,10 +22,10 @@ class Command(BaseCommand):
         не заполнили отчёт, и отправляет им напоминания по e-mail.
         """
         # Получаем учетные данные из переменных окружения
-        email_user = os.getenv('EMAIL_USER')
-        email_password = os.getenv('EMAIL_PASSWORD')
+        email_user = os.getenv('SW_EMAIL_USER')
+        email_password = os.getenv('SW_EMAIL_PASSWORD')
         # Получаем список адресов для копий из переменных окружения
-        cc_emails = os.getenv('CC_EMAILS', '').split(';')
+        cc_emails = os.getenv('SW_CC_EMAILS', '').split(';')
         # Получаем дату для отчета
         date_obj = get_date_for_report()
 
