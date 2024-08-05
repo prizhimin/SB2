@@ -61,6 +61,7 @@ class Command(BaseCommand):
             )
             print(subject)
             print(body)
+            print(recipients)
             message = Message(
                 account=account,
                 subject=subject,
