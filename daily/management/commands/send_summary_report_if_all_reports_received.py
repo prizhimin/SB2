@@ -55,7 +55,7 @@ class Command(BaseCommand):
             subject = 'Не все отчёты представлены'
             body = (
                 f'Здравствуйте!\n\n'
-                f'Не все отчёты за {date_obj.strftime("%d.%m.%Y")} представлены. Ниже приведен список'
+                f'Не все отчёты за {date_obj.strftime("%d.%m.%Y")} представлены. Ниже приведен список '
                 f'отделов и пользователей, которые не внесли данные:\n\n'
                 f'{missing_departments_text}\n\n'
             )
