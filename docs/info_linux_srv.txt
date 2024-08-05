@@ -88,6 +88,10 @@ cd /srv && tar -cjf /var/backups/SB2-$(date +\%Y-\%m-\%d-\%H:\%M:\%S).tar.bz2 SB
 0 10 * * * PGHOST=localhost PGPORT=5432 PGUSER=djangouser PGPASSWORD=1234 /usr/bin/pg_dump -h localhost -U djangouser -d djangoproject | gzip > /var/backups/django/djangoproject-$(date +\%Y-\%m-\%d-\%H:\%M:\%S).sql.gz
 # РК сайта (без каталога venv)
 5 10 * * * tar czf /var/backups/django/SB2-$(date +\%Y-\%m-\%d-\%H:\%M:\%S).tar.gz --exclude=/srv/SB2/venv /srv/SB2
+# daily_reports Проверка наличия всех отчётов и рассылка уведомлений по тем филиалам, которые не внесли данные
+20 9 * * 1-5 /bin/bash -c 'source /srv/SB2/venv/bin/activate && /srv/SB2/venv/bin/python /srv/SB2/manage.py no_daily_reports_warning_10_min'
+# daily_reports Если все филиалы внесли данные, то формируется письмо с отчётом, иначе - кляуза
+30 9 * * 1-5 /bin/bash -c 'source /srv/SB2/venv/bin/activate && /srv/SB2/venv/bin/python /srv/SB2/manage.py send_summary_report_if_all_reports_received'
 
 /usr/local/bin/backup_sb2.sh
 #!/bin/bash
