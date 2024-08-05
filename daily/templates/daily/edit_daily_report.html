@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Редактирование ежедневного отчёта</h1>
     <div class="container report-list">
-        <form method="post" class="form-group" action="{% url 'edit_daily_report' report_id %}">
+        <form method="post" class="form-group" action="{% url 'daily_reports:edit_daily_report' report_id %}">
             {% csrf_token %}
             <table class="form-table">
                 {% for field in form %}

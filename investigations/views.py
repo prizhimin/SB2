@@ -13,6 +13,8 @@ from .decorators import check_user_department, check_summary_report_creator
 from django.utils import timezone
 from commondata.forms import DateRangeForm
 from openpyxl import Workbook, load_workbook
+from datetime import date
+from datetime import datetime
 
 @login_required
 def investigation_list(request):
@@ -191,13 +193,22 @@ def summary_report(request):
             # Обработка данных формы
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
-            investigations = Investigation.objects.filter(order_date__range=(start_date, end_date)).order_by('-order_date')
+            investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
+                              .order_by('-order_date'))
     else:
-        form = DateRangeForm()
+        # Получить текущий год
+        current_year = date.today().year
+        # Устанавливаем первоначальный диапазон дат, равный текущему году
+        form = DateRangeForm(initial={'start_date': f'01.01.{current_year}',
+                                      'end_date': f'31.12.{current_year}'})
+        investigations = (Investigation.
+                          objects.filter(order_date__range=(datetime.strptime(f'01.01.{current_year}', '%d.%m.%Y').date(),
+                                                            datetime.strptime(f'31.12.{current_year}', '%d.%m.%Y').date()))
+                          .order_by('-order_date'))
     return render(request, 'investigations/investigations_report.html',
                   {'investigations': investigations,
                    'form': form,
-                   'summary_reports_creators':summary_reports_creators})
+                   'summary_reports_creators': summary_reports_creators})
 
 
 def generate_summary_report(request, operation_id):
@@ -207,19 +218,27 @@ def generate_summary_report(request, operation_id):
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
             match operation_id:
+                # Все организации
                 case 0:
                     investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
                                       .order_by('order_date'))
+                # ПАО "Т Плюс"
                 case 1:
                     investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
                                       .filter(department__name__startswith='ПАО "Т Плюс"')
                                       .order_by('order_date'))
+                # АО "ЭнергосбыТ Плюс"
                 case 2:
                     investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
                                       .filter(department__name__startswith='АО "ЭнергосбыТ Плюс"')
                                       .order_by('order_date'))
+                # АО "ЭнергоремонТ Плюс"
                 case 3:
                     investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
                                       .filter(department__name__startswith='АО "ЭнергоремонТ Плюс"')
                                       .order_by('order_date'))
+            # Формируем пустой xlsx-файл с шапкой
+            wb = Workbook()
+            ws = wb.active
+
     return HttpResponse('Сводный отчёт по СЗ')

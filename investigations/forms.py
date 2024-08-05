@@ -11,16 +11,29 @@ class InvestigationForm(forms.ModelForm):
         self.fields['damage_amount'].required = False
         self.fields['recovered_amount'].required = False
         self.fields['outcome_summary'].required = False
-        self.fields['num_employees_discipline'].required = False
+        self.fields['num_employees_discipline_demotion'].required = False
+        self.fields['num_employees_discipline_fired'].required = False
+        self.fields['num_employees_discipline_reduction'].required = False
+        self.fields['num_employees_discipline_reprimand'].required = False
+        self.fields['num_employees_discipline_warning'].required = False
+        # self.fields['num_employees_discipline'].required = False
         self.fields['order_date'].input_formats = ['%d.%m.%Y']
         self.fields['end_date'].input_formats = ['%d.%m.%Y']
         self.fields['extended_end_date'].input_formats = ['%d.%m.%Y']
 
     class Meta:
         model = Investigation
-        fields = ['title', 'department', 'order_date', 'order_num', 'brief_summary',
+        fields = ['title', 'department', 'order_date', 'order_num',
+                  'inspection_type', 'brief_summary',
                   'initiator', 'end_date', 'extended_end_date', 'status', 'damage_amount',
-                  'recovered_amount', 'outcome_summary', 'num_employees_discipline']
+                  'recovered_amount', 'outcome_summary',
+                  'num_employees_discipline_demotion',
+                  'num_employees_discipline_fired',
+                  'num_employees_discipline_reduction',
+                  'num_employees_discipline_reprimand',
+                  'num_employees_discipline_warning'
+                  # 'num_employees_discipline'
+                  ]
         widgets = {
             'order_date': forms.DateInput(attrs={'class': 'datepicker'}),
             'end_date': forms.DateInput(attrs={'class': 'datepicker'}),

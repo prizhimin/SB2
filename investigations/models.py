@@ -38,6 +38,15 @@ class Investigation(models.Model):
         ('suspended', 'Приостановлена'),
     ]
 
+    # Возможные типы служебной проверки
+    INSPECTION_TYPE_CHOICES = [
+        ('poor_contract_performance', 'Некачественное исполнение договорных обязательств'),
+        ('procurement_violations', 'Нарушение закупочных процедур'),
+        ('unaccounted_materials', 'Хранение неучтенных ТМЦ'),
+        ('personnel_violations', 'Нарушения в работе персонала'),
+        ('other', 'Иное'),
+    ]
+
     # Название проверки
     title = models.CharField(verbose_name='Заголовок', max_length=200)
     # Филиал (включая полное название головного ЮЛ)
@@ -46,6 +55,11 @@ class Investigation(models.Model):
     order_date = models.DateField(verbose_name="Дата приказа")
     # Номер приказа
     order_num = models.CharField(verbose_name="Номер приказа", max_length=100)
+    # Тип служебной проверки
+    inspection_type = models.CharField(
+        verbose_name="Тип служебной проверки",
+        max_length=50, choices=INSPECTION_TYPE_CHOICES, default='other'
+    )
     # Краткая фабула проверки
     brief_summary = models.TextField(verbose_name="Краткая фабула проверки")
     # Инициатор проверки
@@ -79,14 +93,38 @@ class Investigation(models.Model):
     )
     # Краткое описание итогов проверки
     outcome_summary = models.TextField(verbose_name="Краткое описание итогов")
-    # Количество работников, привлечённых к дисциплинарной ответственности,
-    # значение должно быть не меньше 0
-    num_employees_discipline = models.IntegerField(
-        verbose_name="Количество работников, привлечённых к дисциплинарной "
-                     "ответственности (в т.ч. депремировано)",
+
+    # Количество работников, привлечённых к дисциплинарной ответственности (депремировано)
+    num_employees_discipline_demotion = models.IntegerField(
+        verbose_name="Количество работников, привлечённых к дисциплинарной ответственности (депремировано)",
         validators=[MinValueValidator(0)],
         default=0
     )
+    # Количество работников, привлечённых к дисциплинарной ответственности (уволено)
+    num_employees_discipline_fired = models.IntegerField(
+        verbose_name="Количество работников, привлечённых к дисциплинарной ответственности (уволено)",
+        validators=[MinValueValidator(0)],
+        default=0
+    )
+    # Количество работников, привлечённых к дисциплинарной ответственности (понижено в должности)
+    num_employees_discipline_reduction = models.IntegerField(
+        verbose_name="Количество работников, привлечённых к дисциплинарной ответственности (понижено в должности)",
+        validators=[MinValueValidator(0)],
+        default=0
+    )
+    # Количество работников, привлечённых к дисциплинарной ответственности (выговор)
+    num_employees_discipline_reprimand = models.IntegerField(
+        verbose_name="Количество работников, привлечённых к дисциплинарной ответственности (выговор)",
+        validators=[MinValueValidator(0)],
+        default=0
+    )
+    # Количество работников, привлечённых к дисциплинарной ответственности (замечание)
+    num_employees_discipline_warning = models.IntegerField(
+        verbose_name="Количество работников, привлечённых к дисциплинарной ответственности (замечание)",
+        validators=[MinValueValidator(0)],
+        default=0
+    )
+
 
     def __str__(self):
         return (self.title + ' ' +

@@ -7,3 +7,4 @@ et-xmlfile==1.1.0
 lxml>=4.9.3
 openpyxl==3.1.2
 psycopg2-binary==2.9.9
+exchangelib

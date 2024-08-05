@@ -13,9 +13,49 @@ from commondata.forms import DateForm, DateSelectionForm, DateRangeForm
 from .forms import DailyReportForm
 from .decorators import check_summary_report_creator, check_user_department, check_daily_user
 from .utils import get_date_for_report, get_users_for_department
-from shutil import copy
+
 import os
 from openpyxl import load_workbook
+from shutil import copy
+
+
+def create_daily_report(selected_date, path_to_reports):
+    """
+    Генерирует сводный ежедневный отчёт за указанную дату и возвращает путь к файлу отчёта.
+
+    :param selected_date: Дата отчета, тип datetime.date
+    :param path_to_reports: Путь к папке для сохранения отчётов
+    :return: Путь к сгенерированному файлу отчёта
+    """
+    prefix_report_name = 'Ежедневный отчёт по охране'
+    report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
+                                                f'{selected_date.strftime("%d.%m.%Y")}.xlsx')
+
+    # Копируем шаблон отчёта
+    copy(os.path.join(path_to_reports, 'daily_summary_report_blank.xlsx'), report_name)
+
+    # Получаем все отчёты за выбранную дату, отсортированные по дате
+    reports = DailyReport.objects.filter(report_date=selected_date).order_by('-report_date')
+
+    # Загружаем созданный отчёт в Excel
+    report_workbook = load_workbook(report_name)
+    report_sheet = report_workbook.active
+
+    # Словарь, соотносящий названия подразделений с соответствующими столбцами в Excel
+    departments_cols = {k: v for k, v in zip(('Марий Эл и Чувашии', 'Ульяновский', 'Удмуртский', 'Свердловский',
+                                              'Саратовский', 'Самарский', 'Пермский', 'Оренбургский',
+                                              'Нижегородский', 'Мордовский', 'Коми', 'Кировский',
+                                              'Владимирский', 'Пензенский'), 'CDEFGHIJKLMNOP')}
+
+    # Копируем данные из отчётов филиалов в сводный отчёт
+    for report in reports:
+        for idx, line in enumerate(tuple(range(3, 12)) + (16, 17), start=1):
+            report_sheet[f'{departments_cols[report.department.name]}{line}'] = getattr(report, f'field_{idx}')
+
+    # Сохраняем изменения в отчёте
+    report_workbook.save(report_name)
+
+    return report_name
 
 
 @login_required
@@ -195,38 +235,61 @@ def generate_summary_report(request):
         if form.is_valid():
             # Извлекаем выбранную дату из формы
             selected_date = form.cleaned_data['report_date']
+
             # Получаем экземпляр класса конфигурации приложения daily
             daily_config = apps.get_app_config('daily')
-            # Получаем путь к папке для сохранения отчётов
             path_to_reports = daily_config.PATH_TO_SAVE
-            # Префикс названия отчёта
-            prefix_report_name = 'Ежедневный отчёт по охране'
-            # Формируем имя файла отчёта на основе выбранной даты
-            report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
-                                                        f'{selected_date.strftime("%d.%m.%Y")}.xlsx')
-            # Копируем шаблон отчёта
-            copy(os.path.join(path_to_reports, 'daily_summary_report_blank.xlsx'), report_name)
-            # Получаем все отчёты за выбранную дату, отсортированные по дате
-            reports = DailyReport.objects.filter(report_date=selected_date).order_by('-report_date')
-            # Загружаем созданный отчёт в Excel
-            report_workbook = load_workbook(report_name)
-            report_sheet = report_workbook.active
-            # Словарь, соотносящий названия подразделений с соответствующими столбцами в Excel
-            departments_cols = {k: v for k, v in zip(('Марий Эл и Чувашии', 'Ульяновский', 'Удмуртский', 'Свердловский',
-                                                      'Саратовский', 'Самарский', 'Пермский', 'Оренбургский',
-                                                      'Нижегородский', 'Мордовский', 'Коми', 'Кировский',
-                                                      'Владимирский', 'Пензенский'), 'CDEFGHIJKLMNOP')}
-            # Копируем данные из отчётов филиалов в сводный отчёт
-            for report in reports:
-                for idx, line in enumerate(tuple(range(3, 12)) + (16, 17), start=1):
-                    report_sheet[f'{departments_cols[report.department.name]}{line}'] = getattr(report,
-                                                                                                f'field_{idx}')
-            # Сохраняем изменения в отчёте
-            report_workbook.save(report_name)
+
+            # Генерируем отчёт и получаем путь к файлу
+            report_name = create_daily_report(selected_date, path_to_reports)
+
             # Возвращаем файл отчёта в HTTP-ответе
             response = FileResponse(open(report_name, 'rb'), as_attachment=True,
-                                    filename=report_name)
+                                    filename=os.path.basename(report_name))
             return response
+
+    # """
+    # Генерация сводного ежедневного отчёта
+    # """
+    # if request.method == 'POST':
+    #     # Получаем данные формы
+    #     form = DateSelectionForm(request.POST)
+    #     if form.is_valid():
+    #         # Извлекаем выбранную дату из формы
+    #         selected_date = form.cleaned_data['report_date']
+    #         # Получаем экземпляр класса конфигурации приложения daily
+    #         daily_config = apps.get_app_config('daily')
+    #         # Получаем путь к папке для сохранения отчётов
+    #         path_to_reports = daily_config.PATH_TO_SAVE
+    #         # Префикс названия отчёта
+    #         prefix_report_name = 'Ежедневный отчёт по охране'
+    #         # Формируем имя файла отчёта на основе выбранной даты
+    #         report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
+    #                                                     f'{selected_date.strftime("%d.%m.%Y")}.xlsx')
+    #         # Копируем шаблон отчёта
+    #         copy(os.path.join(path_to_reports, 'daily_summary_report_blank.xlsx'), report_name)
+    #         # Получаем все отчёты за выбранную дату, отсортированные по дате
+    #         reports = DailyReport.objects.filter(report_date=selected_date).order_by('-report_date')
+    #         # Загружаем созданный отчёт в Excel
+    #         report_workbook = load_workbook(report_name)
+    #         report_sheet = report_workbook.active
+    #         # Словарь, соотносящий названия подразделений с соответствующими столбцами в Excel
+    #         departments_cols = {k: v for k, v in zip(('Марий Эл и Чувашии', 'Ульяновский', 'Удмуртский', 'Свердловский',
+    #                                                   'Саратовский', 'Самарский', 'Пермский', 'Оренбургский',
+    #                                                   'Нижегородский', 'Мордовский', 'Коми', 'Кировский',
+    #                                                   'Владимирский', 'Пензенский'), 'CDEFGHIJKLMNOP')}
+    #         # Копируем данные из отчётов филиалов в сводный отчёт
+    #         for report in reports:
+    #             for idx, line in enumerate(tuple(range(3, 12)) + (16, 17), start=1):
+    #                 report_sheet[f'{departments_cols[report.department.name]}{line}'] = getattr(report,
+    #                                                                                             f'field_{idx}')
+    #         # Сохраняем изменения в отчёте
+    #         report_workbook.save(report_name)
+    #         # Возвращаем файл отчёта в HTTP-ответе
+    #         response = FileResponse(open(report_name, 'rb'), as_attachment=True,
+    #                                 filename=report_name)
+    #         return response
+    #
 
 
 @login_required
@@ -237,7 +300,6 @@ def success_page(request):
 @login_required
 @check_summary_report_creator
 def summary_weekly_report(request):
-
     def get_week_range(input_date=None):
         """
         Возвращает даты понедельника и воскресенья недели, к которой принадлежит указанная дата.
@@ -257,9 +319,9 @@ def summary_weekly_report(request):
         # Определяем день недели: понедельник - 0, ..., воскресенье - 6
         weekday = input_date.weekday()
         # Определяем дату понедельника и воскресенья
-        start_date = input_date - timedelta(days=weekday)
-        end_date = start_date + timedelta(days=6)
-        return start_date, end_date
+        _start_date = input_date - timedelta(days=weekday)
+        _end_date = start_date + timedelta(days=6)
+        return _start_date, _end_date
     start_date, end_date = get_week_range()
     reports = DailyReport.objects.filter(report_date__range=(start_date, end_date)).order_by('-report_date')
     for report in reports:

@@ -4,100 +4,111 @@
 {% endblock %}
 {% block styles %}
     <style>
-    table {
-        width: 100%; /* Установка ширины таблицы на 100% от родительского контейнера */
-    }
-
-    th:first-child, td:first-child {
-        width: 35%; /* Ширина первого столбца 35% от ширины таблицы */
-    }
-
-    th:last-child, td:last-child {
-        width: 65%; /* Ширина второго столбца 65% от ширины таблицы */
-    }
-    textarea {
-        width: 100%; /* Установка ширины TextArea на 100% от родительского контейнера (второго столбца) */
-    }
+        main {
+            overflow: scroll; /* Убираем скролл для main, если он есть */
+        }
     </style>
 {% endblock %}
 {% block content %}
     <h1>Детальная информация о проверке</h1>
-    <table id="detailTable" style="width: 100%; cursor: pointer;" onclick="redirectToEditPage();">
-        <col style="width: 30%;">   
-        <col style="width: 70%;">
-        <tbody>
-            <tr>
-                <th>Название</th>
-                <td>{{ investigation.title }}</td>
-            </tr>
-            <tr>
-                <th>Филиал</th>
-                <td>{{ investigation.department.name }}</td>
-            </tr>
-            <tr>
-                <th>Дата приказа</th>
-                <td>{{ investigation.order_date }}</td>
-            </tr>
-            <tr>
-                <th>Номер приказа</th>
-                <td>{{ investigation.order_num }}</td>
-            </tr>
-            <tr>
-                <th>Краткая фабула проверки</th>
-                <td>{{ investigation.brief_summary }}</td>
-            </tr>
-            <tr>
-                <th>Инициатор проверки</th>
-                <td>{{ investigation.initiator }}</td>
-            </tr>
-            <tr>
-                <th>Дата окончания проверки</th>
-                <td>{{ investigation.end_date|default_if_none:"" }}</td>
-            </tr>
-            <tr>
-                <th>Дата окончания при продлении</th>
-                <td>{{ investigation.extended_end_date|default_if_none:"" }}</td>
-            </tr>
-            <tr>
-                <th>Текущее состояние по проверке</th>
-                <td>{{ investigation.get_status_display }}</td>
-            </tr>
-            <tr>
-                <th>Ущерб (млн. руб.)</th>
-                <td>{{ investigation.damage_amount }}</td>
-            </tr>
-            <tr>
-                <th>Возмещено/предотвращено (млн. руб)</th>
-                <td>{{ investigation.recovered_amount }}</td>
-            </tr>
-            <tr>
-                <th>Краткое описание итогов</th>
-                <td>{{ investigation.outcome_summary }}</td>
-            </tr>
-            <tr>
-                <th>Количество работников, привлечённых к дисциплинарной ответственности</th>
-                <td>{{ investigation.num_employees_discipline }}</td>
-            </tr>
-            <tr>
-                <th>Вложения</th>
-                <td> 
-                    <a href="{% url 'investigations:manage_attach' investigation.id %}">
-                        {% if investigation.has_attach > 0 %}
-                            {{ investigation.has_attach }}
-                        {% else %}
-                            Нет вложений
-                        {% endif %}
-                    </a>
-                </td>
-            </tr>
-           
-        </tbody>
-    </table>
-    <script>
-        function redirectToEditPage() {
-            window.location.href = '{% url "investigations:edit_investigation" investigation.id %}';
-        }
-    </script>
+    <div>
+        <table id="detailTable" class="report-list" style="width: 100%; cursor: pointer; overflow:scroll; max-height: 400px;" onclick="redirectToEditPage();">
+            <col style="width: 30%;">   
+            <col style="width: 70%;">
+            <tbody>
+                <tr>
+                    <th>Название</th>
+                    <td>{{ investigation.title }}</td>
+                </tr>
+                <tr>
+                    <th>Филиал</th>
+                    <td>{{ investigation.department.name }}</td>
+                </tr>
+                <tr>
+                    <th>Дата приказа</th>
+                    <td>{{ investigation.order_date }}</td>
+                </tr>
+                <tr>
+                    <th>Номер приказа</th>
+                    <td>{{ investigation.order_num }}</td>
+                </tr>
+                <tr>
+                    <th>Тип проверки</th>
+                    <td>{{ investigation.get_inspection_type_display }}</td>
+                </tr>                
+                <tr>
+                    <th>Краткая фабула проверки</th>
+                    <td>{{ investigation.brief_summary }}</td>
+                </tr>
+                <tr>
+                    <th>Инициатор проверки</th>
+                    <td>{{ investigation.initiator }}</td>
+                </tr>
+                <tr>
+                    <th>Дата окончания проверки</th>
+                    <td>{{ investigation.end_date|default_if_none:"" }}</td>
+                </tr>
+                <tr>
+                    <th>Дата окончания при продлении</th>
+                    <td>{{ investigation.extended_end_date|default_if_none:"" }}</td>
+                </tr>
+                <tr>
+                    <th>Текущее состояние по проверке</th>
+                    <td>{{ investigation.get_status_display }}</td>
+                </tr>
+                <tr>
+                    <th>Ущерб (млн. руб.)</th>
+                    <td>{{ investigation.damage_amount }}</td>
+                </tr>
+                <tr>
+                    <th>Возмещено/предотвращено (млн. руб)</th>
+                    <td>{{ investigation.recovered_amount }}</td>
+                </tr>
+                <tr>
+                    <th>Краткое описание итогов</th>
+                    <td>{{ investigation.outcome_summary }}</td>
+                </tr>
+                <tr>
+                    <th>Количество работников, привлечённых к дисциплинарной ответственности (<b>депремировано</b>)</th>
+                    <td>{{ investigation.num_employees_discipline_demotion }}</td>
+                </tr>
+                <tr>
+                    <th>Количество работников, привлечённых к дисциплинарной ответственности (<b>уволено</b>)</th>
+                    <td>{{ investigation.num_employees_discipline_fired }}</td>
+                </tr>
+                <tr>
+                    <th>Количество работников, привлечённых к дисциплинарной ответственности (<b>понижено в должности</b>)</th>
+                    <td>{{ investigation.num_employees_discipline_reduction }}</td>
+                </tr>
+                <tr>
+                    <th>Количество работников, привлечённых к дисциплинарной ответственности (<b>выговор</b>)</th>
+                    <td>{{ investigation.num_employees_discipline_reprimand }}</td>
+                </tr>
+                <tr>
+                    <th>Количество работников, привлечённых к дисциплинарной ответственности (<b>замечание</b>)</th>
+                    <td>{{ investigation.num_employees_discipline_warning }}</td>
+                </tr>
+                
+                <tr>
+                    <th>Вложения</th>
+                    <td> 
+                        <a href="{% url 'investigations:manage_attach' investigation.id %}">
+                            {% if investigation.has_attach > 0 %}
+                                {{ investigation.has_attach }}
+                            {% else %}
+                                Нет вложений
+                            {% endif %}
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <script>
+            function redirectToEditPage() {
+                window.location.href = '{% url "investigations:edit_investigation" investigation.id %}';
+            }
+        </script>
+    </div>
 {% endblock %}
 {% block buttons %}
     <div class="actions">

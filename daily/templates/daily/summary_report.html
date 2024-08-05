@@ -16,7 +16,7 @@
                 <ul>
                     {% for report in reports %}
                     <li>
-                        <a href="{% url 'report_details' report.id %}" class="action-button">
+                        <a href="{% url 'daily_reports:report_details' report.id %}" class="action-button">
                             {{ report.report_date|date:"d.m.Y" }} - {{ report.department.name }} - {{ report.author.last_name }}
                             {{ report.author.first_name }}
                         </a>
