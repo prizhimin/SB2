@@ -50,15 +50,16 @@ class Command(BaseCommand):
             account = Account(email_user, credentials=credentials, autodiscover=True, access_type=DELEGATE)
 
             # Получаем получателей из строковой переменной
-            recipients = os.getenv('SW_DAILY_REPORT_RECIPIENTS', '').split(';')
+            recipients = os.getenv('SW_CC_EMAILS', '').split(';')
 
-            subject = 'Не все отчёты представлены'
+            subject = f'Не все ежедневные отчёты по охране за {date_obj.strftime("%d.%m.%Y")} представлены'
             body = (
                 f'Здравствуйте!\n\n'
                 f'Не все отчёты за {date_obj.strftime("%d.%m.%Y")} представлены. Ниже приведен список '
                 f'отделов и пользователей, которые не внесли данные:\n\n'
                 f'{missing_departments_text}\n\n'
             )
+            print(subject)
             print(body)
             message = Message(
                 account=account,
