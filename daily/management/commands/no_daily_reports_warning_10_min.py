@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
         # Получаем e-mail пользователей, чьи отделы не заполнили отчёт
         emails = self.get_emails_of_users_without_reports(date_obj)
-        print(emails)
+        # print(emails)
         # Если список пустой, то возврат
         if not emails:
             return

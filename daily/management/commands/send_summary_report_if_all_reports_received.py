@@ -26,7 +26,7 @@ class Command(BaseCommand):
         email_password = os.getenv('SW_EMAIL_PASSWORD')
 
         if not email_user or not email_password:
-            self.stdout.write(self.style.ERROR('EMAIL_USER or EMAIL_PASSWORD environment variable is not set.'))
+            # self.stdout.write(self.style.ERROR('EMAIL_USER or EMAIL_PASSWORD environment variable is not set.'))
             return
 
         # Получаем дату для отчета
@@ -70,8 +70,8 @@ class Command(BaseCommand):
             )
 
             # Отправка сообщения
-            # message.send()
-            self.stdout.write(self.style.SUCCESS('Notification email sent successfully.'))
+            message.send()
+            # self.stdout.write(self.style.SUCCESS('Notification email sent successfully.'))
             return
 
         # Создание отчёта и получение пути к файлу
@@ -105,4 +105,4 @@ class Command(BaseCommand):
 
         # Отправка сообщения
         message.send()
-        self.stdout.write(self.style.SUCCESS('Summary report sent successfully.'))
+        # self.stdout.write(self.style.SUCCESS('Summary report sent successfully.'))
