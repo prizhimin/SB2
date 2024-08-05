@@ -58,7 +58,7 @@ class Command(BaseCommand):
         )
 
         # Отправка сообщения
-        # message.send()
+        message.send()
         # self.stdout.write(self.style.SUCCESS('Reminder email sent successfully.'))
 
     @staticmethod

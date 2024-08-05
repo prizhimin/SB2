@@ -84,11 +84,10 @@ class Command(BaseCommand):
         # Получаем получателей из строковой переменной
         recipients = os.getenv('SW_DAILY_REPORT_RECIPIENTS', '').split(';')
 
-        subject = 'Сводный ежедневный отчёт по охране'
+        subject = f'Охрана Свод {date_obj.strftime("%d.%m.%Y")}'
         body = (
-            'Здравствуйте!\n\n'
-            'Прикреплён сводный ежедневный отчёт по охране.\n\n'
-            'Спасибо!'
+            f'Уважаемые коллеги, добрый день!\n\n'
+            f'Направляю вам сводную информацию по охране за неделю'
         )
 
         # Создание сообщения
@@ -105,5 +104,5 @@ class Command(BaseCommand):
             message.attach(file_attachment)
 
         # Отправка сообщения
-        # message.send()
+        message.send()
         self.stdout.write(self.style.SUCCESS('Summary report sent successfully.'))
