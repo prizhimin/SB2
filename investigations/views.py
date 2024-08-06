@@ -1,4 +1,5 @@
 import os
+import socket
 import shutil
 from django.conf import settings
 from django.http import HttpResponse
@@ -324,10 +325,12 @@ def generate_summary_report(request, operation_id):
                 ws[f'S{row_number}'].number_format = '#,##0.000'
                 ws[f'S{row_number}'].alignment = Alignment(horizontal='center')
                 # Ссылка на материалы проверки
-                ws[f'T{row_number}'].hyperlink = f'http://10.168.0.235/investigations/{investigation.id}/manage_attach'
-                ws[f'T{row_number}'].value = 'Ссылка'
-                ws[f'T{row_number}'].style = 'Hyperlink'
-                ws[f'T{row_number}'].alignment = Alignment(horizontal='center')
+                if investigation.has_attach():
+                    ws[f'T{row_number}'].hyperlink = (f'http://{socket.gethostbyname(socket.gethostname())}'
+                                                      f'/investigations/{investigation.id}/manage_attach')
+                    ws[f'T{row_number}'].value = 'Ссылка'
+                    ws[f'T{row_number}'].style = 'Hyperlink'
+                    ws[f'T{row_number}'].alignment = Alignment(horizontal='center')
                 # Переходим к следующей строчке
                 row_number += 1
             wb.save('investigations.xlsx')
