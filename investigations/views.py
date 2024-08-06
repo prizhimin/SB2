@@ -260,7 +260,6 @@ def generate_summary_report(request, operation_id):
             ]
             #
             for idx, col in enumerate('ABCDEFGHIJKLNMOPQRST'):
-                print(len(head_sheed[idx]))
                 ws[f'{col}1'] = head_sheed[idx][0]
                 ws[f'{col}1'].alignment = Alignment(wrap_text=True, horizontal='center', vertical='center')
                 ws.column_dimensions[col].width = head_sheed[idx][1]
