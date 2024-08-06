@@ -245,7 +245,7 @@ def generate_summary_report(request, operation_id):
             wb = Workbook()
             ws = wb.active
             # Создаём "шапку"
-            head_sheed = [  # (текст ячейки, ширина ячейки)
+            head_sheet = [  # (текст ячейки, ширина ячейки)
                 ('№ п/п', 6), ('Юридическое лицо', 23), ('Филиал', 42),
                 ('Дата приказа', 10), ('Номер приказа', 10), ('Тип служебной  проверки', 49),
                 ('Краткая фабула проверки', 50), ('Инициатор проверки', 13), ('Дата окончания проверки', 12),
@@ -260,9 +260,9 @@ def generate_summary_report(request, operation_id):
             ]
             #
             for idx, col in enumerate('ABCDEFGHIJKLNMOPQRST'):
-                ws[f'{col}1'] = head_sheed[idx][0]
+                ws[f'{col}1'] = head_sheet[idx][0]
                 ws[f'{col}1'].alignment = Alignment(wrap_text=True, horizontal='center', vertical='center')
-                ws.column_dimensions[col].width = head_sheed[idx][1]
+                ws.column_dimensions[col].width = head_sheet[idx][1]
             ws.auto_filter.ref = 'A1:T1'
             # Заполняем таблицу данными о СЗ
             row_number = 2
