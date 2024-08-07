@@ -15,7 +15,7 @@ from .decorators import check_user_department, check_summary_report_creator
 from django.utils import timezone
 from commondata.forms import DateRangeForm
 from openpyxl import Workbook
-from openpyxl.styles import Alignment
+from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 from datetime import date
 from datetime import datetime
 
@@ -249,10 +249,10 @@ def generate_summary_report(request, operation_id):
             # Создаём "шапку"
             head_sheet = [  # (текст ячейки, ширина ячейки)
                 ('№ п/п', 6), ('Юридическое лицо', 23), ('Филиал', 42),
-                ('Дата приказа', 10), ('Номер приказа', 10), ('Тип служебной  проверки', 49),
-                ('Краткая фабула проверки', 50), ('Инициатор проверки', 13), ('Дата окончания проверки', 12),
-                ('Дата окончания при продлении', 12), ('Текущее состояние по проверке', 12), ('Ущерб (млн. руб.)', 8),
-                ('Возмещено/предотвращено\n(млн. руб)', 26), ('Краткое описание итогов', 40),
+                ('Дата приказа', 12), ('Номер приказа', 12), ('Тип служебной  проверки', 49),
+                ('Краткая фабула проверки', 50), ('Инициатор проверки', 13), ('Дата окончания проверки', 15),
+                ('Дата окончания при продлении', 15), ('Текущее состояние по проверке', 14), ('Ущерб (млн. руб.)', 8),
+                ('Возмещено/предотвращено\n(млн. руб)', 31), ('Краткое описание итогов', 40),
                 ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(депремировано)', 26),
                 ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(уволено)', 26),
                 ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(понижено в должности)', 26),
@@ -261,9 +261,15 @@ def generate_summary_report(request, operation_id):
                 ('Ссылка на папку\nс материалами проверки', 27)
             ]
             #
-            for idx, col in enumerate('ABCDEFGHIJKLNMOPQRST'):
+            for idx, col in enumerate('ABCDEFGHIJKLMNOPQRST'):
                 ws[f'{col}1'] = head_sheet[idx][0]
                 ws[f'{col}1'].alignment = Alignment(wrap_text=True, horizontal='center', vertical='center')
+                ws[f'{col}1'].font = Font(name='Calibri', size=11, color='FFFFFF', bold=True)
+                ws[f'{col}1'].fill = PatternFill(fill_type='solid', fgColor='70AD47')
+                ws[f'{col}1'].border = Border(top=Side(border_style='thin'),
+                                              left=Side(border_style='thin'),
+                                              right=Side(border_style='thin'),
+                                              bottom=Side(border_style='thin'))
                 ws.column_dimensions[col].width = head_sheet[idx][1]
             ws.auto_filter.ref = 'A1:T1'
             # Заполняем таблицу данными о СЗ
@@ -271,14 +277,17 @@ def generate_summary_report(request, operation_id):
             for investigation in investigations:
                 # № п/п
                 ws[f'A{row_number}'] = row_number-1
+                ws[f'A{row_number}'].alignment = Alignment(horizontal='center')
                 # ЮЛ и Филила
                 ws[f'B{row_number}'] = investigation.department.name.split('-')[0]
                 ws[f'C{row_number}'] = investigation.department.name.split('-')[1]
                 # Дата приказа
                 ws[f'D{row_number}'] = investigation.order_date
                 ws[f'D{row_number}'].number_format = 'DD.MM.YYYY'
+                ws[f'D{row_number}'].alignment = Alignment(horizontal='center')
                 # Номер приказа
                 ws[f'E{row_number}'] = investigation.order_num
+                ws[f'E{row_number}'].alignment = Alignment(horizontal='center')
                 # Тип служебной проверки
                 ws[f'F{row_number}'] = investigation.get_inspection_type_display()
                 # Краткая фабула проверки
@@ -286,25 +295,29 @@ def generate_summary_report(request, operation_id):
                 ws[f'G{row_number}'].alignment = Alignment(wrap_text=True)
                 # Инициатор проверки
                 ws[f'H{row_number}'] = investigation.initiator
+                ws[f'H{row_number}'].alignment = Alignment(horizontal='center')
                 # Дата окончания проверки
                 ws[f'I{row_number}'] = investigation.end_date
                 ws[f'I{row_number}'].number_format = 'DD.MM.YYYY'
+                ws[f'I{row_number}'].alignment = Alignment(horizontal='center')
                 # Дата окончания при продлении
                 ws[f'J{row_number}'] = investigation.extended_end_date
                 ws[f'J{row_number}'].number_format = 'DD.MM.YYYY'
+                ws[f'J{row_number}'].alignment = Alignment(horizontal='center')
                 # Текущее состояние по проверке
                 ws[f'K{row_number}'] = investigation.get_status_display()
+                ws[f'K{row_number}'].alignment = Alignment(horizontal='center')
                 # Ущерб (млн. руб.)
                 ws[f'L{row_number}'] = investigation.damage_amount
                 ws[f'L{row_number}'].number_format = '#,##0.000'
                 ws[f'L{row_number}'].alignment = Alignment(horizontal='center')
-                # Краткое описание итого
-                ws[f'M{row_number}'] = investigation.outcome_summary
-                ws[f'M{row_number}'].alignment = Alignment(wrap_text=True)
                 # Возмещено/предотвращено(млн. руб)
-                ws[f'N{row_number}'] = investigation.recovered_amount
-                ws[f'N{row_number}'].number_format = '#,##0.000'
-                ws[f'N{row_number}'].alignment = Alignment(horizontal='center')
+                ws[f'M{row_number}'] = investigation.recovered_amount
+                ws[f'M{row_number}'].number_format = '#,##0.000'
+                ws[f'M{row_number}'].alignment = Alignment(horizontal='center')
+                # Краткое описание итого
+                ws[f'N{row_number}'] = investigation.outcome_summary
+                ws[f'N{row_number}'].alignment = Alignment(wrap_text=True)
                 # Количество работников, привлечённых к дисциплионарной ответственности (депремировано)
                 ws[f'O{row_number}'] = investigation.num_employees_discipline_demotion
                 ws[f'O{row_number}'].number_format = '#,##0.000'
@@ -332,6 +345,14 @@ def generate_summary_report(request, operation_id):
                     ws[f'T{row_number}'].value = 'Ссылка'
                     ws[f'T{row_number}'].style = 'Hyperlink'
                     ws[f'T{row_number}'].alignment = Alignment(horizontal='center')
+                # Раскрашиваем строку
+                for col in 'ABCDEFGHIJKLMNOPQRST':
+                    ws[f'{col}{row_number}'].border = Border(top=Side(border_style='thin'),
+                                                             left=Side(border_style='thin'),
+                                                             right=Side(border_style='thin'),
+                                                             bottom=Side(border_style='thin'))
+                    if not (row_number % 2):
+                        ws[f'{col}{row_number}'].fill = PatternFill(fill_type='solid', fgColor='E2EFDA')
                 # Переходим к следующей строчке
                 row_number += 1
             # Получаем экземпляр класса конфигурации приложения daily

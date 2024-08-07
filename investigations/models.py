@@ -54,14 +54,14 @@ class Investigation(models.Model):
     # Дата приказа
     order_date = models.DateField(verbose_name="Дата приказа")
     # Номер приказа
-    order_num = models.CharField(verbose_name="Номер приказа", max_length=100)
+    order_num = models.CharField(verbose_name="Номер приказа", max_length=50)
     # Тип служебной проверки
     inspection_type = models.CharField(
         verbose_name="Тип служебной проверки",
         max_length=50, choices=INSPECTION_TYPE_CHOICES, default='other'
     )
     # Краткая фабула проверки
-    brief_summary = models.TextField(verbose_name="Краткая фабула проверки", max_length=400, blank=True)
+    brief_summary = models.TextField(verbose_name="Краткая фабула проверки", max_length=800, blank=True)
     # Инициатор проверки
     initiator = models.CharField(verbose_name="Инициатор проверки", max_length=200)
     # Дата окончания проверки
