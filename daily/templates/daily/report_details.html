@@ -15,7 +15,7 @@
         <p><strong>Подразделение:</strong> {{ report.department.name }}</p>
         <hr>
         <div class="report-list">
-            <table>
+            <table onclick="redirectToEditPage();">
                 <tr>
                     <th>Поле</th>
                     <th>Значение</th>
@@ -65,6 +65,11 @@
                     <td>{{ report.field_11 }}</td>
                 </tr>
             </table>
+            <script>
+                function redirectToEditPage() {
+                    window.location.href = '{% url "daily_reports:edit_daily_report" report.id %}';
+                }
+            </script>
         </div>
     </div>
 {% endblock %}
