@@ -61,7 +61,7 @@ class Investigation(models.Model):
         max_length=50, choices=INSPECTION_TYPE_CHOICES, default='other'
     )
     # Краткая фабула проверки
-    brief_summary = models.TextField(verbose_name="Краткая фабула проверки")
+    brief_summary = models.TextField(verbose_name="Краткая фабула проверки", max_length=400, blank=True)
     # Инициатор проверки
     initiator = models.CharField(verbose_name="Инициатор проверки", max_length=200)
     # Дата окончания проверки
@@ -95,33 +95,28 @@ class Investigation(models.Model):
     outcome_summary = models.TextField(verbose_name="Краткое описание итогов")
 
     # Количество работников, привлечённых к дисциплинарной ответственности (депремировано)
-    num_employees_discipline_demotion = models.IntegerField(
+    num_employees_discipline_demotion = models.PositiveSmallIntegerField(
         verbose_name="Количество работников, привлечённых к дисциплинарной ответственности (депремировано)",
-        validators=[MinValueValidator(0)],
         default=0
     )
     # Количество работников, привлечённых к дисциплинарной ответственности (уволено)
-    num_employees_discipline_fired = models.IntegerField(
+    num_employees_discipline_fired = models.PositiveSmallIntegerField(
         verbose_name="Количество работников, привлечённых к дисциплинарной ответственности (уволено)",
-        validators=[MinValueValidator(0)],
         default=0
     )
     # Количество работников, привлечённых к дисциплинарной ответственности (понижено в должности)
-    num_employees_discipline_reduction = models.IntegerField(
+    num_employees_discipline_reduction = models.PositiveSmallIntegerField(
         verbose_name="Количество работников, привлечённых к дисциплинарной ответственности (понижено в должности)",
-        validators=[MinValueValidator(0)],
         default=0
     )
     # Количество работников, привлечённых к дисциплинарной ответственности (выговор)
-    num_employees_discipline_reprimand = models.IntegerField(
+    num_employees_discipline_reprimand = models.PositiveSmallIntegerField(
         verbose_name="Количество работников, привлечённых к дисциплинарной ответственности (выговор)",
-        validators=[MinValueValidator(0)],
         default=0
     )
     # Количество работников, привлечённых к дисциплинарной ответственности (замечание)
-    num_employees_discipline_warning = models.IntegerField(
+    num_employees_discipline_warning = models.PositiveSmallIntegerField(
         verbose_name="Количество работников, привлечённых к дисциплинарной ответственности (замечание)",
-        validators=[MinValueValidator(0)],
         default=0
     )
 
