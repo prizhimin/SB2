@@ -7,13 +7,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.apps import apps
 
 from .forms import InvestigationForm, AttachedFileForm, DateForm
 from .models import Investigation, AttachedFile, InvestigationUserDepartment, InvestigationCreatorsSummaryReport
 from .decorators import check_user_department, check_summary_report_creator
 from django.utils import timezone
 from commondata.forms import DateRangeForm
-from openpyxl import Workbook, load_workbook
+from openpyxl import Workbook
 from openpyxl.styles import Alignment
 from datetime import date
 from datetime import datetime
@@ -269,7 +270,7 @@ def generate_summary_report(request, operation_id):
             row_number = 2
             for investigation in investigations:
                 # № п/п
-                ws[f'A{row_number}'] = row_number-1;
+                ws[f'A{row_number}'] = row_number-1
                 # ЮЛ и Филила
                 ws[f'B{row_number}'] = investigation.department.name.split('-')[0]
                 ws[f'C{row_number}'] = investigation.department.name.split('-')[1]
@@ -333,5 +334,17 @@ def generate_summary_report(request, operation_id):
                     ws[f'T{row_number}'].alignment = Alignment(horizontal='center')
                 # Переходим к следующей строчке
                 row_number += 1
-            wb.save('investigations.xlsx')
-    return HttpResponse('Сводный отчёт по СЗ')
+            # Получаем экземпляр класса конфигурации приложения daily
+            daily_config = apps.get_app_config('investigations')
+            path_to_reports = daily_config.PATH_TO_SAVE
+            # Префикс названия отчёта
+            prefix_report_name = 'Сводный реестр по служебным проверкам'
+            report_name = os.path.join(path_to_reports, f'{prefix_report_name}.xlsx')
+            wb.save(report_name)
+            response = FileResponse(open(report_name, 'rb'), as_attachment=True,
+                                    filename=report_name)
+            return response
+        else:
+            return HttpResponse('Invalid form data')  # Сообщение о неверных данных формы
+    else:
+        return HttpResponse('Only POST requests are allowed')  # Сообщение о неправильном методе запроса
