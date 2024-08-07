@@ -8,7 +8,7 @@
         <form method="post" class="form-group">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Показать отчёты на указанную дату</button>
+            <button type="submit">Показать служебные проверки на указанную дату</button>
         </form>
         <ul class="report-list">
                 {% for investigation in page_obj %}
@@ -20,10 +20,12 @@
                             {% endif %}
                         </a>
                     </li>
+                {% empty %}
+                    <li>Нет доступных служебных проверок</li>
                 {% endfor %}
             </ul>
         <nav aria-label="Page navigation">
-            <ul class="pagination">
+            <ul class="pagination"> 
                 {% if page_obj.has_previous %}
                     <li class="page-item">
                         <a class="page-link" href="?page=1" aria-label="Первая">
