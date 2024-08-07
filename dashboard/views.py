@@ -11,7 +11,7 @@ def dashboard(request):
     # Получаем список приложений для текущего пользователя
     user_apps = UserApp.objects.filter(user=user).first()
     if user_apps:
-        apps = user_apps.app.all()
+        apps = user_apps.app.all().order_by('name')
     else:
         apps = []
 
