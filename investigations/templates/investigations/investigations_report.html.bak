@@ -7,12 +7,11 @@
         <form method="POST" class="form-group">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" name="action" value="date-range">Служебные проверки за указанный диапазон дат</button>
-            <button type="submit" name="action" value="all-orgs">Все организации</button>
-            <button type="submit" name="action" value="tplus">ПАО "Т Плюс"</button>
-            <button type="submit" name="action" value="esb">АО "ЭнергосбыТ Плюс"</button>
-            <button type="submit" name="action" value="remont">АО "ЭнергоремонТ Плюс</button>
-            <button type="submit" name="action" value="report">Сводный отчёт</button>
+            <button type="submit">Показать отчёты за указанный диапазон дат</button>
+            <button type="submit" formaction="{% url 'investigations:generate_summary_report' 0 %}">Все организации</button>
+            <button type="submit" formaction="{% url 'investigations:generate_summary_report' 1 %}">ПАО "Т Плюс"</button>
+            <button type="submit" formaction="{% url 'investigations:generate_summary_report' 2 %}">АО "ЭнергосюбыТ Плюс"</button>
+            <button type="submit" formaction="{% url 'investigations:generate_summary_report' 3 %}">АО "ЭнергоремонТ Плюс</button>
         </form>
         <!-- Список ссылок на отчёты -->
         <ul class="report-list">
@@ -38,10 +37,6 @@
             <button type="button">Назад к списку отчётов</button>
         </a>
         <!-- Кнопка "Вернуться на Главную" -->
-        <a href="{% url 'dashboard' %}" class="action-link">
-            <button type="button">Вернуться на Главную</button>
-        </a>
-        <!-- Кнопка "Отчёт" -->
         <a href="{% url 'dashboard' %}" class="action-link">
             <button type="button">Вернуться на Главную</button>
         </a>

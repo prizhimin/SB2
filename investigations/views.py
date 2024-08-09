@@ -20,6 +20,9 @@ from datetime import date
 from datetime import datetime
 
 
+investigations = None
+
+
 @login_required
 def investigation_list(request):
     # Получаем текущего пользователя
@@ -184,7 +187,7 @@ def download_attaches_zip(request, investigation_id):
 @login_required
 @check_summary_report_creator
 def summary_report(request):
-    investigations = None
+    global investigations
     # Получаем список создателей сводных отчетов, если таковые имеются
     summary_reports_creators = []
     first_summary_report = InvestigationCreatorsSummaryReport.objects.first()
@@ -197,8 +200,27 @@ def summary_report(request):
             # Обработка данных формы
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
-            investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
-                              .order_by('-order_date'))
+            action = request.POST.get('action')
+            if action == 'date-range':
+                investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
+                                  .order_by('-order_date'))
+            elif action == 'all-orgs':
+                investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
+                                  .order_by('-order_date'))
+            elif action == 'tplus':
+                investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date),
+                                                               department__name__startswith='ПАО "Т Плюс"')
+                                  .order_by('-order_date'))
+            elif action == 'esb':
+                investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date),
+                                                               department__name__startswith='АО "ЭнергосбыТ Плюс"')
+                                  .order_by('-order_date'))
+            elif action == 'remont':
+                investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date),
+                                                               department__name__startswith='АО "ЭнергоремонТ Плюс"')
+                                  .order_by('-order_date'))
+            elif action == 'report':
+                return generate_summary_report(investigations)
     else:
         # Получить текущий год
         current_year = date.today().year
@@ -215,157 +237,127 @@ def summary_report(request):
                    'summary_reports_creators': summary_reports_creators})
 
 
-@login_required
-@check_summary_report_creator
-def generate_summary_report(request, operation_id):
-    if request.method == "POST":
-        form = DateRangeForm(request.POST)
-        if form.is_valid():
-            start_date = form.cleaned_data['start_date']
-            end_date = form.cleaned_data['end_date']
-            match operation_id:
-                # Все организации
-                case 0:
-                    investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
-                                      .order_by('order_date'))
-                # ПАО "Т Плюс"
-                case 1:
-                    investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
-                                      .filter(department__name__startswith='ПАО "Т Плюс"')
-                                      .order_by('order_date'))
-                # АО "ЭнергосбыТ Плюс"
-                case 2:
-                    investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
-                                      .filter(department__name__startswith='АО "ЭнергосбыТ Плюс"')
-                                      .order_by('order_date'))
-                # АО "ЭнергоремонТ Плюс"
-                case 3:
-                    investigations = (Investigation.objects.filter(order_date__range=(start_date, end_date))
-                                      .filter(department__name__startswith='АО "ЭнергоремонТ Плюс"')
-                                      .order_by('order_date'))
-            # Формируем пустой xlsx-файл с шапкой
-            wb = Workbook()
-            ws = wb.active
-            # Создаём "шапку"
-            head_sheet = [  # (текст ячейки, ширина ячейки)
-                ('№ п/п', 6), ('Юридическое лицо', 23), ('Филиал', 42),
-                ('Дата приказа', 12), ('Номер приказа', 12), ('Тип служебной  проверки', 49),
-                ('Краткая фабула проверки', 50), ('Инициатор проверки', 13), ('Дата окончания проверки', 15),
-                ('Дата окончания при продлении', 15), ('Текущее состояние по проверке', 14), ('Ущерб (млн. руб.)', 8),
-                ('Возмещено/предотвращено\n(млн. руб)', 31), ('Краткое описание итогов', 40),
-                ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(депремировано)', 26),
-                ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(уволено)', 26),
-                ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(понижено в должности)', 26),
-                ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(выговор)', 26),
-                ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(замечание)', 26),
-                ('Ссылка на папку\nс материалами проверки', 27)
-            ]
-            #
-            for idx, col in enumerate('ABCDEFGHIJKLMNOPQRST'):
-                ws[f'{col}1'] = head_sheet[idx][0]
-                ws[f'{col}1'].alignment = Alignment(wrap_text=True, horizontal='center', vertical='center')
-                ws[f'{col}1'].font = Font(name='Calibri', size=11, color='FFFFFF', bold=True)
-                ws[f'{col}1'].fill = PatternFill(fill_type='solid', fgColor='70AD47')
-                ws[f'{col}1'].border = Border(top=Side(border_style='thin'),
-                                              left=Side(border_style='thin'),
-                                              right=Side(border_style='thin'),
-                                              bottom=Side(border_style='thin'))
-                ws.column_dimensions[col].width = head_sheet[idx][1]
-            ws.auto_filter.ref = 'A1:T1'
-            # Заполняем таблицу данными о СЗ
-            row_number = 2
-            for investigation in investigations:
-                # № п/п
-                ws[f'A{row_number}'] = row_number-1
-                ws[f'A{row_number}'].alignment = Alignment(horizontal='center')
-                # ЮЛ и Филила
-                ws[f'B{row_number}'] = investigation.department.name.split('-')[0]
-                ws[f'C{row_number}'] = investigation.department.name.split('-')[1]
-                # Дата приказа
-                ws[f'D{row_number}'] = investigation.order_date
-                ws[f'D{row_number}'].number_format = 'DD.MM.YYYY'
-                ws[f'D{row_number}'].alignment = Alignment(horizontal='center')
-                # Номер приказа
-                ws[f'E{row_number}'] = investigation.order_num
-                ws[f'E{row_number}'].alignment = Alignment(horizontal='center')
-                # Тип служебной проверки
-                ws[f'F{row_number}'] = investigation.get_inspection_type_display()
-                # Краткая фабула проверки
-                ws[f'G{row_number}'] = investigation.brief_summary
-                ws[f'G{row_number}'].alignment = Alignment(wrap_text=True)
-                # Инициатор проверки
-                ws[f'H{row_number}'] = investigation.initiator
-                ws[f'H{row_number}'].alignment = Alignment(horizontal='center')
-                # Дата окончания проверки
-                ws[f'I{row_number}'] = investigation.end_date
-                ws[f'I{row_number}'].number_format = 'DD.MM.YYYY'
-                ws[f'I{row_number}'].alignment = Alignment(horizontal='center')
-                # Дата окончания при продлении
-                ws[f'J{row_number}'] = investigation.extended_end_date
-                ws[f'J{row_number}'].number_format = 'DD.MM.YYYY'
-                ws[f'J{row_number}'].alignment = Alignment(horizontal='center')
-                # Текущее состояние по проверке
-                ws[f'K{row_number}'] = investigation.get_status_display()
-                ws[f'K{row_number}'].alignment = Alignment(horizontal='center')
-                # Ущерб (млн. руб.)
-                ws[f'L{row_number}'] = investigation.damage_amount
-                ws[f'L{row_number}'].number_format = '#,##0.000'
-                ws[f'L{row_number}'].alignment = Alignment(horizontal='center')
-                # Возмещено/предотвращено(млн. руб)
-                ws[f'M{row_number}'] = investigation.recovered_amount
-                ws[f'M{row_number}'].number_format = '#,##0.000'
-                ws[f'M{row_number}'].alignment = Alignment(horizontal='center')
-                # Краткое описание итого
-                ws[f'N{row_number}'] = investigation.outcome_summary
-                ws[f'N{row_number}'].alignment = Alignment(wrap_text=True)
-                # Количество работников, привлечённых к дисциплионарной ответственности (депремировано)
-                ws[f'O{row_number}'] = investigation.num_employees_discipline_demotion
-                ws[f'O{row_number}'].number_format = '#,##0.000'
-                ws[f'O{row_number}'].alignment = Alignment(horizontal='center')
-                # Количество работников, привлечённых к дисциплинарной ответственности (уволено)
-                ws[f'P{row_number}'] = investigation.num_employees_discipline_fired
-                ws[f'P{row_number}'].number_format = '#,##0.000'
-                ws[f'P{row_number}'].alignment = Alignment(horizontal='center')
-                # Количество работников, привлечённых к дисциплинарной ответственности (понижено в должности)
-                ws[f'Q{row_number}'] = investigation.num_employees_discipline_reduction
-                ws[f'Q{row_number}'].number_format = '#,##0.000'
-                ws[f'Q{row_number}'].alignment = Alignment(horizontal='center')
-                # Количество работников, привлечённых к дисциплинарной ответственности (выговор)
-                ws[f'R{row_number}'] = investigation.num_employees_discipline_reprimand
-                ws[f'R{row_number}'].number_format = '#,##0.000'
-                ws[f'R{row_number}'].alignment = Alignment(horizontal='center')
-                # Количество работников, привлечённых к дисциплинарной ответственности (замечание)
-                ws[f'S{row_number}'] = investigation.num_employees_discipline_warning
-                ws[f'S{row_number}'].number_format = '#,##0.000'
-                ws[f'S{row_number}'].alignment = Alignment(horizontal='center')
-                # Ссылка на материалы проверки
-                if investigation.has_attach():
-                    ws[f'T{row_number}'].hyperlink = (f'http://{socket.gethostbyname(socket.gethostname())}'
-                                                      f'/investigations/{investigation.id}/manage_attach')
-                    ws[f'T{row_number}'].value = 'Ссылка'
-                    ws[f'T{row_number}'].style = 'Hyperlink'
-                    ws[f'T{row_number}'].alignment = Alignment(horizontal='center')
-                # Раскрашиваем строку
-                for col in 'ABCDEFGHIJKLMNOPQRST':
-                    ws[f'{col}{row_number}'].border = Border(top=Side(border_style='thin'),
-                                                             left=Side(border_style='thin'),
-                                                             right=Side(border_style='thin'),
-                                                             bottom=Side(border_style='thin'))
-                    if not (row_number % 2):
-                        ws[f'{col}{row_number}'].fill = PatternFill(fill_type='solid', fgColor='E2EFDA')
-                # Переходим к следующей строчке
-                row_number += 1
-            # Получаем экземпляр класса конфигурации приложения daily
-            daily_config = apps.get_app_config('investigations')
-            path_to_reports = daily_config.PATH_TO_SAVE
-            # Префикс названия отчёта
-            prefix_report_name = 'Сводный реестр по служебным проверкам'
-            report_name = os.path.join(path_to_reports, f'{prefix_report_name}.xlsx')
-            wb.save(report_name)
-            response = FileResponse(open(report_name, 'rb'), as_attachment=True,
-                                    filename=report_name)
-            return response
-        else:
-            return HttpResponse('Invalid form data')  # Сообщение о неверных данных формы
-    else:
-        return HttpResponse('Only POST requests are allowed')  # Сообщение о неправильном методе запроса
+
+def generate_summary_report(set_investigations):
+    # Формируем пустой xlsx-файл с шапкой
+    wb = Workbook()
+    ws = wb.active
+    # Создаём "шапку"
+    head_sheet = [  # (текст ячейки, ширина ячейки)
+        ('№ п/п', 6), ('Юридическое лицо', 23), ('Филиал', 42),
+        ('Дата приказа', 12), ('Номер приказа', 12), ('Тип служебной  проверки', 49),
+        ('Краткая фабула проверки', 50), ('Инициатор проверки', 13), ('Дата окончания проверки', 15),
+        ('Дата окончания при продлении', 15), ('Текущее состояние по проверке', 14), ('Ущерб (млн. руб.)', 8),
+        ('Возмещено/предотвращено\n(млн. руб)', 31), ('Краткое описание итогов', 40),
+        ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(депремировано)', 26),
+        ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(уволено)', 26),
+        ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(понижено в должности)', 26),
+        ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(выговор)', 26),
+        ('Количество работников, привлечённых\nк дисциплионарной ответственности\n(замечание)', 26),
+        ('Ссылка на папку\nс материалами проверки', 27)
+    ]
+    #
+    for idx, col in enumerate('ABCDEFGHIJKLMNOPQRST'):
+        ws[f'{col}1'] = head_sheet[idx][0]
+        ws[f'{col}1'].alignment = Alignment(wrap_text=True, horizontal='center', vertical='center')
+        ws[f'{col}1'].font = Font(name='Calibri', size=11, color='FFFFFF', bold=True)
+        ws[f'{col}1'].fill = PatternFill(fill_type='solid', fgColor='70AD47')
+        ws[f'{col}1'].border = Border(top=Side(border_style='thin'),
+                                      left=Side(border_style='thin'),
+                                      right=Side(border_style='thin'),
+                                      bottom=Side(border_style='thin'))
+        ws.column_dimensions[col].width = head_sheet[idx][1]
+    ws.auto_filter.ref = 'A1:T1'
+    # Заполняем таблицу данными о СЗ
+    row_number = 2
+    for investigation in set_investigations:
+        # № п/п
+        ws[f'A{row_number}'] = row_number-1
+        ws[f'A{row_number}'].alignment = Alignment(horizontal='center')
+        # ЮЛ и Филила
+        ws[f'B{row_number}'] = investigation.department.name.split('-')[0]
+        ws[f'C{row_number}'] = investigation.department.name.split('-')[1]
+        # Дата приказа
+        ws[f'D{row_number}'] = investigation.order_date
+        ws[f'D{row_number}'].number_format = 'DD.MM.YYYY'
+        ws[f'D{row_number}'].alignment = Alignment(horizontal='center')
+        # Номер приказа
+        ws[f'E{row_number}'] = investigation.order_num
+        ws[f'E{row_number}'].alignment = Alignment(horizontal='center')
+        # Тип служебной проверки
+        ws[f'F{row_number}'] = investigation.get_inspection_type_display()
+        # Краткая фабула проверки
+        ws[f'G{row_number}'] = investigation.brief_summary
+        ws[f'G{row_number}'].alignment = Alignment(wrap_text=True)
+        # Инициатор проверки
+        ws[f'H{row_number}'] = investigation.initiator
+        ws[f'H{row_number}'].alignment = Alignment(horizontal='center')
+        # Дата окончания проверки
+        ws[f'I{row_number}'] = investigation.end_date
+        ws[f'I{row_number}'].number_format = 'DD.MM.YYYY'
+        ws[f'I{row_number}'].alignment = Alignment(horizontal='center')
+        # Дата окончания при продлении
+        ws[f'J{row_number}'] = investigation.extended_end_date
+        ws[f'J{row_number}'].number_format = 'DD.MM.YYYY'
+        ws[f'J{row_number}'].alignment = Alignment(horizontal='center')
+        # Текущее состояние по проверке
+        ws[f'K{row_number}'] = investigation.get_status_display()
+        ws[f'K{row_number}'].alignment = Alignment(horizontal='center')
+        # Ущерб (млн. руб.)
+        ws[f'L{row_number}'] = investigation.damage_amount
+        ws[f'L{row_number}'].number_format = '#,##0.000'
+        ws[f'L{row_number}'].alignment = Alignment(horizontal='center')
+        # Возмещено/предотвращено(млн. руб)
+        ws[f'M{row_number}'] = investigation.recovered_amount
+        ws[f'M{row_number}'].number_format = '#,##0.000'
+        ws[f'M{row_number}'].alignment = Alignment(horizontal='center')
+        # Краткое описание итого
+        ws[f'N{row_number}'] = investigation.outcome_summary
+        ws[f'N{row_number}'].alignment = Alignment(wrap_text=True)
+        # Количество работников, привлечённых к дисциплионарной ответственности (депремировано)
+        ws[f'O{row_number}'] = investigation.num_employees_discipline_demotion
+        ws[f'O{row_number}'].number_format = '#,##0.000'
+        ws[f'O{row_number}'].alignment = Alignment(horizontal='center')
+        # Количество работников, привлечённых к дисциплинарной ответственности (уволено)
+        ws[f'P{row_number}'] = investigation.num_employees_discipline_fired
+        ws[f'P{row_number}'].number_format = '#,##0.000'
+        ws[f'P{row_number}'].alignment = Alignment(horizontal='center')
+        # Количество работников, привлечённых к дисциплинарной ответственности (понижено в должности)
+        ws[f'Q{row_number}'] = investigation.num_employees_discipline_reduction
+        ws[f'Q{row_number}'].number_format = '#,##0.000'
+        ws[f'Q{row_number}'].alignment = Alignment(horizontal='center')
+        # Количество работников, привлечённых к дисциплинарной ответственности (выговор)
+        ws[f'R{row_number}'] = investigation.num_employees_discipline_reprimand
+        ws[f'R{row_number}'].number_format = '#,##0.000'
+        ws[f'R{row_number}'].alignment = Alignment(horizontal='center')
+        # Количество работников, привлечённых к дисциплинарной ответственности (замечание)
+        ws[f'S{row_number}'] = investigation.num_employees_discipline_warning
+        ws[f'S{row_number}'].number_format = '#,##0.000'
+        ws[f'S{row_number}'].alignment = Alignment(horizontal='center')
+        # Ссылка на материалы проверки
+        if investigation.has_attach():
+            ws[f'T{row_number}'].hyperlink = (f'http://{socket.gethostbyname(socket.gethostname())}'
+                                              f'/investigations/{investigation.id}/manage_attach')
+            ws[f'T{row_number}'].value = 'Ссылка'
+            ws[f'T{row_number}'].style = 'Hyperlink'
+            ws[f'T{row_number}'].alignment = Alignment(horizontal='center')
+        # Раскрашиваем строку
+        for col in 'ABCDEFGHIJKLMNOPQRST':
+            ws[f'{col}{row_number}'].border = Border(top=Side(border_style='thin'),
+                                                     left=Side(border_style='thin'),
+                                                     right=Side(border_style='thin'),
+                                                     bottom=Side(border_style='thin'))
+            if not (row_number % 2):
+                ws[f'{col}{row_number}'].fill = PatternFill(fill_type='solid', fgColor='E2EFDA')
+        # Переходим к следующей строчке
+        row_number += 1
+    # Получаем экземпляр класса конфигурации приложения daily
+    daily_config = apps.get_app_config('investigations')
+    path_to_reports = daily_config.PATH_TO_SAVE
+    # Префикс названия отчёта
+    prefix_report_name = 'Сводный реестр по служебным проверкам'
+    report_name = os.path.join(path_to_reports, f'{prefix_report_name}.xlsx')
+    wb.save(report_name)
+    response = FileResponse(open(report_name, 'rb'), as_attachment=True,
+                            filename=report_name)
+    return response
