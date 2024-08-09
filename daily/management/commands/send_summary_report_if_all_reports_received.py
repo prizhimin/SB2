@@ -47,12 +47,17 @@ class Command(BaseCommand):
             # Получаем получателей из строковой переменной
             recipients = os.getenv('SW_DAILY_CC_EMAILS', '').split(';')
             subject = f'Не все ежедневные отчёты по охране за {date_obj.strftime("%d.%m.%Y")} представлены'
-            body = (
-                f'Здравствуйте!\n\n'
-                f'Не все отчёты за {date_obj.strftime("%d.%m.%Y")} представлены. Ниже приведен список '
-                f'филиалов и пользователей, которые не внесли данные:\n\n'
-                f'{missing_departments_text}\n\n'
-            )
+            body = f"""
+                <html>
+                <body>
+                    <p>Здравствуйте!</p>
+                    <p>Не все отчёты за {date_obj.strftime('%d.%m.%Y')} представлены</p>
+                    <p>Ниже приведён список филиалов и пользователей, которые не внесли данные:</p>
+                    {''.join([f'<p>{line}</p>' for line in missing_departments_text.splitlines()])}
+                    <p><i>Сообщение создано автоматически, отвечать на него не требуется</i></p>
+                </body>
+                </html>
+            """
             message = Message(
                 account=account,
                 subject=subject,
@@ -71,11 +76,15 @@ class Command(BaseCommand):
         # Получаем получателей из строковой переменной
         recipients = os.getenv('SW_DAILY_REPORT_RECIPIENTS', '').split(';')
         subject = f'Охрана Свод {date_obj.strftime("%d.%m.%Y")}'
-        body = (
-            f'Уважаемые коллеги, добрый день!\n\n'
-            f'Направляю вам сводную информацию по охране за {date_obj.strftime("%d.%m.%Y")}\n\n'
-            f'Сообщение создано автоматически, отвечать на него не требуется'
-        )
+        body = f"""
+            <html>
+            <body>
+                <p>Уважаемые коллеги, добрый день!</p>
+                <p>Направляю вам сводную информацию по охране за {date_obj.strftime('%d.%m.%Y')}.</p>
+                <p><i>Сообщение создано автоматически, отвечать на него не требуется.</i></p>
+            </body>
+            </html>
+        """
         # Создание сообщения
         message = Message(
             account=account,

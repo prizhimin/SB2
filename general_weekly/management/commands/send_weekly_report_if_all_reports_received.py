@@ -49,18 +49,22 @@ class Command(BaseCommand):
             # Получаем получателей из строковой переменной
             recipients = os.getenv('SW_WEEKLY_CC_EMAILS', '').split(';')
             subject = f'Не все еженедельные отчёты по эффективности СБ за {date_obj.strftime("%d.%m.%Y")} представлены'
-            body = (
-                f'Здравствуйте!\n\n'
-                f'Не все отчёты за {date_obj.strftime("%d.%m.%Y")} представлены. Ниже приведен список '
-                f'филиалов и пользователей, которые не внесли данные:\n\n'
-                f'{missing_departments_text}\n\n'
-            )
+            body = f"""
+                <html>
+                <body>
+                    <p>Здравствуйте!</p>
+                    <p>Не все отчёты за {date_obj.strftime('%d.%m.%Y')} представлены</p>
+                    <p>Ниже приведён список филиалов и пользователей, которые не внесли данные:</p>
+                    {''.join([f'<p>{line}</p>' for line in missing_departments_text.splitlines()])}
+                    <p><i>Сообщение создано автоматически, отвечать на него не требуется</i></p>
+                </body>
+                </html>
+            """
             message = Message(
                 account=account,
                 subject=subject,
                 body=HTMLBody(body),
                 to_recipients=[email.strip() for email in recipients if email.strip()]
-                # cc_recipients=[email for email in cc_emails if email]
             )
 
             # Отправка сообщения
@@ -78,12 +82,15 @@ class Command(BaseCommand):
         recipients = os.getenv('SW_WEEKLY_REPORT_RECIPIENTS', '').split(';')
 
         subject = f'Сводный отчёт по эффективности СБ за {date_obj.strftime("%d.%m.%Y")}'
-        body = (
-            f'Уважаемые коллеги, добрый день!\n\n'
-            f'Направляю вам сводный отчёт по эффективности СБ за {date_obj.strftime("%d.%m.%Y")}\n\n'
-            f'Сообщение создано автоматически, отвечать на него не требуется'
-        )
-
+        body = f"""
+            <html>
+            <body>
+                <p>Уважаемые коллеги, добрый день!</p>
+                <p>Направляю вам сводный отчёт по эффективности СБ за {date_obj.strftime('%d.%m.%Y')}</p>
+                <p><i>Сообщение создано автоматически, отвечать на него не требуется</i></p>
+            </body>
+            </html>
+        """
         # Создание сообщения
         message = Message(
             account=account,

@@ -28,25 +28,27 @@ class Command(BaseCommand):
         cc_emails = os.getenv('SW_DAILY_CC_EMAILS', '').split(';')
         # Получаем дату для отчета
         date_obj = get_date_for_report()
-
         # Получаем e-mail пользователей, чьи отделы не заполнили отчёт
         emails = self.get_emails_of_users_without_reports(date_obj)
         # Если список пустой, то возврат
         if not emails:
             return
-
         # Настройка e-mail клиента
         credentials = Credentials(email_user, email_password)
         account = Account(email_user, credentials=credentials,
                           autodiscover=True, access_type=DELEGATE)
-
         # Создание и отправка сообщения
         subject = f"Напоминание о внесении данных для ежедневного отчёта по охране за {date_obj.strftime('%d.%m.%Y')}"
-        body = (
-            f'Здравствуйте!\n\n'
-            f'Пожалуйста, внесите данные для ежедневного отчёта по охране за {date_obj.strftime("%d.%m.%Y")}.\n\n'
-            f'Спасибо!'
-        )
+        body = f"""
+            <html>
+            <body>
+                <p>Здравствуйте!</p>
+                <p>Пожалуйста, внесите данные для <strong>ежедневного отчёта по охране</strong> за {date_obj.strftime('%d.%m.%Y')}.</p>
+                <p>Спасибо!</p>
+                <p>Сообщение сгененировано автоматически и не требует ответа</p>
+            </body>
+            </html>
+        """
         message = Message(
             account=account,
             subject=subject,
