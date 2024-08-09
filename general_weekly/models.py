@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from commondata.models import Department
-from .utils import friday_of_week
+from general_weekly.utils import friday_of_week
 
 
 class WeeklyReport(models.Model):

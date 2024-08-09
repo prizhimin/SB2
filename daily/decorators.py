@@ -30,7 +30,6 @@ def check_summary_report_creator(view_func):
             return view_func(request, *args, **kwargs)
         else:
             # Если пользователь не является создателем, перенаправляем его на страницу доступа запрещен
-            messages.error(request, "Доступ запрещен")
             return render(request, 'daily/access_denied_page.html')
     return wrapper
 

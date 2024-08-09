@@ -276,8 +276,10 @@ def summary_weekly_report(request):
         weekday = input_date.weekday()
         # Определяем дату понедельника и воскресенья
         _start_date = input_date - timedelta(days=weekday)
-        _end_date = start_date + timedelta(days=6)
+        _end_date = _start_date + timedelta(days=6)
         return _start_date, _end_date
+
+
     start_date, end_date = get_week_range()
     reports = DailyReport.objects.filter(report_date__range=(start_date, end_date)).order_by('-report_date')
     for report in reports:

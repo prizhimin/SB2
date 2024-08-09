@@ -186,7 +186,38 @@ def generate_general_weekly_summary_report(request):
     """
     Генерация сводного еженедельного отчёта
     """
+    if request.method == 'POST':
+        # Получаем данные формы
+        form = DateSelectionForm(request.POST)
+        if form.is_valid():
+            # Извлекаем выбранную дату из формы
+            selected_date = friday_of_week(form.cleaned_data['report_date'])
+            # Получаем экземпляр класса конфигурации приложения general_weekly
+            general_weekly_config = apps.get_app_config('general_weekly')
+            # Получаем путь к папке для сохранения отчётов
+            path_to_reports = general_weekly_config.PATH_TO_SAVE
+            report_name = create_general_weekly_report(selected_date, path_to_reports)
+            return FileResponse(open(report_name, 'rb'), as_attachment=True,
+                                filename=report_name)
 
+
+def general_weekly_access_denied_page(request):
+    return render(request, 'general_weekly/access_denied_page.html')
+
+
+@login_required
+def success_page(request):
+    return render(request, 'general_weekly/success_page.html')
+
+
+def create_general_weekly_report(selected_date, path_to_reports):
+    """
+    Генерирует сводный ежедневный отчёт за указанную дату и возвращает путь к файлу отчёта.
+
+    :param selected_date: Дата отчета, тип datetime.date
+    :param path_to_reports: Путь к папке для сохранения отчётов
+    :return: Путь к сгенерированному файлу отчёта
+    """
     # описание структуры готового отчёта
     report_structure = (
         # 1 значение - строка, "Номер подпункта"
@@ -228,108 +259,105 @@ def generate_general_weekly_summary_report(request):
         # Вернуть кортеж из строк с датами
         return last_saturday_str, current_friday_str
 
-    if request.method == 'POST':
-        # Получаем данные формы
-        form = DateSelectionForm(request.POST)
-        if form.is_valid():
-            # Извлекаем выбранную дату из формы
-            selected_date = friday_of_week(form.cleaned_data['report_date'])
-            # Получаем экземпляр класса конфигурации приложения general_weekly
-            general_weekly_config = apps.get_app_config('general_weekly')
-            # Получаем путь к папке для сохранения отчётов
-            path_to_reports = general_weekly_config.PATH_TO_SAVE
-            # Префикс названия отчёта
-            prefix_report_name = 'Еженедельный отчёт филиалов'
-            # Формируем имя файла отчёта на основе выбранной даты
-            report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
-                                                        f'{selected_date.strftime("%d.%m.%Y")}.xlsx')
-            # Создаём xlsx-файл отчёта
-            wb = Workbook()
-            sheet = wb.active
-            sheet.title = f'Отчёт {selected_date.strftime("%d.%m.%Y")}'
-            # Заполняем отчёт
-            # Масштаб 55%
-            sheet.page_setup.scale = 55  # НЕ РАБОТАЕТ!!!
-            # Границы ячейки
-            border = Border(left=Side(style='thin'), right=Side(style='thin'),
-                            top=Side(style='thin'), bottom=Side(style='thin'))
-            # Форматируем 1 строку
-            sheet.merge_cells(f'A1:C1')
-            sheet.column_dimensions['A'].width = 4  # 15
-            sheet.column_dimensions['B'].width = 44  # 59
-            sheet.column_dimensions['C'].width = 115  # 247
-            sheet.row_dimensions[1].height = 43  # 100
-            last_saturday, current_friday = get_last_saturday_and_current_friday_dates(selected_date)
-            sheet['A1'].value = f'Еженедельный отчёт\n' \
-                                f'эффективности работы СБ филиалов\n' \
-                                f'c {last_saturday} г. по {current_friday} г.'
-            sheet['A1'].font = Font(name='Tahoma', bold=True, size=11)  # size=24)
-            sheet['A1'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-            sheet['A1'].border = border
-            sheet['B1'].border = border
-            sheet['C1'].border = border
-            # Получаем все отчёты за выбранную дату, отсортированные по названию филиала
-            reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('department__name')
-            current_row = 2
-            start_row = 0
-            for num, paragraph in enumerate(report_structure, start=1):
-                if paragraph[2]:
-                    # суммируем значения
-                    sheet[f'A{current_row}'] = paragraph[0]
-                    sheet[f'B{current_row}'] = paragraph[1]
-                    sheet[f'C{current_row}'] = reports.aggregate(total_field_sum=Sum(f'field{num}'))[f'total_field_sum']
-                    sheet[f'A{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
-                    sheet[f'B{current_row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
-                    sheet[f'C{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
-                    sheet[f'A{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
-                    sheet[f'B{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
-                    sheet[f'B{current_row}'].fill = PatternFill(fill_type='solid',
-                                                                start_color='ffff00', end_color='ffff00')
+    # Префикс названия отчёта
+    prefix_report_name = 'Еженедельный отчёт филиалов'
+    # Формируем имя файла отчёта на основе выбранной даты
+    report_name = os.path.join(path_to_reports, f'{prefix_report_name} за '
+                                                f'{selected_date.strftime("%d.%m.%Y")}.xlsx')
+    # Создаём xlsx-файл отчёта
+    wb = Workbook()
+    sheet = wb.active
+    sheet.title = f'Отчёт {selected_date.strftime("%d.%m.%Y")}'
+    # Заполняем отчёт
+    # Масштаб 55%
+    sheet.page_setup.scale = 55  # НЕ РАБОТАЕТ!!!
+    # Границы ячейки
+    border = Border(left=Side(style='thin'), right=Side(style='thin'),
+                    top=Side(style='thin'), bottom=Side(style='thin'))
+    # Форматируем 1 строку
+    sheet.merge_cells(f'A1:C1')
+    sheet.column_dimensions['A'].width = 4  # 15
+    sheet.column_dimensions['B'].width = 44  # 59
+    sheet.column_dimensions['C'].width = 115  # 247
+    sheet.row_dimensions[1].height = 43  # 100
+    last_saturday, current_friday = get_last_saturday_and_current_friday_dates(selected_date)
+    sheet['A1'].value = f'Еженедельный отчёт\n' \
+                        f'эффективности работы СБ филиалов\n' \
+                        f'c {last_saturday} г. по {current_friday} г.'
+    sheet['A1'].font = Font(name='Tahoma', bold=True, size=11)  # size=24)
+    sheet['A1'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+    sheet['A1'].border = border
+    sheet['B1'].border = border
+    sheet['C1'].border = border
+    # Получаем все отчёты за выбранную дату, отсортированные по названию филиала
+    reports = WeeklyReport.objects.filter(report_date=selected_date).order_by('department__name')
+    current_row = 2
+    start_row = 0
+    for num, paragraph in enumerate(report_structure, start=1):
+        if paragraph[2]:
+            # суммируем значения
+            sheet[f'A{current_row}'] = paragraph[0]
+            sheet[f'B{current_row}'] = paragraph[1]
+            sheet[f'C{current_row}'] = reports.aggregate(total_field_sum=Sum(f'field{num}'))[f'total_field_sum']
+            sheet[f'A{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
+            sheet[f'B{current_row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
+            sheet[f'C{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
+            sheet[f'A{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
+            sheet[f'B{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
+            sheet[f'B{current_row}'].fill = PatternFill(fill_type='solid',
+                                                        start_color='ffff00', end_color='ffff00')
+            sheet[f'C{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
+            sheet[f'A{current_row}'].border = border
+            sheet[f'B{current_row}'].border = border
+            sheet[f'C{current_row}'].border = border
+            current_row += 1
+        else:
+            # формируем строковое описание
+            start_row = current_row
+            sheet[f'A{current_row}'] = paragraph[0]
+            sheet[f'B{current_row}'] = paragraph[1]
+            sheet[f'A{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
+            sheet[f'B{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
+            sheet[f'A{current_row}'].border = border
+            sheet[f'B{current_row}'].border = border
+            sheet[f'A{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
+            sheet[f'B{current_row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
+            for report in reports:
+                if getattr(report, f'field{num}').strip():
+                    sheet.row_dimensions[current_row].auto_size = True
+                    sheet[f'C{current_row}'] = CellRichText(
+                        TextBlock(InlineFont(rFont='Tahoma', sz=11, b=True), report.department.name),
+                        '     ',
+                        TextBlock(InlineFont(rFont='Tahoma', sz=11), getattr(report, f'field{num}').strip()),
+                    )
                     sheet[f'C{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
-                    sheet[f'A{current_row}'].border = border
-                    sheet[f'B{current_row}'].border = border
                     sheet[f'C{current_row}'].border = border
+                    sheet[f'C{current_row}'].alignment = Alignment(horizontal='left', vertical='center',
+                                                                   wrap_text=True)
+
                     current_row += 1
-                else:
-                    # формируем строковое описание
-                    start_row = current_row
-                    sheet[f'A{current_row}'] = paragraph[0]
-                    sheet[f'B{current_row}'] = paragraph[1]
-                    sheet[f'A{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
-                    sheet[f'B{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
-                    sheet[f'A{current_row}'].border = border
-                    sheet[f'B{current_row}'].border = border
-                    sheet[f'A{current_row}'].alignment = Alignment(horizontal='center', vertical='center')
-                    sheet[f'B{current_row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
-                    for report in reports:
-                        if getattr(report, f'field{num}').strip():
-                            sheet.row_dimensions[current_row].auto_size = True
-                            sheet[f'C{current_row}'] = CellRichText(
-                                TextBlock(InlineFont(rFont='Tahoma', sz=11, b=True), report.department.name),
-                                '     ',
-                                TextBlock(InlineFont(rFont='Tahoma', sz=11), getattr(report, f'field{num}').strip()),
-                            )
-                            sheet[f'C{current_row}'].font = Font(name='Tahoma', size=11)  # size=24)
-                            sheet[f'C{current_row}'].border = border
-                            sheet[f'C{current_row}'].alignment = Alignment(horizontal='left', vertical='center',
-                                                                           wrap_text=True)
-
-                            current_row += 1
-                    if start_row < current_row:
-                        sheet.merge_cells(f'A{start_row}:A{current_row - 1}')
-                        sheet.merge_cells(f'B{start_row}:B{current_row - 1}')
-            # закрасим ячейку B в посл. строке жёлтым
-            sheet[f'B{start_row}'].fill = PatternFill(fill_type='solid',
-                                                      start_color='ffff00', end_color='ffff00')
-            wb.save(report_name)
-            return FileResponse(open(report_name, 'rb'), as_attachment=True,
-                                filename=report_name)
+            if start_row < current_row:
+                sheet.merge_cells(f'A{start_row}:A{current_row - 1}')
+                sheet.merge_cells(f'B{start_row}:B{current_row - 1}')
+    # закрасим ячейку B в посл. строке жёлтым
+    sheet[f'B{start_row}'].fill = PatternFill(fill_type='solid',
+                                              start_color='ffff00', end_color='ffff00')
+    wb.save(report_name)
+    return report_name
 
 
-def general_weekly_access_denied_page(request):
-    return render(request, 'general_weekly/access_denied_page.html')
-
-
-@login_required
-def success_page(request):
-    return render(request, 'general_weekly/success_page.html')
+def get_users_for_department(department: str) -> list:
+    """
+    department: строковое название филиала
+    users: модель, хранящая отношения пользователя и филиалы
+    return: список пользователей для данного филиала
+    """
+    # return [user for user in users if department in user.department]
+    users = WeeklyUserDepartment.objects.filter(department__name=department)
+    # Получаем всех создателей сводного отчета
+    creators = WeeklyCreatorsSummaryReport.objects.values_list('creators', flat=True)
+    # Исключаем создателей из списка пользователей
+    users = users.exclude(user__in=creators)
+    # Извлекаем всех пользователей из найденных записей
+    users = [f'{user.user.last_name} {user.user.first_name}' for user in users]
+    return users

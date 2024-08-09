@@ -1,10 +1,11 @@
 import os
+import datetime
 from django.contrib.auth.models import User
 from django.core.management import BaseCommand
 
 from commondata.models import Department
-from daily.models import UserDepartment, CreatorsSummaryReport
-from daily.utils import get_date_for_report
+from general_weekly.models import WeeklyUserDepartment, WeeklyCreatorsSummaryReport, WeeklyReport
+from general_weekly.utils import friday_of_week
 
 from exchangelib import Credentials, Account, Message, DELEGATE, HTMLBody
 
@@ -14,7 +15,7 @@ class Command(BaseCommand):
     Команда Django для отправки напоминаний пользователям о внесении данных в
     ежедневный отчёт по охране за 10 минут до окончания рабочего дня.
     """
-    help = 'Напоминание за 10 минут о внесении данных для ежедневного отчёта по охране'
+    help = 'Напоминание за 10 минут о внесении данных для еженедельного отчёта по эффективности СБ'
 
     def handle(self, *args, **kwargs):
         """
@@ -25,10 +26,9 @@ class Command(BaseCommand):
         email_user = os.getenv('SW_EMAIL_USER')
         email_password = os.getenv('SW_EMAIL_PASSWORD')
         # Получаем список адресов для копий из переменных окружения
-        cc_emails = os.getenv('SW_DAILY_CC_EMAILS', '').split(';')
+        cc_emails = os.getenv('SW_WEEKLY_CC_EMAILS', '').split(';')
         # Получаем дату для отчета
-        date_obj = get_date_for_report()
-
+        date_obj = friday_of_week(datetime.datetime.now())
         # Получаем e-mail пользователей, чьи отделы не заполнили отчёт
         emails = self.get_emails_of_users_without_reports(date_obj)
         # Если список пустой, то возврат
@@ -41,11 +41,12 @@ class Command(BaseCommand):
                           autodiscover=True, access_type=DELEGATE)
 
         # Создание и отправка сообщения
-        subject = f"Напоминание о внесении данных для ежедневного отчёта по охране за {date_obj.strftime('%d.%m.%Y')}"
+        subject = "Напоминание о внесении данных для еженедельного отчёта по эффективности СБ"
         body = (
             f'Здравствуйте!\n\n'
-            f'Пожалуйста, внесите данные для ежедневного отчёта по охране за {date_obj.strftime("%d.%m.%Y")}.\n\n'
-            f'Спасибо!'
+            f'Пожалуйста, внесите данные для еженедельного отчёта по эффективности СБ.\n\n'
+            f'Спасибо!\n\n'
+            f'Это сообщение сгенирировано автоматически, отвечать на него не требуется'
         )
         message = Message(
             account=account,
@@ -54,6 +55,7 @@ class Command(BaseCommand):
             to_recipients=[email for email in emails.split('; ') if email],
             cc_recipients=[email for email in cc_emails if email]
         )
+
         # Отправка сообщения
         message.send()
 
@@ -66,22 +68,18 @@ class Command(BaseCommand):
         :param date: Дата отчета (тип datetime.date).
         :return: Строка с e-mail, разделенными точкой с запятой.
         """
-        # Получаем все отделы, у которых нет отчёта за указанную дату
-        departments_without_reports = Department.objects.exclude(
-            dailyreport__report_date=date
+        # Филиалы, которые создали отчёты
+        departments_with_reports = WeeklyReport.objects.filter(report_date=date).values_list('department', flat=True)
+        # Филиалы, которые не создали отчёты
+        departments_without_reports = Department.objects.exclude(id__in=departments_with_reports)
+        # Пользователи, связанные с этими филиалами
+        users_without_reports = User.objects.filter(
+            weeklyuserdepartment__department__in=departments_without_reports
         ).distinct()
-
-        # Собираем всех пользователей, у которых есть доступ к этим отделам
-        user_ids = UserDepartment.objects.filter(
-            department__in=departments_without_reports
-        ).values_list('user_id', flat=True)
-
-        # Находим пользователей по их ID, исключая пользователей из CreatorsSummaryReport
-        creators_summary_report_users = CreatorsSummaryReport.objects.values_list('creators', flat=True)
-        users = User.objects.filter(id__in=user_ids).exclude(id__in=creators_summary_report_users).distinct()
-
+        # Исключаем пользователей, которые числятся в WeeklyCreatorsSummaryReport
+        creators_summary_report_users = WeeklyCreatorsSummaryReport.objects.values_list('creators', flat=True)
+        users = users_without_reports.exclude(id__in=creators_summary_report_users)
         # Собираем e-mail пользователей
         emails = [user.email for user in users]
-
         # Возвращаем e-mail через точку с запятой
         return '; '.join(emails)
